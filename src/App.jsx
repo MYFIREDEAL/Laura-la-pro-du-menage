@@ -90,7 +90,7 @@ const App = () => {
         <img 
           src="https://ik.imagekit.io/bqla7nrgyf/unnamed-1.jpg" 
           alt="Laura souriante" 
-          className="w-full rounded-2xl min-h-[280px] object-cover object-[70%_center] md:object-center" 
+          className="w-full rounded-2xl min-h-[280px] object-cover object-[30%_center] md:object-center" 
         />
         
         {/* Texte "Le ménage avec du cœur" - à gauche */}
