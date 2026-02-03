@@ -90,11 +90,11 @@ const App = () => {
         <img 
           src="https://ik.imagekit.io/bqla7nrgyf/unnamed-1.jpg" 
           alt="Laura souriante" 
-          className="w-full rounded-2xl min-h-[280px] object-cover" 
+          className="w-full rounded-2xl min-h-[280px] object-cover object-[70%_center] md:object-center" 
         />
         
         {/* Texte "Le ménage avec du cœur" - à gauche */}
-        <div className="absolute top-[22%] left-[4%] md:left-[5%] max-w-[55%] md:max-w-none">
+        <div className="absolute top-[22%] left-[4%] md:left-[5%] max-w-[50%] md:max-w-none">
           <p className="text-[10px] md:text-sm text-orange-500 font-bold tracking-wider uppercase mb-1 md:mb-2">Services de proximité</p>
           <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
             Le ménage<br />avec <span className="text-orange-500 underline decoration-orange-500">du cœur</span>.
@@ -102,14 +102,14 @@ const App = () => {
         </div>
 
         {/* Badge Entreprise Humaine - en haut à droite */}
-        <div className="absolute top-[18%] right-[3%] md:right-[5%] animate-bounce">
-          <div className="bg-white rounded-lg md:rounded-xl shadow-lg px-2 py-1.5 md:px-4 md:py-3 flex items-center gap-1.5 md:gap-2">
-            <div className="bg-orange-100 p-1 md:p-2 rounded-lg">
-              <Heart size={12} className="text-orange-500 md:w-5 md:h-5" fill="currentColor" />
+        <div className="absolute top-[18%] right-[2%] md:right-[5%] animate-bounce">
+          <div className="bg-white rounded-md md:rounded-xl shadow-lg px-1.5 py-1 md:px-4 md:py-3 flex items-center gap-1 md:gap-2">
+            <div className="bg-orange-100 p-0.5 md:p-2 rounded-md">
+              <Heart size={10} className="text-orange-500 md:w-5 md:h-5" fill="currentColor" />
             </div>
             <div>
-              <p className="text-[10px] md:text-sm font-bold text-gray-900">Entreprise</p>
-              <p className="text-[9px] md:text-xs text-gray-600">Humaine</p>
+              <p className="text-[8px] md:text-sm font-bold text-gray-900">Entreprise</p>
+              <p className="text-[7px] md:text-xs text-gray-600">Humaine</p>
             </div>
           </div>
         </div>
