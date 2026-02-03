@@ -86,11 +86,11 @@ const App = () => {
   const PageAccueil = () => (
     <div className="animate-in fade-in duration-700">
       {/* Hero Full Width Image */}
-      <section className="relative w-[85%] mx-auto">
+      <section className="relative w-[95%] md:w-[85%] mx-auto">
         <img 
           src="https://ik.imagekit.io/bqla7nrgyf/unnamed-1.jpg" 
           alt="Laura souriante" 
-          className="w-full rounded-2xl" 
+          className="w-full rounded-2xl min-h-[280px] object-cover" 
         />
         
         {/* Texte "Le ménage avec du cœur" - à gauche */}
