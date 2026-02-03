@@ -148,10 +148,10 @@ const App = () => {
                 <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
                 <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge -30% sur l'image */}
-                <div className="absolute top-4 right-4">
-                  <div className="bg-red-600 text-white px-4 py-3 rounded-2xl shadow-xl">
-                    <p className="text-2xl font-black">-30%</p>
-                    <p className="text-xs font-bold">le 1er mois</p>
+                <div className="absolute top-3 right-3 md:top-4 md:right-4">
+                  <div className="bg-red-600 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
+                    <p className="text-lg md:text-2xl font-black">-30%</p>
+                    <p className="text-[10px] md:text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
                 {/* Dégradé en bas */}
@@ -185,10 +185,10 @@ const App = () => {
                 <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
                 <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
-                <div className="absolute top-4 right-4">
-                  <div className="bg-orange-500 text-white px-4 py-3 rounded-2xl shadow-xl">
-                    <p className="text-2xl font-black">-30%</p>
-                    <p className="text-xs font-bold">le 1er mois</p>
+                <div className="absolute top-3 right-3 md:top-4 md:right-4">
+                  <div className="bg-orange-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
+                    <p className="text-lg md:text-2xl font-black">-30%</p>
+                    <p className="text-[10px] md:text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
                 {/* Dégradé en bas */}
