@@ -395,7 +395,8 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-500" /> Linge de maison (draps, nappes)</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-500" /> Pliage et rangement soigné</li>
                 </ul>
-                <div className="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6">
+                <div className="relative bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6">
+                  <div className="absolute -top-3 -right-3 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
                   <p className="text-purple-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> Service bientôt disponible
                   </p>
@@ -437,7 +438,8 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Fenêtres intérieures & extérieures</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Encadrements & rails nettoyés</li>
                 </ul>
-                <div className="bg-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-6">
+                <div className="relative bg-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-6">
+                  <div className="absolute -top-3 -right-3 bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
                   <p className="text-cyan-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> Service bientôt disponible
                   </p>
