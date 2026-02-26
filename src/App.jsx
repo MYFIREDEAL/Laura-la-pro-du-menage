@@ -788,7 +788,7 @@ const App = () => {
               className="w-48 h-48 rounded-full object-cover shadow-lg flex-shrink-0"
             />
             <div>
-              <h3 className="text-2xl font-bold mb-2">Laura, au service des autres</h3>
+              <h3 className="text-2xl font-bold mb-2">Laura — L'attention qui change tout</h3>
               <p className="text-sm text-red-600 font-semibold mb-4 italic">Prendre soin des gens, c'est sa vocation</p>
               <p className="text-gray-600 leading-relaxed">
                 Pendant des années, Laura a travaillé dans le service à la personne pour des sociétés classiques. 
