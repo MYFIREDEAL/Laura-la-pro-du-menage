@@ -633,7 +633,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             <p className="text-[10px] text-gray-400 mt-2">
               {estimate.isProOrAirbnb 
                 ? '✨ -30% le 1er mois, puis tarif normal'
-                : '✨ 1ère heure offerte + 30% de remise le 1er mois'
+                : '✨ 1ère heure offerte et -30% le 1er mois'
               }
             </p>
           </div>
@@ -646,7 +646,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         <p className="text-xs mt-1 text-orange-700">
           {estimate.isProOrAirbnb 
             ? '-30% le 1er mois'
-            : '1ère heure offerte + 30% le 1er mois'
+            : '1ère heure offerte et -30% le 1er mois'
           }
         </p>
         <p className="text-[10px] mt-2 text-orange-600">Valable jusqu'au 14 février 2026</p>
@@ -762,7 +762,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           <p className="text-gray-600">
             {estimate.isProOrAirbnb 
               ? <>🎁 <span className="font-semibold text-orange-600">-30%</span> le 1er mois</>
-              : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span> + 30% le 1er mois</>
+              : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span> et <span className="font-semibold text-orange-600">-30%</span> le 1er mois</>
             }
           </p>
         </div>
