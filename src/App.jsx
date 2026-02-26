@@ -344,10 +344,6 @@ const App = () => {
                   alt="Ménage Printanier" 
                   className="w-full h-full object-cover object-center"
                 />
-                {/* Étoiles de propreté animées */}
-                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">🌸</div>
-                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">🌷</div>
-                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-pink-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
@@ -390,10 +386,6 @@ const App = () => {
                   alt="Service de repassage" 
                   className="w-full h-full object-cover object-center"
                 />
-                {/* Étoiles de propreté animées */}
-                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">👔</div>
-                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
-                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-purple-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
@@ -436,10 +428,6 @@ const App = () => {
                   alt="Nettoyage baie vitrée" 
                   className="w-full h-full object-cover object-center"
                 />
-                {/* Étoiles de propreté animées */}
-                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">🪟</div>
-                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
-                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-cyan-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
@@ -482,10 +470,6 @@ const App = () => {
                   alt="Nettoyage de terrasse" 
                   className="w-full h-full object-cover object-center"
                 />
-                {/* Éléments animés */}
-                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">☀️</div>
-                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">🌿</div>
-                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-amber-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
