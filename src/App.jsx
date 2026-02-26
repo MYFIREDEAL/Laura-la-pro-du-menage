@@ -348,7 +348,7 @@ const App = () => {
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-pink-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
                     <p className="text-lg md:text-2xl font-black">-30%</p>
-                    <p className="text-[10px] md:text-xs font-bold">le 1er mois</p>
+                    <p className="text-[10px] md:text-xs font-bold">de réduction</p>
                   </div>
                 </div>
                 {/* Dégradé en bas */}
@@ -367,10 +367,10 @@ const App = () => {
                 <div className="relative bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-pink-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
                     <p className="text-sm">-30%</p>
-                    <p className="text-[9px]">1er mois</p>
+                    <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-pink-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 🎁 1ère heure offerte
+                    <Sparkles size={18} /> 🎁 1ère heure offerte + -30%
                   </p>
                   <p className="text-pink-500 text-sm mt-1">Offre spéciale printemps 2026</p>
                 </div>
@@ -409,12 +409,12 @@ const App = () => {
                 <div className="relative bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-purple-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
                     <p className="text-sm">-30%</p>
-                    <p className="text-[9px]">1er mois</p>
+                    <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-purple-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 1ère heure offerte
+                    <Sparkles size={18} /> 1ère heure offerte + -30%
                   </p>
-                  <p className="text-purple-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% le 1er mois</p>
+                  <p className="text-purple-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% de réduction</p>
                 </div>
                 <Button onClick={() => goToReservation('repassage')} className="w-full !bg-purple-500 hover:!bg-purple-600">Calculer mon prix</Button>
               </div>
@@ -451,12 +451,12 @@ const App = () => {
                 <div className="relative bg-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-cyan-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
                     <p className="text-sm">-30%</p>
-                    <p className="text-[9px]">1er mois</p>
+                    <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-cyan-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 1ère heure offerte
+                    <Sparkles size={18} /> 1ère heure offerte + -30%
                   </p>
-                  <p className="text-cyan-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% le 1er mois</p>
+                  <p className="text-cyan-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% de réduction</p>
                 </div>
                 <Button onClick={() => goToReservation('vitres')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Calculer mon prix</Button>
               </div>
@@ -493,12 +493,12 @@ const App = () => {
                 <div className="relative bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-amber-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
                     <p className="text-sm">-30%</p>
-                    <p className="text-[9px]">1er mois</p>
+                    <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-amber-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> -30% le 1er mois
+                    <Sparkles size={18} /> -30% de réduction
                   </p>
-                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — -30% sur votre 1ère intervention</p>
+                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — -30% sur votre intervention</p>
                 </div>
                 <Button onClick={() => goToReservation('terrasse')} className="w-full !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
               </div>
