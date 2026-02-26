@@ -792,12 +792,18 @@ const App = () => {
             <div className="bg-white/70 p-6 rounded-2xl border border-emerald-200">
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-2xl">💪</span>
-                <h4 className="font-bold text-emerald-700">Pour nos professionnels</h4>
+                <h4 className="font-bold text-emerald-700">Pour les pros du ménage</h4>
               </div>
-              <p className="text-gray-600">
-                Proposer aux aides ménagères et professionnels du secteur de travailler avec nous et d'être 
-                <strong> rémunérés à leur juste valeur</strong>. Fini l'exploitation, place à la reconnaissance.
+              <p className="text-gray-600 mb-4">
+                Permettre aux aides ménagères et aux indépendant(e)s du secteur d'être enfin 
+                <strong> rémunéré(e)s à leur juste valeur</strong>. Fini l'exploitation, place à la reconnaissance.
               </p>
+              <button 
+                onClick={() => setCurrentPage('recrutement')}
+                className="bg-emerald-600 text-white font-bold py-2 px-6 rounded-full text-sm hover:bg-emerald-700 transition-all hover:scale-105"
+              >
+                Rejoindre l'équipe →
+              </button>
             </div>
           </div>
         </div>
