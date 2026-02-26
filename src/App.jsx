@@ -416,6 +416,48 @@ const App = () => {
                 <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Me tenir informé</Button>
               </div>
             </div>
+
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+              {/* Image en haut du module */}
+              <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
+                <img 
+                  src="https://ik.imagekit.io/bqla7nrgyf/Terasse.jpg" 
+                  alt="Nettoyage de terrasse" 
+                  className="w-full h-full object-cover object-center"
+                />
+                {/* Éléments animés */}
+                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">☀️</div>
+                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">🌿</div>
+                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
+                {/* Badge sur l'image */}
+                <div className="absolute top-3 right-3 md:top-4 md:right-4">
+                  <div className="bg-amber-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
+                    <p className="text-[10px] md:text-xs font-bold">Bientôt</p>
+                    <p className="text-lg md:text-2xl font-black">dispo</p>
+                  </div>
+                </div>
+                {/* Dégradé en bas */}
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-50 to-transparent"></div>
+              </div>
+              <div className="p-8 md:p-10">
+                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">☀️ Nettoyage de Terrasse</h3>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  Les beaux jours arrivent, c'est le moment de profiter de votre terrasse ! Laura la remet à neuf pour que vous puissiez en profiter pleinement tout l'été.
+                </p>
+                <ul className="space-y-2 mb-4 text-sm text-gray-600">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Nettoyage haute pression du sol</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Démoussage & traitement anti-mousse</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Nettoyage du mobilier de jardin</li>
+                </ul>
+                <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6">
+                  <p className="text-amber-600 font-bold flex items-center gap-2">
+                    <Sparkles size={18} /> Service bientôt disponible
+                  </p>
+                  <p className="text-amber-500 text-sm mt-1">Contactez-nous pour être informé du lancement</p>
+                </div>
+                <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-amber-500 hover:!bg-amber-600">Me tenir informé</Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
