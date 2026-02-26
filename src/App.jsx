@@ -891,9 +891,7 @@ const App = () => {
           <button 
             onClick={() => {
               setCurrentPage('accueil');
-              setTimeout(() => {
-                document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }, 100);
+              setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
             }} 
             className="bg-white text-red-600 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
           >
