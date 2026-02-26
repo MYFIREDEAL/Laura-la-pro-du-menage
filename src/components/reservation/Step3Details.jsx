@@ -40,6 +40,7 @@ const Step3Details = ({
             updateDetails={updateDetails}
             options={options}
             toggleOption={toggleOption}
+            service={service}
           />
         );
       

@@ -11,7 +11,7 @@ import { Home, Sparkles, Key, CheckCircle2, Shirt, Package, Glasses } from 'luci
  * - Options génériques (repassage, produits, vitres)
  */
 
-const DetailsRegularPonctuel = ({ details, updateDetails, options, toggleOption }) => {
+const DetailsRegularPonctuel = ({ details, updateDetails, options, toggleOption, service }) => {
   
   // ═══════════════════════════════════════════════════════════════════
   // DONNÉES
@@ -60,7 +60,8 @@ const DetailsRegularPonctuel = ({ details, updateDetails, options, toggleOption 
         🏠 Détails du ménage
       </h3>
       
-      {/* Surface approximative */}
+      {/* Surface approximative - masquée pour ponctuel (déjà demandée à l'étape 2) */}
+      {service !== 'ponctuel' && (
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
           <Home size={16} className="inline mr-1" />
@@ -84,6 +85,7 @@ const DetailsRegularPonctuel = ({ details, updateDetails, options, toggleOption 
           ))}
         </div>
       </div>
+      )}
 
       {/* Priorités de ménage */}
       <div className="mb-6">
