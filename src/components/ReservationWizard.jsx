@@ -97,8 +97,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   ];
 
   const frequencies = [
-    { id: 'weekly', label: '1 fois / semaine', recommended: true, multiplier: 4.33 },
-    { id: 'biweekly', label: '1 fois / 2 semaines', recommended: false, multiplier: 2.165 },
+    { id: 'weekly', label: '1 fois / semaine', recommended: true, multiplier: 4 },
+    { id: 'biweekly', label: '1 fois / 2 semaines', recommended: false, multiplier: 2 },
     { id: 'monthly', label: '1 fois / mois', recommended: false, multiplier: 1 },
     { id: 'once', label: 'Ponctuel (1 seule fois)', recommended: false, multiplier: 1 },
   ];
