@@ -1205,13 +1205,13 @@ const App = () => {
                     setCurrentPage(item.id);
                   }
                 }} 
-                className={`text-xs font-bold transition-all ${currentPage === item.id ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
+                className={`text-sm font-bold transition-all ${currentPage === item.id ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
               >
                 {item.name}
               </button>
             ))}
-            <Button onClick={() => goToReservation()} className="ml-2 !py-2 px-6 !text-xs">Calculer mon prix</Button>
-            <Button onClick={() => setCurrentPage('recrutement')} variant="secondary" className="!py-2 px-6 !text-xs !bg-emerald-600 !text-white hover:!bg-emerald-700 !border-emerald-600">Recrutement</Button>
+            <Button onClick={() => goToReservation()} className="ml-2 !py-2 px-6 !text-sm">Calculer mon prix</Button>
+            <Button onClick={() => setCurrentPage('recrutement')} variant="secondary" className="!py-2 px-6 !text-sm !bg-emerald-600 !text-white hover:!bg-emerald-700 !border-emerald-600">Recrutement</Button>
           </div>
           
           <button className="lg:hidden text-gray-900 p-1" onClick={() => setIsMenuOpen(!isMenuOpen)}>
