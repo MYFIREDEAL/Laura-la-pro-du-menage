@@ -818,8 +818,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         </div>
       )}
 
-      {/* Niveau d'état du logement - uniquement pour ponctuel, après avoir choisi la surface */}
-      {wizardState.service === 'ponctuel' && wizardState.surface && (
+      {/* Niveau d'état du logement - uniquement pour ponctuel */}
+      {wizardState.service === 'ponctuel' && (
         <div className="mb-8">
           <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
             <Sparkles size={20} className="text-orange-500" />
