@@ -181,7 +181,8 @@ const App = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
               <div className="p-8 md:p-10">
-                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">Ménage Régulier</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-2 italic">Ménage Régulier</h3>
+                <p className="text-lg font-bold text-orange-500 mb-3">Débordé par le quotidien ?</p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Entre le travail, les enfants et les activités, le ménage devient une corvée ? Retrouvez vos soirées dans une maison impeccable.
                 </p>
@@ -189,6 +190,7 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Nettoyage complet des sols</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Cuisine & sanitaires impeccables</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Dépoussiérage & rangement</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Chaque semaine ou tous les 15 jours</li>
                 </ul>
                 <div className="relative bg-red-50 border border-red-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-red-600 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
@@ -227,7 +229,8 @@ const App = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
               <div className="p-8 md:p-10">
-                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">Spécial Seniors</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-2 italic">Spécial Seniors</h3>
+                <p className="text-lg font-bold text-orange-500 mb-3">Prenez soin de vos parents</p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Offrez-leur le soutien d'une présence rassurante qui s'occupe de leur intérieur avec douceur et respect de leur autonomie.
                 </p>
@@ -235,6 +238,7 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Ménage adapté & en douceur</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Présence humaine & écoute</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Toujours la même intervenante</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Un café partagé, un moment d'échange</li>
                 </ul>
                 <div className="relative bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-orange-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
