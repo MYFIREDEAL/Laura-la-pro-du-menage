@@ -149,6 +149,17 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 10, label: '10h' },
   ];
 
+  // Durées terrasse (karcher = rapide, avec saturateur = long)
+  const durationsTerrasse = [
+    { id: 2, label: '2h' },
+    { id: 3, label: '3h' },
+    { id: 4, label: '4h' },
+    { id: 5, label: '5h' },
+    { id: 6, label: '6h' },
+    { id: 7, label: '7h' },
+    { id: 8, label: '8h' },
+  ];
+
   // Surfaces (pour ménage ponctuel)
   const surfaces = [
     { id: 'xs', label: '< 30 m²', description: 'Studio' },
@@ -193,14 +204,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     xl:      [  6,     7,      8,    10   ],
   };
 
-  // Matrice de durées recommandées terrasse
+  // Matrice de durées recommandées terrasse (karcher seul, sans saturateur)
+  // Avec saturateur bois : compter +2h à +3h en plus
   const recommendationMatrixTerrasse = {
     //          light  medium  deep  extreme
-    xs:      [  3,     3,      3,    4    ],
-    sm:      [  3,     3,      4,    5    ],
-    md:      [  3,     4,      5,    6    ],
-    lg:      [  4,     5,      6,    7    ],
-    xl:      [  5,     6,      7,    8    ],
+    xs:      [  2,     2,      2,    3    ],
+    sm:      [  2,     2,      3,    3    ],
+    md:      [  2,     3,      3,    4    ],
+    lg:      [  3,     3,      4,    5    ],
+    xl:      [  3,     4,      5,    6    ],
   };
 
   // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel et terrasse)
@@ -947,9 +959,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           </p>
         )}
         {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') ? (
-          /* Durées étendues pour ponctuel / terrasse (3h à 10h) */
+          /* Durées étendues pour ponctuel / terrasse */
           <div className="grid grid-cols-4 gap-3">
-            {durationsPonctuel.map(dur => {
+            {(wizardState.service === 'terrasse' ? durationsTerrasse : durationsPonctuel).map(dur => {
               const isRecommended = recommendedHoursFromSurface === dur.id;
               return (
                 <ChoiceButton 

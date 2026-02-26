@@ -1,12 +1,13 @@
 import React from 'react';
-import { Key, CheckCircle2, Package } from 'lucide-react';
+import { Key, CheckCircle2, Package, Paintbrush } from 'lucide-react';
 
 /**
  * DetailsTerrasse - Détails spécifiques pour le nettoyage de terrasse
  * 
  * Champs :
+ * - Application saturateur bois (toggle important — impacte la durée recommandée)
  * - Accès extérieur (portail, code, indications)
- * - Seule option payante : Produits fournis par Laura (+3€/venue)
+ * - Option payante : Produits fournis par Laura (+3€/venue)
  * 
  * Note : Surface et état sont déjà renseignés à l'étape 2 (comme ponctuel)
  */
@@ -22,6 +23,48 @@ const DetailsTerrasse = ({ details, updateDetails, options, toggleOption }) => {
       <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
         ☀️ Détails nettoyage terrasse
       </h3>
+
+      {/* Option saturateur bois */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          🪵 Type de terrasse & finition
+        </label>
+        <button
+          type="button"
+          onClick={() => updateDetails({ saturateur: !details.saturateur })}
+          className={`flex items-center gap-4 w-full p-4 rounded-xl border-2 transition-all duration-200 ${
+            details.saturateur 
+              ? 'bg-amber-50 border-amber-400' 
+              : 'bg-white border-gray-200 hover:border-amber-300'
+          }`}
+        >
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${details.saturateur ? 'bg-amber-500' : 'bg-gray-100'}`}>
+            <Paintbrush size={20} className={details.saturateur ? 'text-white' : 'text-gray-500'} />
+          </div>
+          <div className="flex-1 text-left">
+            <span className={`font-semibold text-sm block ${details.saturateur ? 'text-amber-700' : 'text-gray-700'}`}>
+              Application de saturateur / huile bois
+            </span>
+            <span className={`text-xs ${details.saturateur ? 'text-amber-600' : 'text-gray-500'}`}>
+              Protection du bois après nettoyage — au pinceau large, lame par lame
+            </span>
+          </div>
+          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+            details.saturateur ? 'bg-amber-500 border-amber-500' : 'border-gray-300'
+          }`}>
+            {details.saturateur && <CheckCircle2 size={12} className="text-white" />}
+          </div>
+        </button>
+        {details.saturateur && (
+          <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl">
+            <p className="text-amber-700 text-xs">
+              ⏱️ <strong>Comptez +2h à +3h supplémentaires</strong> pour l'application du saturateur. 
+              C'est un travail minutieux au pinceau large (largeur des lames). 
+              Pensez à ajuster la durée à l'étape précédente si nécessaire.
+            </p>
+          </div>
+        )}
+      </div>
 
       {/* Accès extérieur */}
       <div className="mb-6">
