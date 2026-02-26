@@ -505,7 +505,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               <li className="flex items-start gap-2">
                 <span className="bg-green-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
                 <span>{wizardState.frequency === 'once' 
-                  ? (estimate.isNoFreeHour ? 'Intervention avec -30% de réduction' : '1ère heure offerte + -30% de réduction')
+                  ? (estimate.isNoFreeHour ? 'Intervention avec -30% de réduction' : '1ère heure offerte, -30% de réduction')
                   : (estimate.isNoFreeHour ? '1ère intervention avec -30%' : '1ère heure d\'essai')
                 }</span>
               </li>
@@ -1203,7 +1203,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               </div>
               <span className="text-[9px] text-gray-400">
                 {wizardState.frequency === 'once'
-                  ? (estimate.isNoFreeHour ? '-30% de réduction' : '1ère heure offerte + -30%')
+                  ? (estimate.isNoFreeHour ? '-30% de réduction' : '1ère heure offerte et -30%')
                   : (estimate.isNoFreeHour ? '-30% le 1er mois' : '1ère heure d\'essai offerte')
                 }
               </span>

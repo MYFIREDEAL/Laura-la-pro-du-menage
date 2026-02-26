@@ -370,7 +370,7 @@ const App = () => {
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-pink-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 🎁 1ère heure offerte + -30%
+                    <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
                   <p className="text-pink-500 text-sm mt-1">Offre spéciale printemps 2026</p>
                 </div>
@@ -412,9 +412,9 @@ const App = () => {
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-purple-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 1ère heure offerte + -30%
+                    <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-purple-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% de réduction</p>
+                  <p className="text-purple-500 text-sm mt-1">Offre de bienvenue — valable jusqu'au 14 février 2026</p>
                 </div>
                 <Button onClick={() => goToReservation('repassage')} className="w-full !bg-purple-500 hover:!bg-purple-600">Calculer mon prix</Button>
               </div>
@@ -454,9 +454,9 @@ const App = () => {
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-cyan-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 1ère heure offerte + -30%
+                    <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-cyan-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% de réduction</p>
+                  <p className="text-cyan-500 text-sm mt-1">Offre de bienvenue — valable jusqu'au 14 février 2026</p>
                 </div>
                 <Button onClick={() => goToReservation('vitres')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Calculer mon prix</Button>
               </div>
@@ -496,9 +496,9 @@ const App = () => {
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-amber-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> -30% de réduction
+                    <Sparkles size={18} /> 🎁 -30% de réduction
                   </p>
-                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — -30% sur votre intervention</p>
+                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — valable jusqu'au 14 février 2026</p>
                 </div>
                 <Button onClick={() => goToReservation('terrasse')} className="w-full !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
               </div>
@@ -727,7 +727,7 @@ const App = () => {
               <div className="mt-6 text-center w-full max-w-sm">
                 <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-4">
                   <p className="text-orange-600 font-bold flex items-center justify-center gap-2">
-                    <Gift size={18} /> 🎁 1ère heure offerte + -30% le 1er mois
+                    <Gift size={18} /> 🎁 1ère heure offerte
                   </p>
                   <p className="text-orange-500 text-sm mt-1">Offre valable jusqu'au 14 février 2026</p>
                 </div>
