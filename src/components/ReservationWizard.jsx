@@ -833,8 +833,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             </div>
             <p className="text-[10px] text-gray-400 mt-2">
               {wizardState.frequency === 'once'
-                ? (estimate.isNoFreeHour ? '✨ -30% de réduction appliquée' : '✨ 1ère heure offerte et -30% de réduction')
-                : (estimate.isNoFreeHour ? '✨ -30% le 1er mois, puis tarif normal' : '✨ 1ère heure offerte et -30% le 1er mois')
+                ? (estimate.isNoFreeHour ? '✨ -30% de réduction appliquée' : '✨ 1ère heure offerte, -30% de réduction')
+                : (estimate.isNoFreeHour ? '✨ -30% le 1er mois, puis tarif normal' : '✨ 1ère heure d\'essai offerte')
               }
             </p>
           </div>
@@ -846,8 +846,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         <p className="font-bold text-sm">🎁 Offre de bienvenue</p>
         <p className="text-xs mt-1 text-orange-700">
           {wizardState.frequency === 'once'
-            ? (estimate.isNoFreeHour ? '-30% de réduction' : '1ère heure offerte et -30% de réduction')
-            : (estimate.isNoFreeHour ? '-30% le 1er mois' : '1ère heure offerte et -30% le 1er mois')
+            ? (estimate.isNoFreeHour ? '-30% de réduction' : '1ère heure offerte, -30% de réduction')
+            : (estimate.isNoFreeHour ? '-30% le 1er mois' : '1ère heure d\'essai offerte')
           }
         </p>
         <p className="text-[10px] mt-2 text-orange-600">Valable jusqu'au 14 février 2026</p>
@@ -1134,10 +1134,10 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             {wizardState.frequency === 'once'
               ? (estimate.isNoFreeHour 
                   ? <>🎁 <span className="font-semibold text-orange-600">-30%</span> de réduction</>
-                  : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span> et <span className="font-semibold text-orange-600">-30%</span> de réduction</>)
+                  : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span>, <span className="font-semibold text-orange-600">-30%</span> de réduction</>)
               : (estimate.isNoFreeHour 
                   ? <>🎁 <span className="font-semibold text-orange-600">-30%</span> le 1er mois</>
-                  : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span> et <span className="font-semibold text-orange-600">-30%</span> le 1er mois</>)
+                  : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span></>)
             }
           </p>
         </div>
@@ -1203,7 +1203,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               </div>
               <span className="text-[9px] text-gray-400">
                 {wizardState.frequency === 'once'
-                  ? (estimate.isNoFreeHour ? '-30% de réduction' : '1ère heure offerte et -30%')
+                  ? (estimate.isNoFreeHour ? '-30% de réduction' : '1ère heure offerte, -30%')
                   : (estimate.isNoFreeHour ? '-30% le 1er mois' : '1ère heure d\'essai offerte')
                 }
               </span>
