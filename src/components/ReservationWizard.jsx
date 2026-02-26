@@ -231,7 +231,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     
     const finalPrice = isEligible50 ? afterPromo * 0.5 : afterPromo;
 
-    return { subtotal, promo, afterPromo, finalPrice, isEligible50, isProOrAirbnb };
+    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isProOrAirbnb };
   };
 
   const estimate = calculateEstimate();
@@ -573,10 +573,28 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             <span className="text-gray-900">{estimate.subtotal.toFixed(2)} €</span>
           </div>
           
-          {/* Promo */}
-          <div className="flex justify-between text-sm text-green-600">
-            <span>🎁 Offre d'essai</span>
-            <span>-{estimate.promo.toFixed(2)} €</span>
+          {/* Détail des remises */}
+          <div className="bg-green-50 rounded-xl p-3 space-y-2 border border-green-100">
+            <p className="text-xs font-bold text-green-700 uppercase">🎁 Offre de bienvenue - 1er mois</p>
+            
+            {/* 1ère heure offerte (si applicable) */}
+            {!estimate.isProOrAirbnb && estimate.promoFirstHour > 0 && (
+              <div className="flex justify-between text-sm text-green-600">
+                <span>🕐 1ère heure offerte</span>
+                <span>-{estimate.promoFirstHour.toFixed(2)} €</span>
+              </div>
+            )}
+            
+            {/* -30% sur le 1er mois */}
+            <div className="flex justify-between text-sm text-green-600">
+              <span>📉 -30% sur le 1er mois</span>
+              <span>-{estimate.promoPercent.toFixed(2)} €</span>
+            </div>
+
+            <div className="flex justify-between text-xs text-green-700 font-semibold pt-1 border-t border-green-200">
+              <span>Total économisé</span>
+              <span>-{estimate.promo.toFixed(2)} €</span>
+            </div>
           </div>
           
           <div className="flex justify-between text-sm">
@@ -606,8 +624,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             </div>
             <p className="text-[10px] text-gray-400 mt-2">
               {estimate.isProOrAirbnb 
-                ? '✨ -30% le 1er mois, puis paiement CB ou prélèvement'
-                : '✨ 1ère heure d\'essai, puis paiement CB ou prélèvement'
+                ? '✨ -30% le 1er mois, puis tarif normal'
+                : '✨ 1ère heure offerte + 30% de remise le 1er mois'
               }
             </p>
           </div>
