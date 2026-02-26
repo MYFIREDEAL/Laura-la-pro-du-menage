@@ -58,6 +58,7 @@ const App = () => {
     { id: 'services', name: 'Nos Services' },
     { id: 'seniors', name: 'Spécial Seniors' },
     { id: 'histoire', name: 'Notre Histoire' },
+    { id: 'recrutement', name: 'Recrutement' },
     { id: 'fiscal', name: 'Avantage Fiscal' }
     // { id: 'contact', name: 'Contact' } // Masqué pour l'instant
   ];
@@ -902,6 +903,201 @@ const App = () => {
     </div>
   );
 
+  // État du formulaire recrutement
+  const [recrutementForm, setRecrutementForm] = useState({ prenom: '', tel: '', email: '', departement: '' });
+  const [recrutementSent, setRecrutementSent] = useState(false);
+
+  const handleRecrutementSubmit = (e) => {
+    e.preventDefault();
+    // Envoyer par mail ou stocker
+    const subject = encodeURIComponent(`Candidature - ${recrutementForm.prenom} (${recrutementForm.departement})`);
+    const body = encodeURIComponent(
+      `Nouvelle candidature !\n\nPrénom : ${recrutementForm.prenom}\nTéléphone : ${recrutementForm.tel}\nEmail : ${recrutementForm.email}\nDépartement : ${recrutementForm.departement}`
+    );
+    window.location.href = `mailto:contact@laura-menage.fr?subject=${subject}&body=${body}`;
+    setRecrutementSent(true);
+    setTimeout(() => setRecrutementSent(false), 5000);
+  };
+
+  const PageRecrutement = () => (
+    <div className="py-12 px-6 animate-in fade-in duration-500">
+      <div className="max-w-4xl mx-auto">
+        <SectionTitle subtitle="Rejoignez une entreprise qui vous respecte.">
+          Rejoignez-nous !
+        </SectionTitle>
+
+        {/* Hero recrutement */}
+        <div className="bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-gray-100 mb-12">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            <img 
+              src="https://ik.imagekit.io/bqla7nrgyf/unnamed.jpg" 
+              alt="Laura recrute" 
+              className="w-full md:w-1/2 rounded-2xl object-cover shadow-lg"
+            />
+            <div>
+              <h3 className="text-2xl font-bold mb-2">Laura recrute des indépendant(e)s !</h3>
+              <p className="text-sm text-emerald-600 font-semibold mb-4 italic">Auto-entrepreneurs, ce message est pour vous</p>
+              <p className="text-gray-600 leading-relaxed mb-4">
+                Vous êtes aide ménagère, agent d'entretien ou professionnel(le) du service à la personne ? 
+                Vous en avez assez d'être sous-payé(e) par les grandes sociétés ?
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                Chez <strong>Laura la Pro du Ménage</strong>, nous travaillons exclusivement avec des 
+                <strong> indépendant(e)s</strong> et nous les rémunérons à leur <strong>juste valeur</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Pourquoi nous rejoindre */}
+        <SectionTitle subtitle="Ce qu'on vous propose concrètement.">
+          Pourquoi nous rejoindre ?
+        </SectionTitle>
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
+          <div className="bg-gradient-to-b from-emerald-50 to-white p-6 rounded-3xl shadow-lg border border-emerald-100 text-center">
+            <div className="bg-emerald-100 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">💰</span>
+            </div>
+            <h4 className="font-bold text-lg mb-2">Rémunération juste</h4>
+            <p className="text-gray-600 text-sm">Fini les miettes. Vous êtes payé(e) à la hauteur de votre travail et de votre talent.</p>
+          </div>
+          <div className="bg-gradient-to-b from-blue-50 to-white p-6 rounded-3xl shadow-lg border border-blue-100 text-center">
+            <div className="bg-blue-100 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">📋</span>
+            </div>
+            <h4 className="font-bold text-lg mb-2">Aide administrative</h4>
+            <p className="text-gray-600 text-sm">Pas encore auto-entrepreneur ? On vous accompagne dans toutes vos démarches pour créer votre statut.</p>
+          </div>
+          <div className="bg-gradient-to-b from-orange-50 to-white p-6 rounded-3xl shadow-lg border border-orange-100 text-center">
+            <div className="bg-orange-100 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">🤝</span>
+            </div>
+            <h4 className="font-bold text-lg mb-2">Missions régulières</h4>
+            <p className="text-gray-600 text-sm">Des clients fidèles, des plannings stables. Vous travaillez sereinement, on s'occupe du reste.</p>
+          </div>
+        </div>
+
+        {/* Notre philosophie */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 md:p-10 rounded-3xl shadow-lg border border-purple-100 mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="bg-purple-100 w-14 h-14 rounded-2xl flex items-center justify-center">
+              <span className="text-3xl">💜</span>
+            </div>
+            <h3 className="text-2xl font-bold text-purple-700">Notre philosophie</h3>
+          </div>
+          <p className="text-gray-700 leading-relaxed text-lg mb-4">
+            Laura a elle-même travaillé pendant des années pour des sociétés qui la sous-payaient. 
+            Elle sait ce que c'est. C'est pour ça qu'elle a créé cette entreprise : pour offrir aux professionnels 
+            du ménage <strong>le respect et la rémunération qu'ils méritent</strong>.
+          </p>
+          <div className="bg-white/70 p-6 rounded-2xl border border-purple-200">
+            <p className="text-purple-700 font-semibold text-center text-lg italic">
+              « Ici, on ne travaille pas pour nous. On travaille avec nous. »
+            </p>
+          </div>
+        </div>
+
+        {/* Profil recherché */}
+        <div className="bg-white p-8 md:p-10 rounded-3xl shadow-lg border border-gray-100 mb-12">
+          <h3 className="text-2xl font-bold mb-6 text-center">Profil recherché</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 size={20} className="text-emerald-500 mt-1 flex-shrink-0" />
+              <p className="text-gray-600">Auto-entrepreneur(e) ou en cours de création de statut</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 size={20} className="text-emerald-500 mt-1 flex-shrink-0" />
+              <p className="text-gray-600">Sérieux(se), ponctuel(le) et bienveillant(e)</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 size={20} className="text-emerald-500 mt-1 flex-shrink-0" />
+              <p className="text-gray-600">Expérience dans le ménage ou le service à la personne</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle2 size={20} className="text-emerald-500 mt-1 flex-shrink-0" />
+              <p className="text-gray-600">Envie de travailler dans le respect et la confiance</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Formulaire de candidature */}
+        <div className="bg-gradient-to-r from-red-500 to-orange-500 p-8 md:p-12 rounded-3xl shadow-lg mb-12">
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 text-center">Candidatez maintenant ! 🚀</h3>
+          <p className="text-white/90 text-center mb-8">Laissez vos coordonnées, Laura vous rappelle personnellement.</p>
+          
+          {recrutementSent ? (
+            <div className="bg-white/20 backdrop-blur-sm p-8 rounded-2xl text-center">
+              <CheckCircle2 size={48} className="text-white mx-auto mb-4" />
+              <p className="text-white text-xl font-bold">Merci ! 🎉</p>
+              <p className="text-white/90">Votre candidature a été envoyée. Laura vous rappellera très vite !</p>
+            </div>
+          ) : (
+            <form onSubmit={handleRecrutementSubmit} className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              <div>
+                <label className="text-white text-sm font-semibold mb-1 block">Prénom *</label>
+                <input 
+                  type="text" 
+                  required
+                  value={recrutementForm.prenom}
+                  onChange={(e) => setRecrutementForm({...recrutementForm, prenom: e.target.value})}
+                  placeholder="Votre prénom"
+                  className="w-full p-3 rounded-xl border-0 shadow-lg focus:ring-2 focus:ring-white/50 outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-white text-sm font-semibold mb-1 block">Téléphone *</label>
+                <input 
+                  type="tel" 
+                  required
+                  value={recrutementForm.tel}
+                  onChange={(e) => setRecrutementForm({...recrutementForm, tel: e.target.value})}
+                  placeholder="06 XX XX XX XX"
+                  className="w-full p-3 rounded-xl border-0 shadow-lg focus:ring-2 focus:ring-white/50 outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-white text-sm font-semibold mb-1 block">Email *</label>
+                <input 
+                  type="email" 
+                  required
+                  value={recrutementForm.email}
+                  onChange={(e) => setRecrutementForm({...recrutementForm, email: e.target.value})}
+                  placeholder="votre@email.com"
+                  className="w-full p-3 rounded-xl border-0 shadow-lg focus:ring-2 focus:ring-white/50 outline-none"
+                />
+              </div>
+              <div>
+                <label className="text-white text-sm font-semibold mb-1 block">Département *</label>
+                <input 
+                  type="text" 
+                  required
+                  value={recrutementForm.departement}
+                  onChange={(e) => setRecrutementForm({...recrutementForm, departement: e.target.value})}
+                  placeholder="Ex: 75, 92, 13..."
+                  className="w-full p-3 rounded-xl border-0 shadow-lg focus:ring-2 focus:ring-white/50 outline-none"
+                />
+              </div>
+              <div className="md:col-span-2 text-center mt-4">
+                <button 
+                  type="submit"
+                  className="bg-white text-red-600 font-bold py-3 px-10 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 text-lg"
+                >
+                  📩 Envoyer ma candidature
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
+
+        {/* Rassurance */}
+        <div className="text-center text-gray-500 text-sm">
+          <p>🔒 Vos données sont confidentielles et ne seront jamais partagées.</p>
+          <p className="mt-1">Laura vous rappelle sous 48h pour discuter de votre projet professionnel.</p>
+        </div>
+      </div>
+    </div>
+  );
+
   const PageContact = () => (
     <div className="py-12 px-6 animate-in fade-in duration-500">
       <div className="max-w-4xl mx-auto">
@@ -966,6 +1162,7 @@ const App = () => {
       case 'seniors': return <PageSeniors />;
       case 'histoire': return <PageHistoire />;
       case 'fiscal': return <PageFiscal />;
+      case 'recrutement': return <PageRecrutement />;
       case 'contact': return <PageContact />;
       case 'reserver': return (
         <ReservationWizard 
