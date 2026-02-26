@@ -622,12 +622,20 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/50'
       }`}
     >
+      {/* Badge Recommandé : pastille flottante sur desktop, intégré sur mobile */}
       {item.recommended && (
-        <span className={`block text-[10px] font-bold mb-1 ${
-          isSelected ? 'text-orange-500' : 'text-orange-500'
-        }`}>
-          ⭐ Recommandé
-        </span>
+        <>
+          {/* Mobile : texte intégré au-dessus du label */}
+          <span className={`block md:hidden text-[10px] font-bold mb-1 text-orange-500`}>
+            ⭐ Recommandé
+          </span>
+          {/* Desktop : pastille flottante */}
+          <span className={`hidden md:block absolute -top-2.5 left-1/2 -translate-x-1/2 text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+            isSelected ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700'
+          }`}>
+            ⭐ Recommandé
+          </span>
+        </>
       )}
       {item.label}
     </button>
