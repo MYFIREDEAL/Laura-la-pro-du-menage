@@ -27,6 +27,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     service: initialService,       // 'regulier' | 'ponctuel' | 'seniors' | 'airbnb' | 'pro'
     frequency: null,      // 'weekly' | 'biweekly' | 'monthly' | 'once'
     hours: null,          // 2 | 2.5 | 3 | 4
+    surface: null,        // 'xs' | 'sm' | 'md' | 'lg' | 'xl' (pour ponctuel)
     options: {
       ironing: false,     // Repassage
       products: false,    // Produits fournis
@@ -105,10 +106,28 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
 
   const durations = [
     { id: 2, label: '2h', recommended: false },
-    { id: 2.5, label: '2h30', recommended: true },
+    { id: 2.5, label: '2h30', recommended: false },
     { id: 3, label: '3h', recommended: false },
     { id: 4, label: '4h+', recommended: false },
   ];
+
+  // Surfaces (pour ménage ponctuel) et durée recommandée associée
+  const surfaces = [
+    { id: 'xs', label: '< 30 m²', description: 'Studio', recommendedHours: 2 },
+    { id: 'sm', label: '30 – 60 m²', description: 'T2 / T3', recommendedHours: 2.5 },
+    { id: 'md', label: '60 – 90 m²', description: 'T3 / T4', recommendedHours: 3 },
+    { id: 'lg', label: '90 – 120 m²', description: 'T4 / T5', recommendedHours: 4 },
+    { id: 'xl', label: '120 m² +', description: 'Grande maison', recommendedHours: 4 },
+  ];
+
+  // Durée recommandée en fonction de la surface (pour ponctuel)
+  const getRecommendedHours = () => {
+    if (wizardState.service !== 'ponctuel' || !wizardState.surface) return null;
+    const surf = surfaces.find(s => s.id === wizardState.surface);
+    return surf?.recommendedHours || null;
+  };
+
+  const recommendedHoursFromSurface = getRecommendedHours();
 
   // ═══════════════════════════════════════════════════════════════════
   // HELPERS
@@ -430,9 +449,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         onClick={() => {
           // Si ponctuel, on pré-sélectionne la fréquence 'once' automatiquement
           if (service.id === 'ponctuel') {
-            updateState({ service: service.id, frequency: 'once' });
+            updateState({ service: service.id, frequency: 'once', surface: null, hours: null });
           } else {
-            updateState({ service: service.id, frequency: null });
+            updateState({ service: service.id, frequency: null, surface: null, hours: null });
           }
           // Auto-avance vers étape 2 après sélection
           setTimeout(() => updateState({ step: 2 }), 200);
@@ -557,6 +576,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             {selectedFrequency?.label || '—'}
           </span>
         </div>
+        {/* Surface (ponctuel uniquement) */}
+        {wizardState.service === 'ponctuel' && wizardState.surface && (
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Surface</span>
+            <span className="font-semibold text-gray-900">
+              {surfaces.find(s => s.id === wizardState.surface)?.label || '—'}
+            </span>
+          </div>
+        )}
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Durée</span>
           <span className="font-semibold text-gray-900">
@@ -718,22 +746,61 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         )}
       </div>
 
+      {/* Surface du logement - uniquement pour ponctuel */}
+      {wizardState.service === 'ponctuel' && (
+        <div className="mb-8">
+          <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+            <Home size={20} className="text-orange-500" />
+            Surface du logement
+          </h3>
+          <p className="text-gray-500 text-sm mb-4">Nous vous recommandons une durée adaptée à votre surface.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {surfaces.map(surf => (
+              <button
+                key={surf.id}
+                onClick={() => {
+                  updateState({ surface: surf.id, hours: surf.recommendedHours });
+                }}
+                className={`relative px-4 py-3 rounded-2xl border-2 text-center transition-all duration-200 ${
+                  wizardState.surface === surf.id
+                    ? 'bg-orange-50 border-orange-500 text-orange-700 shadow-md'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/50'
+                }`}
+              >
+                <span className="font-semibold text-sm block">{surf.label}</span>
+                <span className="text-xs text-gray-500">{surf.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Durée */}
       <div className="mb-8">
-        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
           <Clock size={20} className="text-orange-500" />
           Durée de l'intervention
         </h3>
+        {/* Message de recommandation si surface sélectionnée */}
+        {wizardState.service === 'ponctuel' && recommendedHoursFromSurface && (
+          <p className="text-orange-600 text-sm mb-4 flex items-center gap-1">
+            ⭐ Recommandé : <strong>{recommendedHoursFromSurface >= 4 ? '4h+' : recommendedHoursFromSurface + 'h'}</strong> pour votre surface — vous pouvez ajuster
+          </p>
+        )}
         <div className="grid grid-cols-4 gap-3">
-          {durations.map(dur => (
-            <ChoiceButton 
-              key={dur.id}
-              item={dur}
-              isSelected={wizardState.hours === dur.id}
-              onClick={() => updateState({ hours: dur.id })}
-              type="duration"
-            />
-          ))}
+          {durations.map(dur => {
+            const isRecommended = wizardState.service === 'ponctuel' && recommendedHoursFromSurface === dur.id;
+            const isDefaultRecommended = wizardState.service !== 'ponctuel' && dur.id === 2.5;
+            return (
+              <ChoiceButton 
+                key={dur.id}
+                item={{ ...dur, recommended: isRecommended || isDefaultRecommended }}
+                isSelected={wizardState.hours === dur.id}
+                onClick={() => updateState({ hours: dur.id })}
+                type="duration"
+              />
+            );
+          })}
         </div>
       </div>
 
