@@ -1252,8 +1252,8 @@ const App = () => {
               <Heart fill="currentColor" size={20} />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-black text-gray-900 leading-none uppercase">Laura</span>
-              <span className="text-[8px] font-black text-orange-600 uppercase tracking-widest -mt-0.5">La pro du ménage</span>
+              <span className="text-xl font-black text-gray-900 leading-none uppercase">Laura</span>
+              <span className="text-[9px] font-black text-orange-600 uppercase tracking-widest">La pro du ménage</span>
             </div>
           </div>
           
