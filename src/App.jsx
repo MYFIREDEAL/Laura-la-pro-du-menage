@@ -190,9 +190,12 @@ const App = () => {
                   Entre le travail, les enfants et les activités, le ménage devient une corvée ? Retrouvez vos soirées dans une maison impeccable.
                 </p>
                 <div className="relative bg-red-50 border border-red-100 rounded-2xl p-4 mb-6">
-                  <div className="absolute -top-3 -right-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
+                  <div className="absolute -top-3 -right-3 bg-red-600 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
+                    <p className="text-sm">-30%</p>
+                    <p className="text-[9px]">1er mois</p>
+                  </div>
                   <p className="text-red-600 font-bold flex items-center gap-2">
-                    <Gift size={18} /> 🎁 1ère heure offerte + -30% le 1er mois
+                    <Gift size={18} /> 🎁 1ère heure offerte
                   </p>
                   <p className="text-red-500 text-sm mt-1">Offre valable jusqu'au 14 février 2026</p>
                 </div>
@@ -228,9 +231,12 @@ const App = () => {
                   Offrez-leur le soutien d'une présence rassurante qui s'occupe de leur intérieur avec douceur et respect de leur autonomie.
                 </p>
                 <div className="relative bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
-                  <div className="absolute -top-3 -right-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
+                  <div className="absolute -top-3 -right-3 bg-orange-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
+                    <p className="text-sm">-30%</p>
+                    <p className="text-[9px]">1er mois</p>
+                  </div>
                   <p className="text-orange-600 font-bold flex items-center gap-2">
-                    <Heart size={18} fill="currentColor" /> 🎁 1ère heure offerte + -30% le 1er mois
+                    <Heart size={18} fill="currentColor" /> 🎁 1ère heure offerte
                   </p>
                   <p className="text-orange-500 text-sm mt-1">Offre valable jusqu'au 14 février 2026</p>
                 </div>
@@ -353,9 +359,12 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Dépoussiérage complet & désinfection</li>
                 </ul>
                 <div className="relative bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-6">
-                  <div className="absolute -top-3 -right-3 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
+                  <div className="absolute -top-3 -right-3 bg-pink-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
+                    <p className="text-sm">-30%</p>
+                    <p className="text-[9px]">1er mois</p>
+                  </div>
                   <p className="text-pink-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 🎁 1ère heure offerte + -30% le 1er mois
+                    <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
                   <p className="text-pink-500 text-sm mt-1">Offre spéciale printemps 2026</p>
                 </div>
@@ -396,7 +405,10 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-500" /> Pliage et rangement soigné</li>
                 </ul>
                 <div className="relative bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6">
-                  <div className="absolute -top-3 -right-3 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
+                  <div className="absolute -top-3 -right-3 bg-purple-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
+                    <p className="text-sm">-30%</p>
+                    <p className="text-[9px]">1er mois</p>
+                  </div>
                   <p className="text-purple-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> Service bientôt disponible
                   </p>
@@ -439,7 +451,10 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Encadrements & rails nettoyés</li>
                 </ul>
                 <div className="relative bg-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-6">
-                  <div className="absolute -top-3 -right-3 bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
+                  <div className="absolute -top-3 -right-3 bg-cyan-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
+                    <p className="text-sm">-30%</p>
+                    <p className="text-[9px]">1er mois</p>
+                  </div>
                   <p className="text-cyan-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> Service bientôt disponible
                   </p>
