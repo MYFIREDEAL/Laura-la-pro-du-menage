@@ -717,25 +717,92 @@ const App = () => {
   const PageHistoire = () => (
     <div className="py-12 px-6 animate-in fade-in duration-500">
       <div className="max-w-4xl mx-auto">
-        <SectionTitle subtitle="Découvrez qui se cache derrière Laura.">
+        <SectionTitle subtitle="Découvrez qui se cache derrière Laura la Pro du Ménage.">
           Notre Histoire
         </SectionTitle>
+
+        {/* Section 1 : La Rencontre */}
         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-gray-100 mb-12">
           <div className="flex flex-col md:flex-row gap-8 items-center mb-8">
             <img 
               src="https://ik.imagekit.io/bqla7nrgyf/unnamed-1.jpg" 
               alt="Laura" 
-              className="w-48 h-48 rounded-full object-cover shadow-lg"
+              className="w-48 h-48 rounded-full object-cover shadow-lg flex-shrink-0"
             />
             <div>
-              <h3 className="text-2xl font-bold mb-4">Laura, passionnée du ménage</h3>
+              <h3 className="text-2xl font-bold mb-2">Laura, passionnée du ménage</h3>
+              <p className="text-sm text-red-600 font-semibold mb-4 italic">Une rencontre qui a tout changé</p>
               <p className="text-gray-600 leading-relaxed">
-                Après plusieurs années d'expérience dans les services à la personne, j'ai décidé de créer ma propre entreprise 
-                pour offrir un service de ménage de qualité, humain et bienveillant. Mon objectif : vous simplifier la vie 
-                tout en créant des emplois durables dans notre région.
+                Tout a commencé par une rencontre simple : Laura intervenait chez moi par l'intermédiaire d'une société de ménage classique. 
+                Travailleuse, rigoureuse, toujours souriante — Laura était tout simplement <strong>exceptionnelle</strong> dans son métier.
               </p>
             </div>
           </div>
+        </div>
+
+        {/* Section 2 : Le Déclic */}
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 p-8 md:p-12 rounded-3xl shadow-lg border border-red-100 mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="bg-red-100 w-14 h-14 rounded-2xl flex items-center justify-center">
+              <span className="text-3xl">💥</span>
+            </div>
+            <h3 className="text-2xl font-bold text-red-700">Le Déclic</h3>
+          </div>
+          <p className="text-gray-700 leading-relaxed text-lg mb-4">
+            Un jour, j'ai découvert combien Laura gagnait réellement pour tout ce travail remarquable. 
+            <strong className="text-red-600"> J'étais sidéré.</strong>
+          </p>
+          <p className="text-gray-700 leading-relaxed text-lg mb-4">
+            Comment une professionnelle aussi dévouée et talentueuse pouvait-elle être si peu valorisée ? 
+            Les grandes sociétés de ménage facturent cher aux clients… mais reversent une misère à celles et ceux qui font réellement le travail.
+          </p>
+          <div className="bg-white/70 p-6 rounded-2xl border border-red-200 mt-6">
+            <p className="text-red-700 font-semibold text-center text-lg italic">
+              « Ce jour-là, j'ai compris qu'il fallait changer les choses. Pas demain. Maintenant. »
+            </p>
+          </div>
+        </div>
+
+        {/* Section 3 : La Création */}
+        <div className="bg-gradient-to-r from-emerald-50 to-teal-50 p-8 md:p-12 rounded-3xl shadow-lg border border-emerald-100 mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="bg-emerald-100 w-14 h-14 rounded-2xl flex items-center justify-center">
+              <span className="text-3xl">🚀</span>
+            </div>
+            <h3 className="text-2xl font-bold text-emerald-700">La Naissance de Laura la Pro du Ménage</h3>
+          </div>
+          <p className="text-gray-700 leading-relaxed text-lg mb-4">
+            Avec Laura, nous avons décidé de créer notre propre entreprise. Pas une société de plus — 
+            <strong>une entreprise avec des valeurs</strong>.
+          </p>
+          <p className="text-gray-700 leading-relaxed text-lg mb-6">
+            Notre mission est double :
+          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white/70 p-6 rounded-2xl border border-emerald-200">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-2xl">🏠</span>
+                <h4 className="font-bold text-emerald-700">Pour nos clients</h4>
+              </div>
+              <p className="text-gray-600">
+                Offrir un service de ménage irréprochable, humain et bienveillant, avec une interlocutrice unique qui connaît votre maison par cœur.
+              </p>
+            </div>
+            <div className="bg-white/70 p-6 rounded-2xl border border-emerald-200">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-2xl">💪</span>
+                <h4 className="font-bold text-emerald-700">Pour nos professionnels</h4>
+              </div>
+              <p className="text-gray-600">
+                Proposer aux aides ménagères et professionnels du secteur de travailler avec nous et d'être 
+                <strong> rémunérés à leur juste valeur</strong>. Fini l'exploitation, place à la reconnaissance.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section Chiffres */}
+        <div className="bg-white p-8 md:p-10 rounded-3xl shadow-lg border border-gray-100 mb-12">
           <div className="grid md:grid-cols-3 gap-6 text-center">
             <div className="p-4">
               <p className="text-3xl font-black text-red-600">+500</p>
@@ -753,10 +820,10 @@ const App = () => {
         </div>
 
         {/* Section Engagement */}
-        <SectionTitle subtitle="Nos valeurs au quotidien.">
-          Notre Engagement
+        <SectionTitle subtitle="Ce qui nous guide chaque jour.">
+          Nos Valeurs
         </SectionTitle>
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="bg-white p-8 rounded-3xl shadow-lg border border-emerald-100">
             <div className="flex items-center gap-4 mb-4">
               <div className="bg-emerald-100 w-12 h-12 rounded-xl flex items-center justify-center">
@@ -793,6 +860,39 @@ const App = () => {
             </div>
             <p className="text-gray-600">Personnel de confiance, assuré et formé pour votre tranquillité.</p>
           </div>
+        </div>
+
+        {/* Section Rémunération juste */}
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 md:p-12 rounded-3xl shadow-lg border border-purple-100 mb-12">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="bg-purple-100 w-14 h-14 rounded-2xl flex items-center justify-center">
+              <span className="text-3xl">⚖️</span>
+            </div>
+            <h3 className="text-2xl font-bold text-purple-700">Rémunération Juste</h3>
+          </div>
+          <p className="text-gray-700 leading-relaxed text-lg mb-4">
+            Chez Laura la Pro du Ménage, nous refusons le modèle classique où les professionnels du ménage sont sous-payés. 
+            Nos intervenants sont rémunérés <strong>bien au-dessus des standards du secteur</strong>.
+          </p>
+          <p className="text-gray-700 leading-relaxed text-lg">
+            Parce qu'un travail bien fait mérite un salaire juste. C'est aussi simple que ça. 
+            Et c'est pour cette raison que nos professionnels sont fidèles, motivés et investis dans leur travail — 
+            <strong>et ça, vous le ressentez à chaque passage</strong>.
+          </p>
+        </div>
+
+        {/* CTA final */}
+        <div className="text-center bg-gradient-to-r from-red-500 to-orange-500 p-8 md:p-12 rounded-3xl shadow-lg">
+          <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Rejoignez l'aventure ! 🌟</h3>
+          <p className="text-white/90 text-lg mb-6">
+            Faites confiance à une entreprise qui valorise aussi bien ses clients que ses professionnels.
+          </p>
+          <button 
+            onClick={() => setPage('accueil')} 
+            className="bg-white text-red-600 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+          >
+            Découvrir nos services
+          </button>
         </div>
       </div>
     </div>
