@@ -889,7 +889,12 @@ const App = () => {
             Faites confiance à une entreprise qui valorise aussi bien ses clients que ses professionnels.
           </p>
           <button 
-            onClick={() => setPage('accueil')} 
+            onClick={() => {
+              setPage('accueil');
+              setTimeout(() => {
+                document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth' });
+              }, 300);
+            }} 
             className="bg-white text-red-600 font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
           >
             Découvrir nos services
