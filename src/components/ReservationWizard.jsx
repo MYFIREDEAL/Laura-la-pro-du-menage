@@ -209,8 +209,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     
     // Calcul options
     let optionsExtra = 0;
-    if (wizardState.options.ironing) optionsExtra += 2 * hours;
-    if (wizardState.options.products) optionsExtra += 3;
+    if (wizardState.options.ironing) optionsExtra += 5 * hours;
+    if (wizardState.options.products) optionsExtra += 5;
     if (wizardState.options.windows) optionsExtra += 5;
 
     const subtotal = (baseRate * hours * freq) + optionsExtra;
@@ -563,7 +563,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             <span className="text-gray-600 text-sm">Options :</span>
             <div className="flex flex-wrap gap-1 mt-1">
               {wizardState.options.ironing && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Repassage</span>}
-              {wizardState.options.products && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Produits</span>}
+              {wizardState.options.products && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Produits par Laura</span>}
               {wizardState.options.windows && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Vitres</span>}
             </div>
           </div>
