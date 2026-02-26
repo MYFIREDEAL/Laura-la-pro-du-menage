@@ -389,8 +389,8 @@ const App = () => {
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-purple-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
-                    <p className="text-[10px] md:text-xs font-bold">Bientôt</p>
-                    <p className="text-lg md:text-2xl font-black">dispo</p>
+                    <p className="text-[10px] md:text-xs font-bold">à partir de</p>
+                    <p className="text-lg md:text-2xl font-black">29€/h</p>
                   </div>
                 </div>
                 {/* Dégradé en bas */}
@@ -412,11 +412,11 @@ const App = () => {
                     <p className="text-[9px]">1er mois</p>
                   </div>
                   <p className="text-purple-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> Service bientôt disponible
+                    <Sparkles size={18} /> 1ère heure offerte
                   </p>
-                  <p className="text-purple-500 text-sm mt-1">Contactez-nous pour être informé du lancement</p>
+                  <p className="text-purple-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% le 1er mois</p>
                 </div>
-                <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-purple-500 hover:!bg-purple-600">Me tenir informé</Button>
+                <Button onClick={() => goToReservation('repassage')} className="w-full !bg-purple-500 hover:!bg-purple-600">Calculer mon prix</Button>
               </div>
             </div>
 
@@ -431,8 +431,8 @@ const App = () => {
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-cyan-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
-                    <p className="text-[10px] md:text-xs font-bold">Bientôt</p>
-                    <p className="text-lg md:text-2xl font-black">dispo</p>
+                    <p className="text-[10px] md:text-xs font-bold">à partir de</p>
+                    <p className="text-lg md:text-2xl font-black">29€/h</p>
                   </div>
                 </div>
                 {/* Dégradé en bas */}
@@ -454,11 +454,11 @@ const App = () => {
                     <p className="text-[9px]">1er mois</p>
                   </div>
                   <p className="text-cyan-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> Service bientôt disponible
+                    <Sparkles size={18} /> 1ère heure offerte
                   </p>
-                  <p className="text-cyan-500 text-sm mt-1">Contactez-nous pour être informé du lancement</p>
+                  <p className="text-cyan-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% le 1er mois</p>
                 </div>
-                <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Me tenir informé</Button>
+                <Button onClick={() => goToReservation('vitres')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Calculer mon prix</Button>
               </div>
             </div>
 
@@ -473,8 +473,8 @@ const App = () => {
                 {/* Badge sur l'image */}
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-amber-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
-                    <p className="text-[10px] md:text-xs font-bold">Bientôt</p>
-                    <p className="text-lg md:text-2xl font-black">dispo</p>
+                    <p className="text-[10px] md:text-xs font-bold">à partir de</p>
+                    <p className="text-lg md:text-2xl font-black">34€/h</p>
                   </div>
                 </div>
                 {/* Dégradé en bas */}
@@ -496,11 +496,11 @@ const App = () => {
                     <p className="text-[9px]">1er mois</p>
                   </div>
                   <p className="text-amber-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> Service bientôt disponible
+                    <Sparkles size={18} /> 1ère heure offerte
                   </p>
-                  <p className="text-amber-500 text-sm mt-1">Contactez-nous pour être informé du lancement</p>
+                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% le 1er mois</p>
                 </div>
-                <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-amber-500 hover:!bg-amber-600">Me tenir informé</Button>
+                <Button onClick={() => goToReservation('terrasse')} className="w-full !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
               </div>
             </div>
           </div>

@@ -4,6 +4,9 @@ import DetailsRegularPonctuel from './DetailsRegularPonctuel';
 import DetailsSeniors from './DetailsSeniors';
 import DetailsAirbnb from './DetailsAirbnb';
 import DetailsPro from './DetailsPro';
+import DetailsRepassage from './DetailsRepassage';
+import DetailsVitres from './DetailsVitres';
+import DetailsTerrasse from './DetailsTerrasse';
 
 /**
  * Step3Details - Étape 3 modulaire du wizard (4 étapes au total)
@@ -67,6 +70,36 @@ const Step3Details = ({
           <DetailsPro 
             details={details} 
             updateDetails={updateDetails}
+          />
+        );
+      
+      case 'repassage':
+        return (
+          <DetailsRepassage 
+            details={details} 
+            updateDetails={updateDetails}
+            options={options}
+            toggleOption={toggleOption}
+          />
+        );
+      
+      case 'vitres':
+        return (
+          <DetailsVitres 
+            details={details} 
+            updateDetails={updateDetails}
+            options={options}
+            toggleOption={toggleOption}
+          />
+        );
+      
+      case 'terrasse':
+        return (
+          <DetailsTerrasse 
+            details={details} 
+            updateDetails={updateDetails}
+            options={options}
+            toggleOption={toggleOption}
           />
         );
       

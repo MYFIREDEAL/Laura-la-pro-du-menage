@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { 
   Home, Users, Calendar, Building2, Key, Sparkles,
   Clock, CheckCircle2, ChevronRight, Heart,
-  ArrowLeft, X, Phone, PartyPopper, Loader2
+  ArrowLeft, X, Phone, PartyPopper, Loader2,
+  Shirt, Glasses, Sun
 } from 'lucide-react';
 import Step3Details from './reservation/Step3Details';
 import Step4Contact from './reservation/Step4Contact';
@@ -24,8 +25,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   // ═══════════════════════════════════════════════════════════════════
   const [wizardState, setWizardState] = useState({
     step: initialService ? 2 : 1,  // Si service pré-sélectionné, on démarre à l'étape 2
-    service: initialService,       // 'regulier' | 'ponctuel' | 'seniors' | 'airbnb' | 'pro'
-    frequency: initialService === 'ponctuel' ? 'once' : null,      // 'weekly' | 'biweekly' | 'monthly' | 'once'
+    service: initialService,       // 'regulier' | 'ponctuel' | 'seniors' | 'airbnb' | 'pro' | 'repassage' | 'vitres' | 'terrasse'
+    frequency: (initialService === 'ponctuel' || initialService === 'terrasse') ? 'once' : null,      // 'weekly' | 'biweekly' | 'monthly' | 'once'
     hours: null,          // 2 | 2.5 | 3 | 4
     surface: null,        // 'xs' | 'sm' | 'md' | 'lg' | 'xl' (pour ponctuel)
     cleanLevel: null,     // 'light' | 'medium' | 'deep' | 'extreme' (état du logement)
@@ -96,6 +97,30 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       color: 'emerald',
       eligible50: false  // Pro = pas d'avance immédiate
     },
+    { 
+      id: 'repassage', 
+      label: 'Repassage à domicile', 
+      description: 'Vêtements impeccables, prêts à porter',
+      icon: Shirt, 
+      color: 'orange',
+      eligible50: true 
+    },
+    { 
+      id: 'vitres', 
+      label: 'Nettoyage Baie Vitrée', 
+      description: 'Fenêtres et baies vitrées étincelantes',
+      icon: Glasses, 
+      color: 'blue',
+      eligible50: true 
+    },
+    { 
+      id: 'terrasse', 
+      label: 'Nettoyage de Terrasse', 
+      description: 'Terrasse remise à neuf pour les beaux jours',
+      icon: Sun, 
+      color: 'orange',
+      eligible50: true 
+    },
   ];
 
   const frequencies = [
@@ -151,9 +176,10 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     xl:      [  6,     7,      8,    10   ],
   };
 
-  // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel)
+  // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel et terrasse)
   const getRecommendedHours = () => {
-    if (wizardState.service !== 'ponctuel' || !wizardState.surface || !wizardState.cleanLevel) return null;
+    const isPonctuelLike = wizardState.service === 'ponctuel' || wizardState.service === 'terrasse';
+    if (!isPonctuelLike || !wizardState.surface || !wizardState.cleanLevel) return null;
     const levelIndex = cleanLevels.findIndex(l => l.id === wizardState.cleanLevel);
     const matrix = recommendationMatrix[wizardState.surface];
     if (!matrix || levelIndex < 0) return null;
@@ -249,9 +275,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       seniors: 29,
       airbnb: 29,
       pro: 29,
+      repassage: 29,
+      vitres: 29,
+      terrasse: 34,  // Terrasse = tarif ponctuel (toujours ponctuel)
     };
     // Si fréquence ponctuelle, on applique le tarif ponctuel même si le service choisi est différent
-    const effectiveRate = wizardState.frequency === 'once' ? rates.ponctuel : (rates[wizardState.service] || 29);
+    // Sauf pour terrasse qui est déjà à 34€/h
+    const effectiveRate = wizardState.service === 'terrasse' 
+      ? rates.terrasse 
+      : (wizardState.frequency === 'once' ? rates.ponctuel : (rates[wizardState.service] || 29));
     const baseRate = effectiveRate;
     
     if (!wizardState.hours || !wizardState.frequency) {
@@ -480,8 +512,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     return (
       <button
         onClick={() => {
-          // Si ponctuel, on pré-sélectionne la fréquence 'once' automatiquement
-          if (service.id === 'ponctuel') {
+          // Si ponctuel ou terrasse, on pré-sélectionne la fréquence 'once' automatiquement
+          if (service.id === 'ponctuel' || service.id === 'terrasse') {
             updateState({ service: service.id, frequency: 'once', surface: null, cleanLevel: null, hours: null });
           } else {
             updateState({ service: service.id, frequency: null, surface: null, cleanLevel: null, hours: null });
@@ -572,6 +604,13 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           if (details.localType) detailItems.push({ label: 'Type', value: details.localType });
           if (details.companyName) detailItems.push({ label: 'Société', value: details.companyName });
           break;
+        case 'repassage':
+          break;
+        case 'vitres':
+          if (details.surface) detailItems.push({ label: 'Surface', value: details.surface });
+          break;
+        case 'terrasse':
+          break;
       }
       
       if (detailItems.length === 0) return null;
@@ -609,8 +648,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             {selectedFrequency?.label || '—'}
           </span>
         </div>
-        {/* Surface (ponctuel uniquement) */}
-        {wizardState.service === 'ponctuel' && wizardState.surface && (
+        {/* Surface (ponctuel et terrasse uniquement) */}
+        {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') && wizardState.surface && (
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Surface</span>
             <span className="font-semibold text-gray-900">
@@ -618,8 +657,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             </span>
           </div>
         )}
-        {/* Niveau d'état (ponctuel uniquement) */}
-        {wizardState.service === 'ponctuel' && wizardState.cleanLevel && (
+        {/* Niveau d'état (ponctuel et terrasse uniquement) */}
+        {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') && wizardState.cleanLevel && (
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">État</span>
             <span className="font-semibold text-gray-900">
@@ -655,7 +694,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       {(wizardState.hours && wizardState.frequency) && (
         <div className="space-y-2 pt-4 border-t border-gray-200">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Sous-total / mois</span>
+            <span className="text-gray-600">{wizardState.frequency === 'once' ? 'Sous-total' : 'Sous-total / mois'}</span>
             <span className="text-gray-900">{estimate.subtotal.toFixed(2)} €</span>
           </div>
           
@@ -699,12 +738,12 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           <div className="pt-3 mt-3 border-t-2 border-orange-100">
             <div className="flex justify-between items-end">
               <div>
-                <span className="text-xs text-gray-500 block">Estimation mensuelle</span>
+                <span className="text-xs text-gray-500 block">{wizardState.frequency === 'once' ? 'Total estimé' : 'Estimation mensuelle'}</span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-2xl font-black text-red-600">
                     {estimate.finalPrice.toFixed(2)} €
                   </span>
-                  <span className="text-sm font-medium text-gray-500">/ mois</span>
+                  {wizardState.frequency !== 'once' && <span className="text-sm font-medium text-gray-500">/ mois</span>}
                 </div>
               </div>
             </div>
@@ -769,8 +808,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           <Calendar size={20} className="text-orange-500" />
           Fréquence
         </h3>
-        {wizardState.service === 'ponctuel' ? (
-          /* Service ponctuel : fréquence figée */
+        {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') ? (
+          /* Service ponctuel / terrasse : fréquence figée */
           <div className="p-4 rounded-xl border-2 border-orange-500 bg-orange-50 text-center">
             <span className="font-bold text-orange-700">Ponctuel (1 seule fois)</span>
           </div>
@@ -789,12 +828,14 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         )}
       </div>
 
-      {/* Surface du logement - uniquement pour ponctuel */}
-      {wizardState.service === 'ponctuel' && (
+      {/* Surface du logement - pour ponctuel et terrasse */}
+      {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') && (
         <div className="mb-8">
           <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
             <Home size={20} className="text-orange-500" />
-            Quelle est la surface de votre logement ?
+            {wizardState.service === 'terrasse' 
+              ? 'Quelle est la taille de votre terrasse ?' 
+              : 'Quelle est la surface de votre logement ?'}
           </h3>
           <p className="text-gray-500 text-sm mb-4">Pour vous proposer une durée adaptée.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -818,12 +859,14 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         </div>
       )}
 
-      {/* Niveau d'état du logement - uniquement pour ponctuel */}
-      {wizardState.service === 'ponctuel' && (
+      {/* Niveau d'état - pour ponctuel et terrasse */}
+      {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') && (
         <div className="mb-8">
           <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
             <Sparkles size={20} className="text-orange-500" />
-            Comment décririez-vous l'état actuel ?
+            {wizardState.service === 'terrasse'
+              ? 'Comment décririez-vous l\'état de votre terrasse ?'
+              : 'Comment décririez-vous l\'état actuel ?'}
           </h3>
           <p className="text-gray-500 text-sm mb-4">Pas de jugement, juste pour bien doser l'intervention 😉</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -866,13 +909,13 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           Durée de l'intervention
         </h3>
         {/* Message de recommandation si surface sélectionnée */}
-        {wizardState.service === 'ponctuel' && recommendedHoursFromSurface && (
+        {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') && recommendedHoursFromSurface && (
           <p className="text-orange-600 text-sm mb-4 flex items-center gap-1">
             ⭐ Recommandé : <strong>{recommendedHoursFromSurface}h</strong> pour votre surface — vous pouvez ajuster
           </p>
         )}
-        {wizardState.service === 'ponctuel' ? (
-          /* Durées étendues pour ponctuel (3h à 10h) */
+        {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') ? (
+          /* Durées étendues pour ponctuel / terrasse (3h à 10h) */
           <div className="grid grid-cols-4 gap-3">
             {durationsPonctuel.map(dur => {
               const isRecommended = recommendedHoursFromSurface === dur.id;
@@ -1002,12 +1045,12 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl p-4 z-50">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <div>
-              <span className="text-xs text-gray-500 block">Estimation mensuelle</span>
+              <span className="text-xs text-gray-500 block">{wizardState.frequency === 'once' ? 'Total estimé' : 'Estimation mensuelle'}</span>
               <div className="flex items-baseline gap-1">
                 <span className="text-xl font-black text-red-600">
                   {estimate.finalPrice > 0 ? `${estimate.finalPrice.toFixed(2)} €` : '— €'}
                 </span>
-                {estimate.finalPrice > 0 && <span className="text-xs text-gray-500">/ mois</span>}
+                {estimate.finalPrice > 0 && wizardState.frequency !== 'once' && <span className="text-xs text-gray-500">/ mois</span>}
               </div>
               <span className="text-[9px] text-gray-400">
                 {estimate.isProOrAirbnb ? '-30% le 1er mois' : '1ère heure d\'essai offerte'}
