@@ -291,7 +291,7 @@ const App = () => {
               </div>
             </div>
 
-            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -333,7 +333,7 @@ const App = () => {
               </div>
             </div>
 
-            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-purple-50 to-white border border-purple-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-purple-50 to-white border border-purple-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -375,7 +375,7 @@ const App = () => {
               </div>
             </div>
 
-            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -417,7 +417,7 @@ const App = () => {
               </div>
             </div>
 
-            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
