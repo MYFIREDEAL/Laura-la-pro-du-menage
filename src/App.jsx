@@ -128,7 +128,7 @@ const App = () => {
         </div>
       </section>
 
-      <section id="section-services" className="py-16 px-6 bg-white" style={{ scrollMarginTop: '60px' }}>
+      <section id="section-services" className="py-16 px-6 bg-white" style={{ scrollMarginTop: '40px' }}>
         <div className="max-w-6xl mx-auto">
           <SectionTitle subtitle="Des solutions professionnelles pour chaque aspect de votre vie.">
             Nos Univers de Service
@@ -181,7 +181,7 @@ const App = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
               <div className="p-8 md:p-10">
-                <h3 className="text-2xl font-black text-gray-900 mb-2 italic">Ménage Régulier</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-2 italic">🏠 Ménage Régulier</h3>
                 <p className="text-lg font-bold text-orange-500 mb-3">Débordé par le quotidien ?</p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Entre le travail, les enfants et les activités, le ménage devient une corvée ? Retrouvez vos soirées dans une maison impeccable.
@@ -229,7 +229,7 @@ const App = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
               <div className="p-8 md:p-10">
-                <h3 className="text-2xl font-black text-gray-900 mb-2 italic">Spécial Seniors</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-2 italic">🧡 Spécial Seniors</h3>
                 <p className="text-lg font-bold text-orange-500 mb-3">Prenez soin de vos parents</p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Offrez-leur le soutien d'une présence rassurante qui s'occupe de leur intérieur avec douceur et respect de leur autonomie.
@@ -277,7 +277,7 @@ const App = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-50 to-transparent"></div>
               </div>
               <div className="p-8 md:p-10">
-                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">Offre AirBnB & Gîtes</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🏡 Offre AirBnB & Gîtes</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Propriétaires, déléguez la corvée du ménage entre deux locations. Nous garantissons une propreté irréprochable pour vos voyageurs.
                 </p>
@@ -318,7 +318,7 @@ const App = () => {
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-emerald-50 to-transparent"></div>
               </div>
               <div className="p-8 md:p-10">
-                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">Bureaux & Copropriétés</h3>
+                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🏢 Bureaux & Copropriétés</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Des espaces communs propres pour une meilleure ambiance. Laura intervient avec discrétion dans vos locaux ou parties communes.
                 </p>
