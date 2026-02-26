@@ -108,16 +108,28 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 2, label: '2h', recommended: false },
     { id: 2.5, label: '2h30', recommended: false },
     { id: 3, label: '3h', recommended: false },
-    { id: 4, label: '4h+', recommended: false },
+    { id: 4, label: '4h', recommended: false },
+  ];
+
+  // Durées étendues pour le ménage ponctuel (grand ménage / printanier)
+  const durationsPonctuel = [
+    { id: 3, label: '3h' },
+    { id: 4, label: '4h' },
+    { id: 5, label: '5h' },
+    { id: 6, label: '6h' },
+    { id: 7, label: '7h' },
+    { id: 8, label: '8h' },
+    { id: 9, label: '9h' },
+    { id: 10, label: '10h' },
   ];
 
   // Surfaces (pour ménage ponctuel) et durée recommandée associée
   const surfaces = [
-    { id: 'xs', label: '< 30 m²', description: 'Studio', recommendedHours: 2 },
-    { id: 'sm', label: '30 – 60 m²', description: 'T2 / T3', recommendedHours: 2.5 },
-    { id: 'md', label: '60 – 90 m²', description: 'T3 / T4', recommendedHours: 3 },
-    { id: 'lg', label: '90 – 120 m²', description: 'T4 / T5', recommendedHours: 4 },
-    { id: 'xl', label: '120 m² +', description: 'Grande maison', recommendedHours: 4 },
+    { id: 'xs', label: '< 30 m²', description: 'Studio', recommendedHours: 3 },
+    { id: 'sm', label: '30 – 60 m²', description: 'T2 / T3', recommendedHours: 4 },
+    { id: 'md', label: '60 – 90 m²', description: 'T3 / T4', recommendedHours: 5 },
+    { id: 'lg', label: '90 – 120 m²', description: 'T4 / T5', recommendedHours: 6 },
+    { id: 'xl', label: '120 m² +', description: 'Grande maison', recommendedHours: 8 },
   ];
 
   // Durée recommandée en fonction de la surface (pour ponctuel)
@@ -202,7 +214,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
 
   const selectedService = services.find(s => s.id === wizardState.service);
   const selectedFrequency = frequencies.find(f => f.id === wizardState.frequency);
-  const selectedDuration = durations.find(d => d.id === wizardState.hours);
+  const selectedDuration = durations.find(d => d.id === wizardState.hours) || durationsPonctuel.find(d => d.id === wizardState.hours);
 
   // ═══════════════════════════════════════════════════════════════════
   // CALCUL PRIX (placeholder - à remplacer par calculatePrice.js)
@@ -784,24 +796,42 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         {/* Message de recommandation si surface sélectionnée */}
         {wizardState.service === 'ponctuel' && recommendedHoursFromSurface && (
           <p className="text-orange-600 text-sm mb-4 flex items-center gap-1">
-            ⭐ Recommandé : <strong>{recommendedHoursFromSurface >= 4 ? '4h+' : recommendedHoursFromSurface + 'h'}</strong> pour votre surface — vous pouvez ajuster
+            ⭐ Recommandé : <strong>{recommendedHoursFromSurface}h</strong> pour votre surface — vous pouvez ajuster
           </p>
         )}
-        <div className="grid grid-cols-4 gap-3">
-          {durations.map(dur => {
-            const isRecommended = wizardState.service === 'ponctuel' && recommendedHoursFromSurface === dur.id;
-            const isDefaultRecommended = wizardState.service !== 'ponctuel' && dur.id === 2.5;
-            return (
-              <ChoiceButton 
-                key={dur.id}
-                item={{ ...dur, recommended: isRecommended || isDefaultRecommended }}
-                isSelected={wizardState.hours === dur.id}
-                onClick={() => updateState({ hours: dur.id })}
-                type="duration"
-              />
-            );
-          })}
-        </div>
+        {wizardState.service === 'ponctuel' ? (
+          /* Durées étendues pour ponctuel (3h à 10h) */
+          <div className="grid grid-cols-4 gap-3">
+            {durationsPonctuel.map(dur => {
+              const isRecommended = recommendedHoursFromSurface === dur.id;
+              return (
+                <ChoiceButton 
+                  key={dur.id}
+                  item={{ ...dur, recommended: isRecommended }}
+                  isSelected={wizardState.hours === dur.id}
+                  onClick={() => updateState({ hours: dur.id })}
+                  type="duration"
+                />
+              );
+            })}
+          </div>
+        ) : (
+          /* Durées classiques pour les autres services */
+          <div className="grid grid-cols-4 gap-3">
+            {durations.map(dur => {
+              const isDefaultRecommended = dur.id === 2.5;
+              return (
+                <ChoiceButton 
+                  key={dur.id}
+                  item={{ ...dur, recommended: isDefaultRecommended }}
+                  isSelected={wizardState.hours === dur.id}
+                  onClick={() => updateState({ hours: dur.id })}
+                  type="duration"
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Message rassurant */}
