@@ -25,7 +25,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   const [wizardState, setWizardState] = useState({
     step: initialService ? 2 : 1,  // Si service pré-sélectionné, on démarre à l'étape 2
     service: initialService,       // 'regulier' | 'ponctuel' | 'seniors' | 'airbnb' | 'pro'
-    frequency: null,      // 'weekly' | 'biweekly' | 'monthly' | 'once'
+    frequency: initialService === 'ponctuel' ? 'once' : null,      // 'weekly' | 'biweekly' | 'monthly' | 'once'
     hours: null,          // 2 | 2.5 | 3 | 4
     surface: null,        // 'xs' | 'sm' | 'md' | 'lg' | 'xl' (pour ponctuel)
     cleanLevel: null,     // 'light' | 'medium' | 'deep' | 'extreme' (état du logement)
