@@ -587,7 +587,7 @@ const App = () => {
                 </a>
               </p>
               <p className="text-xs text-blue-600 mt-2 italic">
-                Laura la Pro du Ménage est une entreprise déclarée et agréée services à la personne. Toutes nos prestations ouvrent droit au crédit d'impôt de 50%.
+                Laura la Pro du Ménage est une entreprise déclarée et agréée services à la personne. Certaines prestations sont éligibles au crédit d'impôt de 50%.
               </p>
             </div>
           </div>
@@ -1346,7 +1346,7 @@ const App = () => {
             </div>
             <div className="text-sm text-gray-400">
               <h5 className="font-bold text-orange-400 uppercase text-xs mb-4">Avantage -50%</h5>
-              <p className="mb-2">Toutes nos prestations ouvrent droit au crédit d'impôt de 50% (Art. 199 sexdecies du CGI).</p>
+              <p className="mb-2">Certaines prestations ouvrent droit au crédit d'impôt de 50%. Calculez votre prix pour savoir si vous êtes éligible.</p>
               <button 
                 onClick={() => { setCurrentPage('fiscal'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 className="text-red-400 hover:text-red-300 font-semibold text-xs underline transition-colors"
