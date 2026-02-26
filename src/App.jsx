@@ -148,7 +148,7 @@ const App = () => {
             ].map((item) => (
               <button
                 key={item.id}
-                onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-white font-bold text-sm whitespace-nowrap shadow-md hover:scale-105 active:scale-95 transition-all duration-200 ${item.color}`}
               >
                 <span>{item.emoji}</span>
@@ -158,7 +158,7 @@ const App = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div id="service-regulier" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-regulier" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module avec badge */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -206,7 +206,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-seniors" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-seniors" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -254,7 +254,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-airbnb" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-airbnb" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -295,7 +295,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-bureaux" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-bureaux" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -336,7 +336,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-printanier" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-printanier" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -378,7 +378,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-repassage" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-purple-50 to-white border border-purple-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-repassage" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-purple-50 to-white border border-purple-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -420,7 +420,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-vitres" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-vitres" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -462,7 +462,7 @@ const App = () => {
               </div>
             </div>
 
-            <div id="service-terrasse" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-terrasse" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
