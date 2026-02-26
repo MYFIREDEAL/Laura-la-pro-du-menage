@@ -28,6 +28,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     frequency: null,      // 'weekly' | 'biweekly' | 'monthly' | 'once'
     hours: null,          // 2 | 2.5 | 3 | 4
     surface: null,        // 'xs' | 'sm' | 'md' | 'lg' | 'xl' (pour ponctuel)
+    cleanLevel: null,     // 'light' | 'medium' | 'deep' | 'extreme' (état du logement)
     options: {
       ironing: false,     // Repassage
       products: false,    // Produits fournis
@@ -123,20 +124,40 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 10, label: '10h' },
   ];
 
-  // Surfaces (pour ménage ponctuel) et durée recommandée associée
+  // Surfaces (pour ménage ponctuel)
   const surfaces = [
-    { id: 'xs', label: '< 30 m²', description: 'Studio', recommendedHours: 3 },
-    { id: 'sm', label: '30 – 60 m²', description: 'T2 / T3', recommendedHours: 4 },
-    { id: 'md', label: '60 – 90 m²', description: 'T3 / T4', recommendedHours: 5 },
-    { id: 'lg', label: '90 – 120 m²', description: 'T4 / T5', recommendedHours: 6 },
-    { id: 'xl', label: '120 m² +', description: 'Grande maison', recommendedHours: 8 },
+    { id: 'xs', label: '< 30 m²', description: 'Studio' },
+    { id: 'sm', label: '30 – 60 m²', description: 'T2 / T3' },
+    { id: 'md', label: '60 – 90 m²', description: 'T3 / T4' },
+    { id: 'lg', label: '90 – 120 m²', description: 'T4 / T5' },
+    { id: 'xl', label: '120 m² +', description: 'Grande maison' },
   ];
 
-  // Durée recommandée en fonction de la surface (pour ponctuel)
+  // Niveaux d'état du logement (questions sympas)
+  const cleanLevels = [
+    { id: 'light', emoji: '😊', label: 'Plutôt propre', description: 'Un petit coup de frais suffit !' },
+    { id: 'medium', emoji: '🙂', label: 'Ça s\'accumule un peu', description: 'Pas de panique, on gère !' },
+    { id: 'deep', emoji: '😅', label: 'Ça fait un moment…', description: 'Laura adore les défis !' },
+    { id: 'extreme', emoji: '🫣', label: 'Gros chantier en vue !', description: 'On sort l\'artillerie lourde 💪' },
+  ];
+
+  // Matrice de durées recommandées : surface × cleanLevel (en heures)
+  const recommendationMatrix = {
+    //          light  medium  deep  extreme
+    xs:      [  3,     3,      4,    5    ],
+    sm:      [  3,     4,      5,    6    ],
+    md:      [  4,     5,      6,    7    ],
+    lg:      [  5,     6,      7,    8    ],
+    xl:      [  6,     7,      8,    10   ],
+  };
+
+  // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel)
   const getRecommendedHours = () => {
-    if (wizardState.service !== 'ponctuel' || !wizardState.surface) return null;
-    const surf = surfaces.find(s => s.id === wizardState.surface);
-    return surf?.recommendedHours || null;
+    if (wizardState.service !== 'ponctuel' || !wizardState.surface || !wizardState.cleanLevel) return null;
+    const levelIndex = cleanLevels.findIndex(l => l.id === wizardState.cleanLevel);
+    const matrix = recommendationMatrix[wizardState.surface];
+    if (!matrix || levelIndex < 0) return null;
+    return matrix[levelIndex];
   };
 
   const recommendedHoursFromSurface = getRecommendedHours();
@@ -461,9 +482,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         onClick={() => {
           // Si ponctuel, on pré-sélectionne la fréquence 'once' automatiquement
           if (service.id === 'ponctuel') {
-            updateState({ service: service.id, frequency: 'once', surface: null, hours: null });
+            updateState({ service: service.id, frequency: 'once', surface: null, cleanLevel: null, hours: null });
           } else {
-            updateState({ service: service.id, frequency: null, surface: null, hours: null });
+            updateState({ service: service.id, frequency: null, surface: null, cleanLevel: null, hours: null });
           }
           // Auto-avance vers étape 2 après sélection
           setTimeout(() => updateState({ step: 2 }), 200);
@@ -594,6 +615,16 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             <span className="text-gray-600">Surface</span>
             <span className="font-semibold text-gray-900">
               {surfaces.find(s => s.id === wizardState.surface)?.label || '—'}
+            </span>
+          </div>
+        )}
+        {/* Niveau d'état (ponctuel uniquement) */}
+        {wizardState.service === 'ponctuel' && wizardState.cleanLevel && (
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">État</span>
+            <span className="font-semibold text-gray-900">
+              {cleanLevels.find(l => l.id === wizardState.cleanLevel)?.emoji}{' '}
+              {cleanLevels.find(l => l.id === wizardState.cleanLevel)?.label || '—'}
             </span>
           </div>
         )}
@@ -763,15 +794,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         <div className="mb-8">
           <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
             <Home size={20} className="text-orange-500" />
-            Surface du logement
+            Quelle est la surface de votre logement ?
           </h3>
-          <p className="text-gray-500 text-sm mb-4">Nous vous recommandons une durée adaptée à votre surface.</p>
+          <p className="text-gray-500 text-sm mb-4">Pour vous proposer une durée adaptée.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {surfaces.map(surf => (
               <button
                 key={surf.id}
                 onClick={() => {
-                  updateState({ surface: surf.id, hours: surf.recommendedHours });
+                  updateState({ surface: surf.id, cleanLevel: null, hours: null });
                 }}
                 className={`relative px-4 py-3 rounded-2xl border-2 text-center transition-all duration-200 ${
                   wizardState.surface === surf.id
@@ -783,6 +814,47 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
                 <span className="text-xs text-gray-500">{surf.description}</span>
               </button>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Niveau d'état du logement - uniquement pour ponctuel, après avoir choisi la surface */}
+      {wizardState.service === 'ponctuel' && wizardState.surface && (
+        <div className="mb-8">
+          <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+            <Sparkles size={20} className="text-orange-500" />
+            Comment décririez-vous l'état actuel ?
+          </h3>
+          <p className="text-gray-500 text-sm mb-4">Pas de jugement, juste pour bien doser l'intervention 😉</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {cleanLevels.map(level => {
+              const isSelected = wizardState.cleanLevel === level.id;
+              // Quand on clique, on calcule la durée recommandée et on la pré-sélectionne
+              const levelIndex = cleanLevels.findIndex(l => l.id === level.id);
+              const matrix = recommendationMatrix[wizardState.surface];
+              const recHours = matrix ? matrix[levelIndex] : null;
+              return (
+                <button
+                  key={level.id}
+                  onClick={() => {
+                    updateState({ cleanLevel: level.id, hours: recHours });
+                  }}
+                  className={`relative px-4 py-4 rounded-2xl border-2 text-left transition-all duration-200 ${
+                    isSelected
+                      ? 'bg-orange-50 border-orange-500 text-orange-700 shadow-md'
+                      : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{level.emoji}</span>
+                    <div>
+                      <span className="font-semibold text-sm block">{level.label}</span>
+                      <span className={`text-xs ${isSelected ? 'text-orange-600' : 'text-gray-500'}`}>{level.description}</span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
