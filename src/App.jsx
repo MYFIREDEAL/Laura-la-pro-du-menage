@@ -128,7 +128,7 @@ const App = () => {
         </div>
       </section>
 
-      <section className="py-16 px-6 bg-white">
+      <section id="section-services" className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <SectionTitle subtitle="Des solutions professionnelles pour chaque aspect de votre vie.">
             Nos Univers de Service
@@ -913,7 +913,14 @@ const App = () => {
             {navigation.map(item => (
               <button 
                 key={item.id} 
-                onClick={() => setCurrentPage(item.id)} 
+                onClick={() => {
+                  if (item.id === 'services') {
+                    setCurrentPage('accueil');
+                    setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                  } else {
+                    setCurrentPage(item.id);
+                  }
+                }} 
                 className={`text-xs font-bold transition-all ${currentPage === item.id ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
               >
                 {item.name}
@@ -934,7 +941,16 @@ const App = () => {
               {navigation.map(item => (
                 <button 
                   key={item.id} 
-                  onClick={() => { setCurrentPage(item.id); setIsMenuOpen(false); }} 
+                  onClick={() => { 
+                    if (item.id === 'services') {
+                      setCurrentPage('accueil');
+                      setIsMenuOpen(false);
+                      setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                    } else {
+                      setCurrentPage(item.id); 
+                      setIsMenuOpen(false);
+                    }
+                  }} 
                   className={`block w-full text-left px-4 py-3 rounded-xl font-semibold transition-all ${
                     currentPage === item.id 
                       ? 'bg-orange-50 text-orange-600' 
