@@ -442,15 +442,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     if (!showSuccessModal) return null;
 
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[100] flex items-start md:items-center justify-center overflow-y-auto">
         {/* Backdrop */}
         <div 
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300"
           onClick={handleCloseModal}
         />
         
         {/* Modal */}
-        <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 animate-in zoom-in-95 fade-in duration-300">
+        <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 animate-in zoom-in-95 fade-in duration-300 my-4 mx-4">
           {/* Bouton fermer */}
           <button 
             onClick={handleCloseModal}
@@ -616,20 +616,20 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   const ChoiceButton = ({ item, isSelected, onClick, type }) => (
     <button
       onClick={onClick}
-      className={`relative px-6 py-4 rounded-2xl border-2 font-semibold text-sm transition-all duration-200 ${
+      className={`relative px-4 py-4 rounded-2xl border-2 font-semibold text-sm transition-all duration-200 ${
         isSelected 
           ? 'bg-orange-50 border-orange-500 text-orange-700 shadow-md' 
           : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/50'
       }`}
     >
-      {item.label}
       {item.recommended && (
-        <span className={`absolute -top-2 -right-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${
-          isSelected ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700'
+        <span className={`block text-[10px] font-bold mb-1 ${
+          isSelected ? 'text-orange-500' : 'text-orange-500'
         }`}>
           ⭐ Recommandé
         </span>
       )}
+      {item.label}
     </button>
   );
 
