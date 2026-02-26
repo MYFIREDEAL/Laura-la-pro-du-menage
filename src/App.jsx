@@ -58,7 +58,6 @@ const App = () => {
     { id: 'services', name: 'Nos Services' },
     { id: 'seniors', name: 'Spécial Seniors' },
     { id: 'histoire', name: 'Notre Histoire' },
-    { id: 'recrutement', name: 'Recrutement' },
     { id: 'fiscal', name: 'Avantage Fiscal' }
     // { id: 'contact', name: 'Contact' } // Masqué pour l'instant
   ];
