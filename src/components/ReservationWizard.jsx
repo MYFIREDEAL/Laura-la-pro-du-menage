@@ -150,8 +150,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 10, label: '10h' },
   ];
 
-  // Durées terrasse (karcher = rapide, avec saturateur = long)
+  // Durées terrasse (du petit balcon au gros chantier XXL+saturateur)
   const durationsTerrasse = [
+    { id: 1, label: '1h' },
     { id: 2, label: '2h' },
     { id: 3, label: '3h' },
     { id: 4, label: '4h' },
@@ -159,6 +160,10 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 6, label: '6h' },
     { id: 7, label: '7h' },
     { id: 8, label: '8h' },
+    { id: 9, label: '9h' },
+    { id: 10, label: '10h' },
+    { id: 11, label: '11h' },
+    { id: 12, label: '12h' },
   ];
 
   // Surfaces (pour ménage ponctuel)
@@ -205,15 +210,25 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     xl:      [  6,     7,      8,    10   ],
   };
 
-  // Matrice de durées recommandées terrasse (karcher seul, sans saturateur)
-  // Avec saturateur bois : compter +2h à +3h en plus
+  // Matrice de durées recommandées terrasse — KARCHER SEUL (heures)
+  // Réaliste : un karcher fait ~15-20m²/h sur terrasse encrassée, plus rapide si légères salissures
   const recommendationMatrixTerrasse = {
     //          light  medium  deep  extreme
-    xs:      [  2,     2,      2,    3    ],
-    sm:      [  2,     2,      3,    3    ],
-    md:      [  2,     3,      3,    4    ],
-    lg:      [  3,     3,      4,    5    ],
-    xl:      [  3,     4,      5,    6    ],
+    xs:      [  1,     1,      1,    2    ],   // <10m² petit balcon
+    sm:      [  1,     2,      2,    3    ],   // 10-25m² terrasse standard
+    md:      [  2,     3,      3,    4    ],   // 25-50m² grande terrasse
+    lg:      [  3,     4,      5,    6    ],   // 50-80m² très grande
+    xl:      [  4,     5,      6,    8    ],   // 80m²+ XXL / tour de piscine
+  };
+
+  // Bonus saturateur bois selon la surface (en heures)
+  // Application au pinceau large, lame par lame : ~10-15m²/h
+  const saturateurBonusTerrasse = {
+    xs: 1,   // <10m²  → +1h
+    sm: 2,   // 10-25m² → +2h
+    md: 3,   // 25-50m² → +3h
+    lg: 4,   // 50-80m² → +4h
+    xl: 5,   // 80m²+  → +5h
   };
 
   // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel et terrasse)
@@ -227,8 +242,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     const row = matrix[wizardState.surface];
     if (!row || levelIndex < 0) return null;
     const baseHours = row[levelIndex];
-    // Ajouter 3h si saturateur bois sélectionné
-    return isTerrasse && wizardState.saturateur ? baseHours + 3 : baseHours;
+    // Ajouter le bonus saturateur proportionnel à la surface
+    const bonus = (isTerrasse && wizardState.saturateur) ? (saturateurBonusTerrasse[wizardState.surface] || 0) : 0;
+    return baseHours + bonus;
   };
 
   const recommendedHoursFromSurface = getRecommendedHours();
@@ -904,7 +920,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
                     const levelIndex = activeLevels.findIndex(l => l.id === wizardState.cleanLevel);
                     const row = activeMatrix[surf.id];
                     const baseHours = (row && levelIndex >= 0) ? row[levelIndex] : null;
-                    newHours = baseHours ? (isTerrasse && wizardState.saturateur ? baseHours + 3 : baseHours) : null;
+                    const bonus = (isTerrasse && wizardState.saturateur) ? (saturateurBonusTerrasse[surf.id] || 0) : 0;
+                    newHours = baseHours ? baseHours + bonus : null;
                   }
                   updateState({ surface: surf.id, hours: newHours });
                 }}
@@ -942,7 +959,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               const levelIndex = activeLevels.findIndex(l => l.id === level.id);
               const row = activeMatrix[wizardState.surface];
               const baseHours = (row && levelIndex >= 0) ? row[levelIndex] : null;
-              const recHours = baseHours ? (isTerrasse && wizardState.saturateur ? baseHours + 3 : baseHours) : null;
+              const bonus = (isTerrasse && wizardState.saturateur) ? (saturateurBonusTerrasse[wizardState.surface] || 0) : 0;
+              const recHours = baseHours ? baseHours + bonus : null;
               return (
                 <button
                   key={level.id}
@@ -979,14 +997,14 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           <button
             onClick={() => {
               const newSaturateur = !wizardState.saturateur;
-              // Recalculer la durée recommandée avec/sans saturateur
-              const isTerrasse = true;
+              // Recalculer la durée recommandée avec/sans saturateur (bonus proportionnel à la surface)
               const levels = cleanLevelsTerrasse;
               const matrix = recommendationMatrixTerrasse;
               const levelIndex = wizardState.cleanLevel ? levels.findIndex(l => l.id === wizardState.cleanLevel) : -1;
               const row = wizardState.surface ? matrix[wizardState.surface] : null;
               const baseHours = (row && levelIndex >= 0) ? row[levelIndex] : null;
-              const newHours = baseHours ? (newSaturateur ? baseHours + 3 : baseHours) : wizardState.hours;
+              const bonus = newSaturateur ? (saturateurBonusTerrasse[wizardState.surface] || 0) : 0;
+              const newHours = baseHours ? baseHours + bonus : wizardState.hours;
               updateState({ saturateur: newSaturateur, hours: newHours });
             }}
             className={`flex items-center gap-4 w-full p-4 rounded-2xl border-2 transition-all duration-200 ${
@@ -1001,7 +1019,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
                 Application de saturateur / huile bois
               </span>
               <span className={`text-xs ${wizardState.saturateur ? 'text-amber-600' : 'text-gray-500'}`}>
-                Protection du bois au pinceau large, lame par lame — compter ~3h de plus
+                Protection du bois au pinceau large, lame par lame — compter ~{saturateurBonusTerrasse[wizardState.surface] || '1 à 5'}h de plus
               </span>
             </div>
             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
