@@ -730,12 +730,11 @@ const App = () => {
               className="w-48 h-48 rounded-full object-cover shadow-lg flex-shrink-0"
             />
             <div>
-              <h3 className="text-2xl font-bold mb-2">Laura, passionnée du ménage</h3>
-              <p className="text-sm text-red-600 font-semibold mb-4 italic">Une vocation devenue mission</p>
+              <h3 className="text-2xl font-bold mb-2">Laura, au service des autres</h3>
+              <p className="text-sm text-red-600 font-semibold mb-4 italic">Prendre soin des gens, c'est sa vocation</p>
               <p className="text-gray-600 leading-relaxed">
-                Pendant des années, Laura a travaillé pour des sociétés de ménage classiques. 
-                Travailleuse, rigoureuse, toujours souriante — elle était tout simplement <strong>exceptionnelle</strong> dans son métier. 
-                Mais quelque chose n'allait pas.
+                Pendant des années, Laura a travaillé dans le service à la personne pour des sociétés classiques. 
+                Attentionnée, rigoureuse, toujours souriante — elle a toujours eu à cœur de <strong>prendre soin des autres</strong> et de leur intérieur. Mais quelque chose n'allait pas.
               </p>
             </div>
           </div>
