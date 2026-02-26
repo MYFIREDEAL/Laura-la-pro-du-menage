@@ -1211,7 +1211,7 @@ const App = () => {
               </button>
             ))}
             <Button onClick={() => goToReservation()} className="ml-2 !py-2 px-6 !text-xs">Calculer mon prix</Button>
-            <Button onClick={() => setCurrentPage('recrutement')} variant="secondary" className="!py-2 px-6 !text-xs !bg-emerald-600 !text-white hover:!bg-emerald-700 !border-emerald-600">Nous rejoindre</Button>
+            <Button onClick={() => setCurrentPage('recrutement')} variant="secondary" className="!py-2 px-6 !text-xs !bg-emerald-600 !text-white hover:!bg-emerald-700 !border-emerald-600">Recrutement</Button>
           </div>
           
           <button className="lg:hidden text-gray-900 p-1" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -1256,7 +1256,7 @@ const App = () => {
                   onClick={() => { setCurrentPage('recrutement'); setIsMenuOpen(false); }} 
                   className="w-full !py-3 !bg-emerald-600 !text-white hover:!bg-emerald-700 !border-emerald-600"
                 >
-                  Nous rejoindre
+                  Recrutement
                 </Button>
               </div>
             </div>
