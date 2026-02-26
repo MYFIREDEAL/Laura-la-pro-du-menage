@@ -537,15 +537,21 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   // ═══════════════════════════════════════════════════════════════════
 
   // Indicateur de progression (4 étapes) - CLIQUABLE sur étapes passées
+  const isSkipStep3 = wizardState.service === 'terrasse';
+
   const StepIndicator = () => (
     <div className="flex items-center justify-center gap-2 mb-8">
       {[1, 2, 3, 4].map((step) => (
         <React.Fragment key={step}>
           <button 
             onClick={() => {
-              // Naviguer uniquement vers les étapes passées
               if (step < wizardState.step) {
-                updateState({ step });
+                // Pour terrasse, step 3 est skipé → aller à step 2
+                if (step === 3 && isSkipStep3) {
+                  updateState({ step: 2 });
+                } else {
+                  updateState({ step });
+                }
               }
             }}
             disabled={step >= wizardState.step}
@@ -1094,6 +1100,16 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         )}
       </div>
 
+      {/* Info terrasse — bon à savoir */}
+      {wizardState.service === 'terrasse' && (
+        <div className="mb-8 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+          <p className="text-amber-700 text-sm">
+            💡 <strong>Bon à savoir :</strong> Laura apporte tout le matériel nécessaire (nettoyeur haute pression, 
+            produits anti-mousse). Assurez-vous simplement qu'un point d'eau extérieur est accessible.
+          </p>
+        </div>
+      )}
+
       {/* Message rassurant */}
       <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-8">
         <p className="text-orange-700 text-sm flex items-center gap-2">
@@ -1102,9 +1118,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         </p>
       </div>
 
-      {/* Bouton continuer */}
+      {/* Bouton continuer — terrasse skip step 3 */}
       <button
-        onClick={() => canProceedToStep3 && updateState({ step: 3 })}
+        onClick={() => canProceedToStep3 && updateState({ step: wizardState.service === 'terrasse' ? 4 : 3 })}
         disabled={!canProceedToStep3}
         className={`w-full py-4 rounded-full font-bold text-lg transition-all duration-300 ${
           canProceedToStep3 
@@ -1170,7 +1186,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
                   wizardState={wizardState}
                   updateDetails={updateDetails}
                   estimate={estimate}
-                  onBack={() => updateState({ step: 3 })}
+                  onBack={() => updateState({ step: wizardState.service === 'terrasse' ? 2 : 3 })}
                   onSubmit={handleSubmit}
                 />
               )}
@@ -1228,7 +1244,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               <button
                 onClick={() => {
                   if (wizardState.step === 1 && canProceedToStep2) updateState({ step: 2 });
-                  if (wizardState.step === 2 && canProceedToStep3) updateState({ step: 3 });
+                  if (wizardState.step === 2 && canProceedToStep3) updateState({ step: wizardState.service === 'terrasse' ? 4 : 3 });
                   if (wizardState.step === 3) updateState({ step: 4 });
                 }}
                 disabled={(wizardState.step === 1 && !canProceedToStep2) || (wizardState.step === 2 && !canProceedToStep3)}
