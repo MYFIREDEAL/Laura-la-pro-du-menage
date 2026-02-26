@@ -895,7 +895,18 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               <button
                 key={surf.id}
                 onClick={() => {
-                  updateState({ surface: surf.id, cleanLevel: null, hours: null });
+                  // Conserver l'état et le saturateur, recalculer la durée si l'état est déjà choisi
+                  const isTerrasse = wizardState.service === 'terrasse';
+                  const activeLevels = isTerrasse ? cleanLevelsTerrasse : cleanLevels;
+                  const activeMatrix = isTerrasse ? recommendationMatrixTerrasse : recommendationMatrix;
+                  let newHours = null;
+                  if (wizardState.cleanLevel) {
+                    const levelIndex = activeLevels.findIndex(l => l.id === wizardState.cleanLevel);
+                    const row = activeMatrix[surf.id];
+                    const baseHours = (row && levelIndex >= 0) ? row[levelIndex] : null;
+                    newHours = baseHours ? (isTerrasse && wizardState.saturateur ? baseHours + 3 : baseHours) : null;
+                  }
+                  updateState({ surface: surf.id, hours: newHours });
                 }}
                 className={`relative px-4 py-3 rounded-2xl border-2 text-center transition-all duration-200 ${
                   wizardState.surface === surf.id
@@ -925,11 +936,13 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             {(wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels).map(level => {
               const isSelected = wizardState.cleanLevel === level.id;
               // Quand on clique, on calcule la durée recommandée et on la pré-sélectionne
-              const activeLevels = wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels;
-              const activeMatrix = wizardState.service === 'terrasse' ? recommendationMatrixTerrasse : recommendationMatrix;
+              const isTerrasse = wizardState.service === 'terrasse';
+              const activeLevels = isTerrasse ? cleanLevelsTerrasse : cleanLevels;
+              const activeMatrix = isTerrasse ? recommendationMatrixTerrasse : recommendationMatrix;
               const levelIndex = activeLevels.findIndex(l => l.id === level.id);
               const row = activeMatrix[wizardState.surface];
-              const recHours = row ? row[levelIndex] : null;
+              const baseHours = (row && levelIndex >= 0) ? row[levelIndex] : null;
+              const recHours = baseHours ? (isTerrasse && wizardState.saturateur ? baseHours + 3 : baseHours) : null;
               return (
                 <button
                   key={level.id}
