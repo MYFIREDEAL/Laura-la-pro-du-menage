@@ -75,7 +75,53 @@ const translations = {
     'commerce': 'Commerce',
     'office': 'Bureau',
     'building': 'Copropriété',
-    'shop': 'Commerce'
+    'shop': 'Commerce',
+    'offices': 'Bureaux',
+    'common': 'Parties communes',
+    'medical': 'Cabinet médical',
+    'other': 'Autre'
+  },
+  // Surface Pro
+  surfacePro: {
+    'S': 'Moins de 50m²',
+    'M': '50 - 150m²',
+    'L': '150 - 300m²',
+    'XL': 'Plus de 300m²'
+  },
+  // Surface Terrasse
+  surfaceTerrasse: {
+    'xs': 'Moins de 10m²',
+    'sm': '10 - 20m²',
+    'md': '20 - 40m²',
+    'lg': '40 - 60m²',
+    'xl': 'Plus de 60m²'
+  },
+  // Niveau de nettoyage terrasse
+  cleanLevelTerrasse: {
+    'light': 'Léger (poussière, feuilles)',
+    'medium': 'Moyen (taches, mousse légère)',
+    'heavy': 'Intense (mousse épaisse, noir)',
+    'extreme': 'Très encrassé (karcher obligatoire)'
+  },
+  // Horaires préférés
+  preferredSchedule: {
+    'before9': 'Avant 9h',
+    'after18': 'Après 18h',
+    'weekend': 'Week-end',
+    'flexible': 'Flexible'
+  },
+  // Exigences d'accès
+  accessRequirements: {
+    'badge': 'Badge',
+    'alarm': 'Alarme',
+    'keys': 'Clés'
+  },
+  // Options wizard
+  wizardOptions: {
+    'ironing': 'Repassage',
+    'products': 'Produits fournis',
+    'windows': 'Nettoyage vitres',
+    'shopping': 'Courses'
   }
 };
 
@@ -509,11 +555,44 @@ const AdminPage = ({ onBack }) => {
                   <div className="bg-blue-50 rounded-xl p-4 mb-4">
                     <h4 className="text-xs text-blue-600 uppercase tracking-wide mb-3">Détails configurés</h4>
                     <div className="space-y-2 text-sm">
-                      {/* Surface */}
-                      {selectedDemande.details.surface && (
+
+                      {/* Surface Pro (depuis details) */}
+                      {selectedDemande.details.surface && selectedDemande.service === 'pro' && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">📐 Surface</span>
-                          <span className="font-medium">{selectedDemande.details.surface} m²</span>
+                          <span className="font-medium">{translations.surfacePro[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                        </div>
+                      )}
+
+                      {/* Surface wizard-level (terrasse) */}
+                      {selectedDemande.surface && selectedDemande.service === 'terrasse' && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">📐 Surface terrasse</span>
+                          <span className="font-medium">{translations.surfaceTerrasse[selectedDemande.surface] || selectedDemande.surface}</span>
+                        </div>
+                      )}
+
+                      {/* Surface vitres (depuis details) */}
+                      {selectedDemande.details.surface && selectedDemande.service === 'vitres' && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">📐 Surface vitrée</span>
+                          <span className="font-medium">{translations.surfacePro[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                        </div>
+                      )}
+
+                      {/* Niveau d'encrassement terrasse */}
+                      {selectedDemande.cleanLevel && selectedDemande.service === 'terrasse' && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🧽 Encrassement</span>
+                          <span className="font-medium">{translations.cleanLevelTerrasse[selectedDemande.cleanLevel] || selectedDemande.cleanLevel}</span>
+                        </div>
+                      )}
+
+                      {/* Saturateur terrasse */}
+                      {selectedDemande.service === 'terrasse' && selectedDemande.saturateur && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🪵 Saturateur</span>
+                          <span className="font-medium text-orange-600">Oui (application incluse)</span>
                         </div>
                       )}
                       
@@ -551,6 +630,66 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
+                      {/* Nom de l'entreprise (Pro) */}
+                      {selectedDemande.details.companyName && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🏭 Entreprise</span>
+                          <span className="font-medium">{selectedDemande.details.companyName}</span>
+                        </div>
+                      )}
+
+                      {/* SIRET (Pro) */}
+                      {selectedDemande.details.siret && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">📋 SIRET</span>
+                          <span className="font-medium font-mono text-xs">{selectedDemande.details.siret}</span>
+                        </div>
+                      )}
+
+                      {/* Horaire préféré (Pro) */}
+                      {selectedDemande.details.preferredSchedule && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🕐 Horaire préféré</span>
+                          <span className="font-medium">{translate('preferredSchedule', selectedDemande.details.preferredSchedule)}</span>
+                        </div>
+                      )}
+
+                      {/* Exigences d'accès (Pro) */}
+                      {selectedDemande.details.accessRequirements && selectedDemande.details.accessRequirements.length > 0 && (
+                        <div className="pt-2 border-t border-blue-100">
+                          <span className="text-gray-500 block mb-1">🔐 Exigences d'accès</span>
+                          <div className="flex flex-wrap gap-1">
+                            {translateArray('accessRequirements', selectedDemande.details.accessRequirements).map((r, i) => (
+                              <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{r}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Instructions d'accès (Pro) */}
+                      {selectedDemande.details.accessInstructions && (
+                        <div className="pt-2 border-t border-blue-100">
+                          <span className="text-gray-500 block mb-1">📝 Instructions d'accès</span>
+                          <p className="text-gray-700">{selectedDemande.details.accessInstructions}</p>
+                        </div>
+                      )}
+
+                      {/* Code d'accès */}
+                      {selectedDemande.details.accessCode && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🔑 Code d'accès</span>
+                          <span className="font-medium font-mono">{selectedDemande.details.accessCode}</span>
+                        </div>
+                      )}
+
+                      {/* Étage */}
+                      {selectedDemande.details.floor && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🏢 Étage</span>
+                          <span className="font-medium">{selectedDemande.details.floor}</span>
+                        </div>
+                      )}
+
                       {/* Priorités */}
                       {selectedDemande.details.priorities && selectedDemande.details.priorities.length > 0 && (
                         <div className="pt-2 border-t border-blue-100">
@@ -563,7 +702,7 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
-                      {/* Options */}
+                      {/* Options depuis details (ancien format) */}
                       {selectedDemande.details.options && selectedDemande.details.options.length > 0 && (
                         <div className="pt-2 border-t border-blue-100">
                           <span className="text-gray-500 block mb-1">🔧 Options</span>
@@ -571,6 +710,22 @@ const AdminPage = ({ onBack }) => {
                             {translateArray('options', selectedDemande.details.options).map((o, i) => (
                               <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{o}</span>
                             ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Options wizard-level (nouveau format) */}
+                      {selectedDemande.options && Object.entries(selectedDemande.options).some(([, v]) => v) && (
+                        <div className="pt-2 border-t border-blue-100">
+                          <span className="text-gray-500 block mb-1">⚙️ Options incluses</span>
+                          <div className="flex flex-wrap gap-1">
+                            {Object.entries(selectedDemande.options)
+                              .filter(([, v]) => v)
+                              .map(([key], i) => (
+                                <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">
+                                  {translations.wizardOptions[key] || key}
+                                </span>
+                              ))}
                           </div>
                         </div>
                       )}
@@ -587,7 +742,7 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
-                      {/* Accès */}
+                      {/* Accès (ancien format) */}
                       {selectedDemande.details.accessInfo && (
                         <div className="pt-2 border-t border-blue-100">
                           <span className="text-gray-500 block mb-1">🔑 Accès</span>
@@ -749,12 +904,131 @@ const AdminPage = ({ onBack }) => {
                 <div className="bg-blue-50 rounded-xl p-4 mb-4">
                   <h4 className="text-xs text-blue-600 uppercase tracking-wide mb-3">Détails</h4>
                   <div className="space-y-2 text-sm">
-                    {selectedDemande.details.surface && (
+
+                    {/* Surface Pro */}
+                    {selectedDemande.details.surface && selectedDemande.service === 'pro' && (
                       <div className="flex justify-between">
                         <span className="text-gray-500">📐 Surface</span>
-                        <span className="font-medium">{selectedDemande.details.surface} m²</span>
+                        <span className="font-medium">{translations.surfacePro[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
                       </div>
                     )}
+
+                    {/* Surface Terrasse */}
+                    {selectedDemande.surface && selectedDemande.service === 'terrasse' && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">📐 Surface terrasse</span>
+                        <span className="font-medium">{translations.surfaceTerrasse[selectedDemande.surface] || selectedDemande.surface}</span>
+                      </div>
+                    )}
+
+                    {/* Surface Vitres */}
+                    {selectedDemande.details.surface && selectedDemande.service === 'vitres' && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">📐 Surface vitrée</span>
+                        <span className="font-medium">{translations.surfacePro[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                      </div>
+                    )}
+
+                    {/* Encrassement terrasse */}
+                    {selectedDemande.cleanLevel && selectedDemande.service === 'terrasse' && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🧽 Encrassement</span>
+                        <span className="font-medium">{translations.cleanLevelTerrasse[selectedDemande.cleanLevel] || selectedDemande.cleanLevel}</span>
+                      </div>
+                    )}
+
+                    {/* Saturateur */}
+                    {selectedDemande.service === 'terrasse' && selectedDemande.saturateur && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🪵 Saturateur</span>
+                        <span className="font-medium text-orange-600">Oui</span>
+                      </div>
+                    )}
+
+                    {/* Type logement */}
+                    {selectedDemande.details.homeType && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🏠 Logement</span>
+                        <span className="font-medium">{translate('homeType', selectedDemande.details.homeType)}</span>
+                      </div>
+                    )}
+
+                    {/* Pièces */}
+                    {selectedDemande.details.rooms && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🚪 Pièces</span>
+                        <span className="font-medium">{selectedDemande.details.rooms}</span>
+                      </div>
+                    )}
+
+                    {/* Type local */}
+                    {selectedDemande.details.localType && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🏢 Type local</span>
+                        <span className="font-medium">{translate('localType', selectedDemande.details.localType)}</span>
+                      </div>
+                    )}
+
+                    {/* Entreprise */}
+                    {selectedDemande.details.companyName && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🏭 Entreprise</span>
+                        <span className="font-medium">{selectedDemande.details.companyName}</span>
+                      </div>
+                    )}
+
+                    {/* SIRET */}
+                    {selectedDemande.details.siret && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">📋 SIRET</span>
+                        <span className="font-medium font-mono text-xs">{selectedDemande.details.siret}</span>
+                      </div>
+                    )}
+
+                    {/* Horaire préféré */}
+                    {selectedDemande.details.preferredSchedule && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🕐 Horaire</span>
+                        <span className="font-medium">{translate('preferredSchedule', selectedDemande.details.preferredSchedule)}</span>
+                      </div>
+                    )}
+
+                    {/* Exigences d'accès */}
+                    {selectedDemande.details.accessRequirements?.length > 0 && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">🔐 Exigences d'accès</span>
+                        <div className="flex flex-wrap gap-1">
+                          {translateArray('accessRequirements', selectedDemande.details.accessRequirements).map((r, i) => (
+                            <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{r}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Instructions d'accès */}
+                    {selectedDemande.details.accessInstructions && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">📝 Instructions d'accès</span>
+                        <p className="text-gray-700">{selectedDemande.details.accessInstructions}</p>
+                      </div>
+                    )}
+
+                    {/* Code d'accès */}
+                    {selectedDemande.details.accessCode && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🔑 Code d'accès</span>
+                        <span className="font-medium font-mono">{selectedDemande.details.accessCode}</span>
+                      </div>
+                    )}
+
+                    {/* Étage */}
+                    {selectedDemande.details.floor && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🏢 Étage</span>
+                        <span className="font-medium">{selectedDemande.details.floor}</span>
+                      </div>
+                    )}
+
                     {selectedDemande.details.priorities?.length > 0 && (
                       <div className="pt-2 border-t border-blue-100">
                         <span className="text-gray-500 block mb-1">✨ Priorités</span>
@@ -773,6 +1047,42 @@ const AdminPage = ({ onBack }) => {
                             <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{o}</span>
                           ))}
                         </div>
+                      </div>
+                    )}
+
+                    {/* Options wizard-level */}
+                    {selectedDemande.options && Object.entries(selectedDemande.options).some(([, v]) => v) && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">⚙️ Options incluses</span>
+                        <div className="flex flex-wrap gap-1">
+                          {Object.entries(selectedDemande.options)
+                            .filter(([, v]) => v)
+                            .map(([key], i) => (
+                              <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">
+                                {translations.wizardOptions[key] || key}
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Services seniors */}
+                    {selectedDemande.details.seniorServices?.length > 0 && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">👴 Services seniors</span>
+                        <div className="flex flex-wrap gap-1">
+                          {translateArray('seniorServices', selectedDemande.details.seniorServices).map((s, i) => (
+                            <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{s}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Accès ancien format */}
+                    {selectedDemande.details.accessInfo && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">🔑 Accès</span>
+                        <p className="text-gray-700">{selectedDemande.details.accessInfo}</p>
                       </div>
                     )}
                   </div>

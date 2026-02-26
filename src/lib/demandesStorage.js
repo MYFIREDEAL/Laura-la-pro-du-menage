@@ -15,7 +15,10 @@ export const serviceLabels = {
   ponctuel: 'Ménage ponctuel',
   seniors: 'Accompagnement Seniors',
   airbnb: 'Airbnb & Gîtes',
-  pro: 'Bureaux & Copropriétés'
+  pro: 'Bureaux & Copropriétés',
+  repassage: 'Repassage à domicile',
+  vitres: 'Nettoyage Baie Vitrée',
+  terrasse: 'Nettoyage de Terrasse'
 };
 
 export const frequencyLabels = {
@@ -79,8 +82,14 @@ export const saveDemande = (wizardState) => {
     // Prix
     priceEstimate: wizardState.priceEstimate,
     
-    // Détails complets
+    // Détails complets (Step 3 & 4)
     details: { ...wizardState.details },
+    
+    // Options du wizard (Step 2)
+    options: wizardState.options || {},
+    surface: wizardState.surface || null,
+    cleanLevel: wizardState.cleanLevel || null,
+    saturateur: wizardState.saturateur || false,
     
     // Notes internes
     notes: ''
@@ -150,7 +159,7 @@ export const deleteDemande = (id) => {
 export const exportToCSV = () => {
   const demandes = getAllDemandes();
   
-  const headers = ['ID', 'Date', 'Statut', 'Nom', 'Téléphone', 'Ville', 'Service', 'Fréquence', 'Heures', 'Prix estimé', 'Message'];
+  const headers = ['ID', 'Date', 'Statut', 'Nom', 'Téléphone', 'Ville', 'Service', 'Fréquence', 'Heures', 'Prix estimé', 'Type local', 'Surface', 'Entreprise', 'SIRET', 'Horaire préféré', 'Message'];
   
   const rows = demandes.map(d => [
     d.id,
@@ -163,6 +172,11 @@ export const exportToCSV = () => {
     d.frequencyLabel,
     d.hours,
     d.priceEstimate ? `${d.priceEstimate}€` : '',
+    d.details?.localType || '',
+    d.details?.surface || d.surface || '',
+    d.details?.companyName || '',
+    d.details?.siret || '',
+    d.details?.preferredSchedule || '',
     d.message?.replace(/"/g, '""') || ''
   ]);
   
