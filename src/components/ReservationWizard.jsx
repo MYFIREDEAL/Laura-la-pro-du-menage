@@ -158,6 +158,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 'xl', label: '120 m² +', description: 'Grande maison' },
   ];
 
+  // Surfaces spécifiques terrasse
+  const surfacesTerrasse = [
+    { id: 'xs', label: '< 10 m²', description: 'Petit balcon' },
+    { id: 'sm', label: '10 – 25 m²', description: 'Terrasse standard' },
+    { id: 'md', label: '25 – 50 m²', description: 'Grande terrasse' },
+    { id: 'lg', label: '50 – 80 m²', description: 'Très grande terrasse' },
+    { id: 'xl', label: '80 m² +', description: 'Terrasse XXL / Tour de piscine' },
+  ];
+
   // Niveaux d'état du logement (questions sympas)
   const cleanLevels = [
     { id: 'light', emoji: '😊', label: 'Plutôt propre', description: 'Un petit coup de frais suffit !' },
@@ -166,7 +175,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     { id: 'extreme', emoji: '🫣', label: 'Gros chantier en vue !', description: 'On sort l\'artillerie lourde 💪' },
   ];
 
-  // Matrice de durées recommandées : surface × cleanLevel (en heures)
+  // Niveaux d'état spécifiques terrasse
+  const cleanLevelsTerrasse = [
+    { id: 'light', emoji: '😊', label: 'Quelques salissures', description: 'Juste un bon nettoyage de saison' },
+    { id: 'medium', emoji: '🙂', label: 'Mousse & traces vertes', description: 'Rien qu\'un bon karcher ne règle !' },
+    { id: 'deep', emoji: '😅', label: 'Bien encrassée', description: 'Laura va lui redonner vie !' },
+    { id: 'extreme', emoji: '🫣', label: 'Jungle urbaine !', description: 'On sort l\'artillerie lourde 💪' },
+  ];
+
+  // Matrice de durées recommandées : surface × cleanLevel (en heures) — ménage ponctuel
   const recommendationMatrix = {
     //          light  medium  deep  extreme
     xs:      [  3,     3,      4,    5    ],
@@ -176,14 +193,27 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     xl:      [  6,     7,      8,    10   ],
   };
 
+  // Matrice de durées recommandées terrasse
+  const recommendationMatrixTerrasse = {
+    //          light  medium  deep  extreme
+    xs:      [  3,     3,      3,    4    ],
+    sm:      [  3,     3,      4,    5    ],
+    md:      [  3,     4,      5,    6    ],
+    lg:      [  4,     5,      6,    7    ],
+    xl:      [  5,     6,      7,    8    ],
+  };
+
   // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel et terrasse)
   const getRecommendedHours = () => {
     const isPonctuelLike = wizardState.service === 'ponctuel' || wizardState.service === 'terrasse';
     if (!isPonctuelLike || !wizardState.surface || !wizardState.cleanLevel) return null;
-    const levelIndex = cleanLevels.findIndex(l => l.id === wizardState.cleanLevel);
-    const matrix = recommendationMatrix[wizardState.surface];
-    if (!matrix || levelIndex < 0) return null;
-    return matrix[levelIndex];
+    const isTerrasse = wizardState.service === 'terrasse';
+    const levels = isTerrasse ? cleanLevelsTerrasse : cleanLevels;
+    const matrix = isTerrasse ? recommendationMatrixTerrasse : recommendationMatrix;
+    const levelIndex = levels.findIndex(l => l.id === wizardState.cleanLevel);
+    const row = matrix[wizardState.surface];
+    if (!row || levelIndex < 0) return null;
+    return row[levelIndex];
   };
 
   const recommendedHoursFromSurface = getRecommendedHours();
@@ -651,9 +681,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         {/* Surface (ponctuel et terrasse uniquement) */}
         {(wizardState.service === 'ponctuel' || wizardState.service === 'terrasse') && wizardState.surface && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Surface</span>
+            <span className="text-gray-600">{wizardState.service === 'terrasse' ? 'Taille' : 'Surface'}</span>
             <span className="font-semibold text-gray-900">
-              {surfaces.find(s => s.id === wizardState.surface)?.label || '—'}
+              {(wizardState.service === 'terrasse' ? surfacesTerrasse : surfaces).find(s => s.id === wizardState.surface)?.label || '—'}
             </span>
           </div>
         )}
@@ -662,8 +692,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">État</span>
             <span className="font-semibold text-gray-900">
-              {cleanLevels.find(l => l.id === wizardState.cleanLevel)?.emoji}{' '}
-              {cleanLevels.find(l => l.id === wizardState.cleanLevel)?.label || '—'}
+              {(wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels).find(l => l.id === wizardState.cleanLevel)?.emoji}{' '}
+              {(wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels).find(l => l.id === wizardState.cleanLevel)?.label || '—'}
             </span>
           </div>
         )}
@@ -839,7 +869,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           </h3>
           <p className="text-gray-500 text-sm mb-4">Pour vous proposer une durée adaptée.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {surfaces.map(surf => (
+            {(wizardState.service === 'terrasse' ? surfacesTerrasse : surfaces).map(surf => (
               <button
                 key={surf.id}
                 onClick={() => {
@@ -870,12 +900,14 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           </h3>
           <p className="text-gray-500 text-sm mb-4">Pas de jugement, juste pour bien doser l'intervention 😉</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {cleanLevels.map(level => {
+            {(wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels).map(level => {
               const isSelected = wizardState.cleanLevel === level.id;
               // Quand on clique, on calcule la durée recommandée et on la pré-sélectionne
-              const levelIndex = cleanLevels.findIndex(l => l.id === level.id);
-              const matrix = recommendationMatrix[wizardState.surface];
-              const recHours = matrix ? matrix[levelIndex] : null;
+              const activeLevels = wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels;
+              const activeMatrix = wizardState.service === 'terrasse' ? recommendationMatrixTerrasse : recommendationMatrix;
+              const levelIndex = activeLevels.findIndex(l => l.id === level.id);
+              const row = activeMatrix[wizardState.surface];
+              const recHours = row ? row[levelIndex] : null;
               return (
                 <button
                   key={level.id}
