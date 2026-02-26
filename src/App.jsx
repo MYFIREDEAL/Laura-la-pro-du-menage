@@ -1251,9 +1251,9 @@ const App = () => {
             <div className="bg-red-600 text-white p-1.5 rounded-lg shadow-md transform hover:rotate-6 transition-transform">
               <Heart fill="currentColor" size={20} />
             </div>
-            <div>
-              <span className="text-lg font-black text-gray-900 block leading-none uppercase">Laura</span>
-              <span className="text-[8px] font-black text-orange-600 uppercase tracking-widest">La pro du ménage</span>
+            <div className="flex flex-col">
+              <span className="text-lg font-black text-gray-900 leading-none uppercase">Laura</span>
+              <span className="text-[8px] font-black text-orange-600 uppercase tracking-widest -mt-0.5">La pro du ménage</span>
             </div>
           </div>
           
