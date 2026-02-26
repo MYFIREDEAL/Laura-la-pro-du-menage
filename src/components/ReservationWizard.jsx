@@ -30,6 +30,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     hours: null,          // 2 | 2.5 | 3 | 4
     surface: null,        // 'xs' | 'sm' | 'md' | 'lg' | 'xl' (pour ponctuel)
     cleanLevel: null,     // 'light' | 'medium' | 'deep' | 'extreme' (état du logement)
+    saturateur: false,    // Application saturateur bois (terrasse uniquement)
     options: {
       ironing: false,     // Repassage
       products: false,    // Produits fournis
@@ -225,7 +226,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     const levelIndex = levels.findIndex(l => l.id === wizardState.cleanLevel);
     const row = matrix[wizardState.surface];
     if (!row || levelIndex < 0) return null;
-    return row[levelIndex];
+    const baseHours = row[levelIndex];
+    // Ajouter 3h si saturateur bois sélectionné
+    return isTerrasse && wizardState.saturateur ? baseHours + 3 : baseHours;
   };
 
   const recommendedHoursFromSurface = getRecommendedHours();
@@ -556,9 +559,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
         onClick={() => {
           // Si ponctuel ou terrasse, on pré-sélectionne la fréquence 'once' automatiquement
           if (service.id === 'ponctuel' || service.id === 'terrasse') {
-            updateState({ service: service.id, frequency: 'once', surface: null, cleanLevel: null, hours: null });
+            updateState({ service: service.id, frequency: 'once', surface: null, cleanLevel: null, hours: null, saturateur: false });
           } else {
-            updateState({ service: service.id, frequency: null, surface: null, cleanLevel: null, hours: null });
+            updateState({ service: service.id, frequency: null, surface: null, cleanLevel: null, hours: null, saturateur: false });
           }
           // Auto-avance vers étape 2 après sélection
           setTimeout(() => updateState({ step: 2 }), 200);
@@ -707,6 +710,13 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               {(wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels).find(l => l.id === wizardState.cleanLevel)?.emoji}{' '}
               {(wizardState.service === 'terrasse' ? cleanLevelsTerrasse : cleanLevels).find(l => l.id === wizardState.cleanLevel)?.label || '—'}
             </span>
+          </div>
+        )}
+        {/* Saturateur bois (terrasse uniquement) */}
+        {wizardState.service === 'terrasse' && wizardState.saturateur && (
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Finition</span>
+            <span className="font-semibold text-amber-600">🪵 Saturateur bois</span>
           </div>
         )}
         <div className="flex justify-between text-sm">
@@ -943,6 +953,50 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Option saturateur bois - terrasse uniquement, AVANT la durée */}
+      {wizardState.service === 'terrasse' && (
+        <div className="mb-8">
+          <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+            🪵 Finition bois
+          </h3>
+          <p className="text-gray-500 text-sm mb-4">Souhaitez-vous une application de saturateur après le nettoyage ?</p>
+          <button
+            onClick={() => {
+              const newSaturateur = !wizardState.saturateur;
+              // Recalculer la durée recommandée avec/sans saturateur
+              const isTerrasse = true;
+              const levels = cleanLevelsTerrasse;
+              const matrix = recommendationMatrixTerrasse;
+              const levelIndex = wizardState.cleanLevel ? levels.findIndex(l => l.id === wizardState.cleanLevel) : -1;
+              const row = wizardState.surface ? matrix[wizardState.surface] : null;
+              const baseHours = (row && levelIndex >= 0) ? row[levelIndex] : null;
+              const newHours = baseHours ? (newSaturateur ? baseHours + 3 : baseHours) : wizardState.hours;
+              updateState({ saturateur: newSaturateur, hours: newHours });
+            }}
+            className={`flex items-center gap-4 w-full p-4 rounded-2xl border-2 transition-all duration-200 ${
+              wizardState.saturateur 
+                ? 'bg-amber-50 border-amber-500 shadow-md' 
+                : 'bg-white border-gray-200 hover:border-amber-300'
+            }`}
+          >
+            <span className="text-2xl">🖌️</span>
+            <div className="flex-1 text-left">
+              <span className={`font-semibold text-sm block ${wizardState.saturateur ? 'text-amber-700' : 'text-gray-700'}`}>
+                Application de saturateur / huile bois
+              </span>
+              <span className={`text-xs ${wizardState.saturateur ? 'text-amber-600' : 'text-gray-500'}`}>
+                Protection du bois au pinceau large, lame par lame — compter ~3h de plus
+              </span>
+            </div>
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+              wizardState.saturateur ? 'bg-amber-500 border-amber-500' : 'border-gray-300'
+            }`}>
+              {wizardState.saturateur && <CheckCircle2 size={14} className="text-white" />}
+            </div>
+          </button>
         </div>
       )}
 
