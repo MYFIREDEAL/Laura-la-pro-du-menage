@@ -1,5 +1,5 @@
 import React from 'react';
-import { Key, Calendar, Clock, Bed, CheckCircle2, Camera, Home, AlertTriangle } from 'lucide-react';
+import { Key, Bed, CheckCircle2, Camera, Home, AlertTriangle } from 'lucide-react';
 
 /**
  * DetailsAirbnb - Détails spécifiques pour Airbnb & Gîtes
@@ -170,45 +170,6 @@ const DetailsAirbnb = ({ details, updateDetails }) => {
             className="mt-3 w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
           />
         )}
-      </div>
-
-      {/* Horaires de turnover */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          <Calendar size={16} className="inline mr-1" />
-          Horaires de turnover
-        </label>
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-3">
-          <p className="text-blue-700 text-sm">
-            ⏰ Indiquez l'heure de départ des voyageurs et l'arrivée des suivants.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="text-xs text-gray-500 mb-1 block">Départ voyageurs</label>
-            <div className="relative">
-              <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="time"
-                value={details.checkoutTime || ''}
-                onChange={(e) => updateDetails({ checkoutTime: e.target.value })}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-xs text-gray-500 mb-1 block">Arrivée suivants</label>
-            <div className="relative">
-              <Clock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="time"
-                value={details.checkinTime || ''}
-                onChange={(e) => updateDetails({ checkinTime: e.target.value })}
-                className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-400 focus:outline-none transition-colors"
-              />
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Gestion du linge */}
