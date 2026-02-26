@@ -198,7 +198,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       airbnb: 29,
       pro: 29,
     };
-    const baseRate = rates[wizardState.service] || 29;
+    // Si fréquence ponctuelle, on applique le tarif ponctuel même si le service choisi est différent
+    const effectiveRate = wizardState.frequency === 'once' ? rates.ponctuel : (rates[wizardState.service] || 29);
+    const baseRate = effectiveRate;
     
     if (!wizardState.hours || !wizardState.frequency) {
       return { subtotal: 0, promo: 0, afterPromo: 0, finalPrice: 0 };
