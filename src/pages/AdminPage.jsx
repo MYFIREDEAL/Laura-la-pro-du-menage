@@ -712,18 +712,6 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
-                      {/* Horaires turnover Airbnb */}
-                      {(selectedDemande.details.checkoutTime || selectedDemande.details.checkinTime) && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500">⏰ Turnover</span>
-                          <span className="font-medium">
-                            {selectedDemande.details.checkoutTime && `Départ ${selectedDemande.details.checkoutTime}`}
-                            {selectedDemande.details.checkoutTime && selectedDemande.details.checkinTime && ' → '}
-                            {selectedDemande.details.checkinTime && `Arrivée ${selectedDemande.details.checkinTime}`}
-                          </span>
-                        </div>
-                      )}
-
                       {/* Gestion du linge Airbnb */}
                       {selectedDemande.details.linenOption && (
                         <div className="flex justify-between">
@@ -1161,18 +1149,6 @@ const AdminPage = ({ onBack }) => {
                       <div className="flex justify-between">
                         <span className="text-gray-500">🔐 Code boîte à clés</span>
                         <span className="font-medium font-mono">{selectedDemande.details.keyboxCode}</span>
-                      </div>
-                    )}
-
-                    {/* Horaires turnover Airbnb */}
-                    {(selectedDemande.details.checkoutTime || selectedDemande.details.checkinTime) && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-500">⏰ Turnover</span>
-                        <span className="font-medium">
-                          {selectedDemande.details.checkoutTime && `Départ ${selectedDemande.details.checkoutTime}`}
-                          {selectedDemande.details.checkoutTime && selectedDemande.details.checkinTime && ' → '}
-                          {selectedDemande.details.checkinTime && `Arrivée ${selectedDemande.details.checkinTime}`}
-                        </span>
                       </div>
                     )}
 
