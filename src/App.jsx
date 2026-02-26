@@ -496,9 +496,9 @@ const App = () => {
                     <p className="text-[9px]">1er mois</p>
                   </div>
                   <p className="text-amber-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 1ère heure offerte
+                    <Sparkles size={18} /> -30% le 1er mois
                   </p>
-                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — 1ère heure offerte + -30% le 1er mois</p>
+                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — -30% sur votre 1ère intervention</p>
                 </div>
                 <Button onClick={() => goToReservation('terrasse')} className="w-full !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
               </div>

@@ -302,10 +302,10 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     const subtotal = (baseRate * hours * freq) + (optionsPerVenue * freq);
     
     // Promo selon service :
-    // - Airbnb & Pro : seulement 30% le 1er mois (pas de 1ère heure offerte)
-    // - Autres (régulier, ponctuel, seniors) : 1ère heure offerte PUIS 30% sur le reste
-    const isProOrAirbnb = wizardState.service === 'airbnb' || wizardState.service === 'pro';
-    const promoFirstHour = isProOrAirbnb ? 0 : baseRate; // 1h offerte uniquement pour particuliers
+    // - Airbnb, Pro & Terrasse : seulement 30% le 1er mois (pas de 1ère heure offerte)
+    // - Autres (régulier, ponctuel, seniors, repassage, vitres) : 1ère heure offerte PUIS 30% sur le reste
+    const isNoFreeHour = wizardState.service === 'airbnb' || wizardState.service === 'pro' || wizardState.service === 'terrasse';
+    const promoFirstHour = isNoFreeHour ? 0 : baseRate; // 1h offerte uniquement pour particuliers (hors terrasse)
     const subtotalAfterFreeHour = Math.max(0, subtotal - promoFirstHour); // On retire l'heure gratuite d'abord
     const promoPercent = subtotalAfterFreeHour * 0.30; // Puis -30% sur le reste
     const promo = promoFirstHour + promoPercent;
@@ -325,7 +325,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     
     const finalPrice = isEligible50 ? afterPromo * 0.5 : afterPromo;
 
-    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isProOrAirbnb };
+    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isNoFreeHour };
   };
 
   const estimate = calculateEstimate();
@@ -441,7 +441,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-green-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
-                <span>{estimate.isProOrAirbnb ? '1ère intervention avec -30%' : '1ère heure d\'essai'}</span>
+                <span>{estimate.isNoFreeHour ? '1ère intervention avec -30%' : '1ère heure d\'essai'}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="bg-green-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">3</span>
@@ -703,7 +703,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             <p className="text-xs font-bold text-green-700 uppercase">🎁 Offre de bienvenue - 1er mois</p>
             
             {/* 1ère heure offerte (si applicable) */}
-            {!estimate.isProOrAirbnb && estimate.promoFirstHour > 0 && (
+            {!estimate.isNoFreeHour && estimate.promoFirstHour > 0 && (
               <div className="flex justify-between text-sm text-green-600">
                 <span>🕐 1ère heure offerte</span>
                 <span>-{estimate.promoFirstHour.toFixed(2)} €</span>
@@ -748,7 +748,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               </div>
             </div>
             <p className="text-[10px] text-gray-400 mt-2">
-              {estimate.isProOrAirbnb 
+              {estimate.isNoFreeHour 
                 ? '✨ -30% le 1er mois, puis tarif normal'
                 : '✨ 1ère heure offerte et -30% le 1er mois'
               }
@@ -761,7 +761,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       <div className="mt-6 bg-gradient-to-r from-orange-100 to-amber-50 border border-orange-200 text-orange-800 p-4 rounded-2xl">
         <p className="font-bold text-sm">🎁 Offre de bienvenue</p>
         <p className="text-xs mt-1 text-orange-700">
-          {estimate.isProOrAirbnb 
+          {estimate.isNoFreeHour 
             ? '-30% le 1er mois'
             : '1ère heure offerte et -30% le 1er mois'
           }
@@ -986,7 +986,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             Réservez votre intervention
           </h1>
           <p className="text-gray-600">
-            {estimate.isProOrAirbnb 
+            {estimate.isNoFreeHour 
               ? <>🎁 <span className="font-semibold text-orange-600">-30%</span> le 1er mois</>
               : <>🎁 <span className="font-semibold text-orange-600">1ère heure offerte</span> et <span className="font-semibold text-orange-600">-30%</span> le 1er mois</>
             }
@@ -1053,7 +1053,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
                 {estimate.finalPrice > 0 && wizardState.frequency !== 'once' && <span className="text-xs text-gray-500">/ mois</span>}
               </div>
               <span className="text-[9px] text-gray-400">
-                {estimate.isProOrAirbnb ? '-30% le 1er mois' : '1ère heure d\'essai offerte'}
+                {estimate.isNoFreeHour ? '-30% le 1er mois' : '1ère heure d\'essai offerte'}
               </span>
             </div>
             
