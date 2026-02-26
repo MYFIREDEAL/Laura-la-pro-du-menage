@@ -217,10 +217,11 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     
     // Promo selon service :
     // - Airbnb & Pro : seulement 30% le 1er mois (pas de 1ère heure offerte)
-    // - Autres (régulier, ponctuel, seniors) : 1ère heure offerte + 30%
+    // - Autres (régulier, ponctuel, seniors) : 1ère heure offerte PUIS 30% sur le reste
     const isProOrAirbnb = wizardState.service === 'airbnb' || wizardState.service === 'pro';
     const promoFirstHour = isProOrAirbnb ? 0 : baseRate; // 1h offerte uniquement pour particuliers
-    const promoPercent = subtotal * 0.30;
+    const subtotalAfterFreeHour = Math.max(0, subtotal - promoFirstHour); // On retire l'heure gratuite d'abord
+    const promoPercent = subtotalAfterFreeHour * 0.30; // Puis -30% sur le reste
     const promo = promoFirstHour + promoPercent;
     
     const afterPromo = Math.max(0, subtotal - promo);
