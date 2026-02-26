@@ -189,7 +189,8 @@ const App = () => {
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Entre le travail, les enfants et les activités, le ménage devient une corvée ? Retrouvez vos soirées dans une maison impeccable.
                 </p>
-                <div className="bg-red-50 border border-red-100 rounded-2xl p-4 mb-6">
+                <div className="relative bg-red-50 border border-red-100 rounded-2xl p-4 mb-6">
+                  <div className="absolute -top-3 -right-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
                   <p className="text-red-600 font-bold flex items-center gap-2">
                     <Gift size={18} /> 🎁 1ère heure offerte + -30% le 1er mois
                   </p>
@@ -226,7 +227,8 @@ const App = () => {
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Offrez-leur le soutien d'une présence rassurante qui s'occupe de leur intérieur avec douceur et respect de leur autonomie.
                 </p>
-                <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
+                <div className="relative bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
+                  <div className="absolute -top-3 -right-3 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
                   <p className="text-orange-600 font-bold flex items-center gap-2">
                     <Heart size={18} fill="currentColor" /> 🎁 1ère heure offerte + -30% le 1er mois
                   </p>
@@ -350,7 +352,8 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Vitres, plinthes & recoins oubliés</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Dépoussiérage complet & désinfection</li>
                 </ul>
-                <div className="bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-6">
+                <div className="relative bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-6">
+                  <div className="absolute -top-3 -right-3 bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">-30%</div>
                   <p className="text-pink-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> 🎁 1ère heure offerte + -30% le 1er mois
                   </p>
