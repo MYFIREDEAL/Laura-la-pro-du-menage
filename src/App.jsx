@@ -374,6 +374,48 @@ const App = () => {
                 <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-purple-500 hover:!bg-purple-600">Me tenir informé</Button>
               </div>
             </div>
+
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+              {/* Image en haut du module */}
+              <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
+                <img 
+                  src="https://ik.imagekit.io/bqla7nrgyf/Lavage%20vitre.jpg" 
+                  alt="Nettoyage baie vitrée" 
+                  className="w-full h-full object-cover object-center"
+                />
+                {/* Étoiles de propreté animées */}
+                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">🪟</div>
+                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
+                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
+                {/* Badge sur l'image */}
+                <div className="absolute top-3 right-3 md:top-4 md:right-4">
+                  <div className="bg-cyan-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
+                    <p className="text-[10px] md:text-xs font-bold">Bientôt</p>
+                    <p className="text-lg md:text-2xl font-black">dispo</p>
+                  </div>
+                </div>
+                {/* Dégradé en bas */}
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-cyan-50 to-transparent"></div>
+              </div>
+              <div className="p-8 md:p-10">
+                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🪟 Nettoyage Baie Vitrée</h3>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  Retrouvez une vue cristalline ! Laura nettoie vos baies vitrées, fenêtres et vérandas pour une luminosité parfaite dans votre intérieur.
+                </p>
+                <ul className="space-y-2 mb-4 text-sm text-gray-600">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Baies vitrées & grandes surfaces vitrées</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Fenêtres intérieures & extérieures</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Encadrements & rails nettoyés</li>
+                </ul>
+                <div className="bg-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-6">
+                  <p className="text-cyan-600 font-bold flex items-center gap-2">
+                    <Sparkles size={18} /> Service bientôt disponible
+                  </p>
+                  <p className="text-cyan-500 text-sm mt-1">Contactez-nous pour être informé du lancement</p>
+                </div>
+                <Button onClick={() => alert('Ce service sera bientôt disponible ! Contactez-nous pour être informé.')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Me tenir informé</Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
