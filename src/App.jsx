@@ -290,6 +290,48 @@ const App = () => {
                 <Button onClick={() => goToReservation('pro')} className="w-full !bg-emerald-600 hover:!bg-emerald-700">Demander une proposition Pro</Button>
               </div>
             </div>
+
+            <div className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500 md:col-span-2">
+              {/* Image en haut du module */}
+              <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
+                <img 
+                  src="https://ik.imagekit.io/bqla7nrgyf/printemps.jpg" 
+                  alt="Ménage Printanier" 
+                  className="w-full h-full object-cover object-center"
+                />
+                {/* Étoiles de propreté animées */}
+                <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">🌸</div>
+                <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">🌷</div>
+                <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
+                {/* Badge sur l'image */}
+                <div className="absolute top-3 right-3 md:top-4 md:right-4">
+                  <div className="bg-pink-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
+                    <p className="text-lg md:text-2xl font-black">-30%</p>
+                    <p className="text-[10px] md:text-xs font-bold">le 1er mois</p>
+                  </div>
+                </div>
+                {/* Dégradé en bas */}
+                <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-pink-50 to-transparent"></div>
+              </div>
+              <div className="p-8 md:p-10">
+                <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🌸 Ménage Printanier</h3>
+                <p className="text-gray-700 mb-4 leading-relaxed">
+                  Le printemps arrive ! Offrez à votre intérieur un grand nettoyage de saison. On s'occupe de tout : vitres, recoins oubliés, dépoussiérage en profondeur et fraîcheur retrouvée.
+                </p>
+                <ul className="space-y-2 mb-4 text-sm text-gray-600">
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Nettoyage en profondeur de toute la maison</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Vitres, plinthes & recoins oubliés</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Dépoussiérage complet & désinfection</li>
+                </ul>
+                <div className="bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-6">
+                  <p className="text-pink-600 font-bold flex items-center gap-2">
+                    <Sparkles size={18} /> 🎁 1ère heure offerte + -30% le 1er mois
+                  </p>
+                  <p className="text-pink-500 text-sm mt-1">Offre spéciale printemps 2026</p>
+                </div>
+                <Button onClick={() => goToReservation('ponctuel')} className="w-full !bg-pink-500 hover:!bg-pink-600">Réserver mon ménage de printemps</Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
