@@ -70,7 +70,7 @@ export const saveDemande = (wizardState) => {
     name: wizardState.details.name || '',
     phone: wizardState.details.phone || '',
     city: wizardState.details.city || '',
-    message: wizardState.details.message || '',
+    message: wizardState.details.comments || wizardState.details.message || '',
     
     // Service
     service: wizardState.service,
@@ -177,7 +177,7 @@ export const exportToCSV = () => {
     d.details?.companyName || '',
     d.details?.siret || '',
     d.details?.preferredSchedule || '',
-    d.message?.replace(/"/g, '""') || ''
+    (d.message || d.details?.comments || '').replace(/"/g, '""')
   ]);
   
   const csv = [

@@ -103,10 +103,10 @@ const translations = {
   },
   // Niveau de nettoyage terrasse
   cleanLevelTerrasse: {
-    'light': 'Léger (poussière, feuilles)',
-    'medium': 'Moyen (taches, mousse légère)',
-    'heavy': 'Intense (mousse épaisse, noir)',
-    'extreme': 'Très encrassé (karcher obligatoire)'
+    'light': 'Quelques salissures',
+    'medium': 'Mousse & traces vertes',
+    'deep': 'Bien encrassée',
+    'extreme': 'Jungle urbaine (karcher obligatoire)'
   },
   // Horaires préférés
   preferredSchedule: {
@@ -161,6 +161,21 @@ const translations = {
   residenceType: {
     'principal': 'Résidence principale (éligible 50%)',
     'secondaire': 'Résidence secondaire / Investissement'
+  },
+  // Surface ponctuel (wizard-level xs/sm/md/lg/xl)
+  surfacePonctuel: {
+    'xs': '< 30m² (Studio)',
+    'sm': '30-60m² (T2/T3)',
+    'md': '60-90m² (T3/T4)',
+    'lg': '90-120m² (T4/T5)',
+    'xl': '120m²+ (Grande maison)'
+  },
+  // État du logement ponctuel
+  cleanLevelPonctuel: {
+    'light': 'Plutôt propre',
+    'medium': 'Ça s\'accumule un peu',
+    'deep': 'Ça fait un moment…',
+    'extreme': 'Gros chantier en vue !'
   }
 };
 
@@ -619,6 +634,14 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
+                      {/* Surface wizard-level (ponctuel) */}
+                      {selectedDemande.surface && selectedDemande.service === 'ponctuel' && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">📐 Surface</span>
+                          <span className="font-medium">{translations.surfacePonctuel[selectedDemande.surface] || selectedDemande.surface}</span>
+                        </div>
+                      )}
+
                       {/* Surface vitres (depuis details) */}
                       {selectedDemande.details.surface && selectedDemande.service === 'vitres' && (
                         <div className="flex justify-between">
@@ -632,6 +655,14 @@ const AdminPage = ({ onBack }) => {
                         <div className="flex justify-between">
                           <span className="text-gray-500">🧽 Encrassement</span>
                           <span className="font-medium">{translations.cleanLevelTerrasse[selectedDemande.cleanLevel] || selectedDemande.cleanLevel}</span>
+                        </div>
+                      )}
+
+                      {/* État du logement ponctuel */}
+                      {selectedDemande.cleanLevel && selectedDemande.service === 'ponctuel' && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🧹 État du logement</span>
+                          <span className="font-medium">{translations.cleanLevelPonctuel[selectedDemande.cleanLevel] || selectedDemande.cleanLevel}</span>
                         </div>
                       )}
 
@@ -872,10 +903,10 @@ const AdminPage = ({ onBack }) => {
                 )}
 
                 {/* Message */}
-                {selectedDemande.message && (
+                {(selectedDemande.message || selectedDemande.details?.comments) && (
                   <div className="bg-gray-50 rounded-xl p-4 mb-4">
                     <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Message</h4>
-                    <p className="text-sm text-gray-700">{selectedDemande.message}</p>
+                    <p className="text-sm text-gray-700">{selectedDemande.message || selectedDemande.details?.comments}</p>
                   </div>
                 )}
 
@@ -1047,6 +1078,14 @@ const AdminPage = ({ onBack }) => {
                       </div>
                     )}
 
+                    {/* Surface Ponctuel */}
+                    {selectedDemande.surface && selectedDemande.service === 'ponctuel' && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">📐 Surface</span>
+                        <span className="font-medium">{translations.surfacePonctuel[selectedDemande.surface] || selectedDemande.surface}</span>
+                      </div>
+                    )}
+
                     {/* Surface Vitres */}
                     {selectedDemande.details.surface && selectedDemande.service === 'vitres' && (
                       <div className="flex justify-between">
@@ -1060,6 +1099,14 @@ const AdminPage = ({ onBack }) => {
                       <div className="flex justify-between">
                         <span className="text-gray-500">🧽 Encrassement</span>
                         <span className="font-medium">{translations.cleanLevelTerrasse[selectedDemande.cleanLevel] || selectedDemande.cleanLevel}</span>
+                      </div>
+                    )}
+
+                    {/* État du logement ponctuel */}
+                    {selectedDemande.cleanLevel && selectedDemande.service === 'ponctuel' && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🧹 État du logement</span>
+                        <span className="font-medium">{translations.cleanLevelPonctuel[selectedDemande.cleanLevel] || selectedDemande.cleanLevel}</span>
                       </div>
                     )}
 
@@ -1297,10 +1344,10 @@ const AdminPage = ({ onBack }) => {
               )}
 
               {/* Message */}
-              {selectedDemande.message && (
+              {(selectedDemande.message || selectedDemande.details?.comments) && (
                 <div className="bg-gray-50 rounded-xl p-4 mb-4">
                   <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Message</h4>
-                  <p className="text-sm text-gray-700">{selectedDemande.message}</p>
+                  <p className="text-sm text-gray-700">{selectedDemande.message || selectedDemande.details?.comments}</p>
                 </div>
               )}
 
