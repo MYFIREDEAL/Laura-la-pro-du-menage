@@ -516,24 +516,6 @@ const App = () => {
           Avantage Fiscal 50%
         </SectionTitle>
 
-        {/* Bandeau officiel État */}
-        <div className="bg-blue-900 text-white p-6 md:p-8 rounded-3xl shadow-lg mb-8 text-left">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="bg-white w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl">🇫🇷</span>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg">Dispositif officiel de l'État français</h3>
-              <p className="text-blue-200 text-sm">Article 199 sexdecies du Code Général des Impôts</p>
-            </div>
-          </div>
-          <p className="text-blue-100 leading-relaxed text-sm">
-            Le crédit d'impôt pour l'emploi d'un salarié à domicile est un dispositif légal garanti par l'État. 
-            Il s'applique à <strong className="text-white">tous les foyers</strong>, imposables ou non. 
-            Avec l'avance immédiate de l'URSSAF, vous ne payez que 50% dès la facture.
-          </p>
-        </div>
-
         <div className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-red-100 mb-8">
           <div className="bg-red-600 text-white inline-block px-8 py-4 rounded-3xl text-3xl font-black mb-8">
             - 50 %
@@ -542,7 +524,7 @@ const App = () => {
           <p className="text-gray-700 mb-8 text-lg">
             Que vous soyez imposable ou non, vous bénéficiez d'une remise de 50% immédiatement au moment du paiement de votre facture.
           </p>
-          <div className="grid md:grid-cols-2 gap-8 text-left">
+          <div className="grid md:grid-cols-2 gap-8 text-left mb-8">
             <div className="p-6 bg-red-50 rounded-2xl border border-red-100">
               <h4 className="font-bold mb-2 flex items-center gap-2 text-red-700"><CheckCircle2 size={18}/> Non Imposable ?</h4>
               <p className="text-sm text-gray-700 italic font-medium">Vous profitez quand même de la réduction ! L'État verse directement les 50% restants.</p>
@@ -551,6 +533,24 @@ const App = () => {
               <h4 className="font-bold mb-2 flex items-center gap-2"><CheckCircle2 size={18}/> Simplification</h4>
               <p className="text-sm text-gray-600">Fini d'attendre l'année suivante. C'est du pouvoir d'achat récupéré tout de suite.</p>
             </div>
+          </div>
+
+          {/* Bandeau officiel État - sous le bloc */}
+          <div className="bg-blue-900 text-white p-6 md:p-8 rounded-2xl text-left">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="bg-white w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                <span className="text-2xl">🇫🇷</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">Dispositif officiel de l'État français</h3>
+                <p className="text-blue-200 text-sm">Article 199 sexdecies du Code Général des Impôts</p>
+              </div>
+            </div>
+            <p className="text-blue-100 leading-relaxed text-sm">
+              Le crédit d'impôt pour l'emploi d'un salarié à domicile est un dispositif légal garanti par l'État. 
+              Il s'applique à <strong className="text-white">tous les foyers</strong>, imposables ou non. 
+              Avec l'avance immédiate de l'URSSAF, vous ne payez que 50% dès la facture.
+            </p>
           </div>
         </div>
 
@@ -1343,6 +1343,16 @@ const App = () => {
             <div className="text-sm text-gray-400">
               <h5 className="font-bold text-orange-400 uppercase text-xs mb-4">Légal</h5>
               <p>Crédit d'impôt immédiat sous réserve d'éligibilité. Agrément Services à la Personne.</p>
+            </div>
+            <div className="text-sm text-gray-400">
+              <h5 className="font-bold text-orange-400 uppercase text-xs mb-4">Avantage -50%</h5>
+              <p className="mb-2">Toutes nos prestations ouvrent droit au crédit d'impôt de 50% (Art. 199 sexdecies du CGI).</p>
+              <button 
+                onClick={() => setCurrentPage('fiscal')}
+                className="text-red-400 hover:text-red-300 font-semibold text-xs underline transition-colors"
+              >
+                En savoir plus →
+              </button>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
