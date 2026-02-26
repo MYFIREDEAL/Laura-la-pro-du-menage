@@ -128,7 +128,7 @@ const App = () => {
         </div>
       </section>
 
-      <section id="section-services" className="py-16 px-6 bg-white">
+      <section id="section-services" className="py-16 px-6 bg-white" style={{ scrollMarginTop: '80px' }}>
         <div className="max-w-6xl mx-auto">
           <SectionTitle subtitle="Des solutions professionnelles pour chaque aspect de votre vie.">
             Nos Univers de Service
@@ -916,7 +916,7 @@ const App = () => {
                 onClick={() => {
                   if (item.id === 'services') {
                     setCurrentPage('accueil');
-                    setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                    setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                   } else {
                     setCurrentPage(item.id);
                   }
@@ -945,7 +945,7 @@ const App = () => {
                     if (item.id === 'services') {
                       setCurrentPage('accueil');
                       setIsMenuOpen(false);
-                      setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                      setTimeout(() => document.getElementById('section-services')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                     } else {
                       setCurrentPage(item.id); 
                       setIsMenuOpen(false);
