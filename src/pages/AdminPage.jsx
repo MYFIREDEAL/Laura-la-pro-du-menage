@@ -37,6 +37,7 @@ const translations = {
     'vitres': 'Vitres',
     'poussiere': 'Poussière',
     'kitchen': 'Cuisine',
+    'bathroom': 'Salle de bain',
     'bathrooms': 'Salles de bain',
     'bedrooms': 'Chambres',
     'living': 'Salon',
@@ -62,7 +63,11 @@ const translations = {
     'accompagnement': 'Accompagnement courses',
     'pharmacie': 'Retrait pharmacie',
     'rdv': 'Accompagnement RDV',
-    'compagnie': 'Compagnie',
+    'compagnie': 'Moment de compagnie',
+    'medicaments': 'Aide médicaments',
+    'lecture': 'Lecture / courrier',
+    'plantes': 'Arrosage plantes',
+    'repas': 'Préparation repas léger',
     'shopping': 'Accompagnement courses',
     'pharmacy': 'Retrait pharmacie',
     'appointment': 'Accompagnement RDV',
@@ -122,6 +127,40 @@ const translations = {
     'products': 'Produits fournis',
     'windows': 'Nettoyage vitres',
     'shopping': 'Courses'
+  },
+  // Surface logement (régulier/ponctuel/seniors)
+  surfaceLogement: {
+    'S': '< 50m² (Studio/T1)',
+    'M': '50-80m² (T2/T3)',
+    'L': '80-120m² (T4/T5)',
+    'XL': '> 120m² (Grande maison)'
+  },
+  // Accès clés Airbnb
+  keyAccess: {
+    'keybox': 'Boîte à clés',
+    'handover': 'Remise en main propre',
+    'digital': 'Accès digital / code',
+    'onsite': 'Propriétaire sur place'
+  },
+  // Gestion du linge Airbnb
+  linenOption: {
+    'host': 'Fourni par le propriétaire',
+    'wash': 'À laver sur place',
+    'full': 'Gestion complète (lavage + séchage + mise en place)'
+  },
+  // Checklist Airbnb
+  checklist: {
+    'bathroom': 'Salle de bain',
+    'kitchen': 'Cuisine',
+    'beds': 'Lits & draps',
+    'trash': 'Poubelles',
+    'floors': 'Sols',
+    'dust': 'Poussière'
+  },
+  // Résidence Airbnb
+  residenceType: {
+    'principal': 'Résidence principale (éligible 50%)',
+    'secondaire': 'Résidence secondaire / Investissement'
   }
 };
 
@@ -564,6 +603,14 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
+                      {/* Surface logement (régulier / seniors) */}
+                      {selectedDemande.details.surface && ['regulier', 'seniors'].includes(selectedDemande.service) && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">📐 Surface</span>
+                          <span className="font-medium">{translations.surfaceLogement[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                        </div>
+                      )}
+
                       {/* Surface wizard-level (terrasse) */}
                       {selectedDemande.surface && selectedDemande.service === 'terrasse' && (
                         <div className="flex justify-between">
@@ -576,7 +623,7 @@ const AdminPage = ({ onBack }) => {
                       {selectedDemande.details.surface && selectedDemande.service === 'vitres' && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">📐 Surface vitrée</span>
-                          <span className="font-medium">{translations.surfacePro[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                          <span className="font-medium">{translations.surfaceLogement[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
                         </div>
                       )}
 
@@ -608,9 +655,63 @@ const AdminPage = ({ onBack }) => {
                       {selectedDemande.details.residenceType && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">🏡 Type résidence</span>
+                          <span className="font-medium">{translate('residenceType', selectedDemande.details.residenceType)}</span>
+                        </div>
+                      )}
+
+                      {/* Accès clés Airbnb */}
+                      {selectedDemande.details.keyAccess && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🔑 Accès logement</span>
+                          <span className="font-medium">{translate('keyAccess', selectedDemande.details.keyAccess)}</span>
+                        </div>
+                      )}
+
+                      {/* Code boîte à clés Airbnb */}
+                      {selectedDemande.details.keyboxCode && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🔐 Code boîte à clés</span>
+                          <span className="font-medium font-mono">{selectedDemande.details.keyboxCode}</span>
+                        </div>
+                      )}
+
+                      {/* Horaires turnover Airbnb */}
+                      {(selectedDemande.details.checkoutTime || selectedDemande.details.checkinTime) && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">⏰ Turnover</span>
                           <span className="font-medium">
-                            {selectedDemande.details.residenceType === 'main' ? 'Principale (50% éligible)' : 'Secondaire'}
+                            {selectedDemande.details.checkoutTime && `Départ ${selectedDemande.details.checkoutTime}`}
+                            {selectedDemande.details.checkoutTime && selectedDemande.details.checkinTime && ' → '}
+                            {selectedDemande.details.checkinTime && `Arrivée ${selectedDemande.details.checkinTime}`}
                           </span>
+                        </div>
+                      )}
+
+                      {/* Gestion du linge Airbnb */}
+                      {selectedDemande.details.linenOption && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🛏️ Linge</span>
+                          <span className="font-medium">{translate('linenOption', selectedDemande.details.linenOption)}</span>
+                        </div>
+                      )}
+
+                      {/* Photos Airbnb */}
+                      {selectedDemande.details.wantPhotos && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">📸 Photos fin prestation</span>
+                          <span className="font-medium text-blue-600">Oui</span>
+                        </div>
+                      )}
+
+                      {/* Checklist Airbnb */}
+                      {selectedDemande.details.checklist && selectedDemande.details.checklist.length > 0 && (
+                        <div className="pt-2 border-t border-blue-100">
+                          <span className="text-gray-500 block mb-1">✅ Checklist priorités</span>
+                          <div className="flex flex-wrap gap-1">
+                            {translateArray('checklist', selectedDemande.details.checklist).map((c, i) => (
+                              <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{c}</span>
+                            ))}
+                          </div>
                         </div>
                       )}
 
@@ -738,6 +839,23 @@ const AdminPage = ({ onBack }) => {
                             {translateArray('seniorServices', selectedDemande.details.seniorServices).map((s, i) => (
                               <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{s}</span>
                             ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Contact proche aidant (Seniors) */}
+                      {(selectedDemande.details.carerName || selectedDemande.details.carerPhone) && (
+                        <div className="pt-2 border-t border-blue-100">
+                          <span className="text-gray-500 block mb-1">👨‍👩‍👦 Proche aidant</span>
+                          <div className="space-y-1">
+                            {selectedDemande.details.carerName && (
+                              <p className="text-gray-700 text-sm">{selectedDemande.details.carerName}</p>
+                            )}
+                            {selectedDemande.details.carerPhone && (
+                              <a href={`tel:${selectedDemande.details.carerPhone}`} className="text-orange-600 text-sm font-medium hover:underline">
+                                📞 {selectedDemande.details.carerPhone}
+                              </a>
+                            )}
                           </div>
                         </div>
                       )}
@@ -913,6 +1031,14 @@ const AdminPage = ({ onBack }) => {
                       </div>
                     )}
 
+                    {/* Surface logement (régulier / seniors) */}
+                    {selectedDemande.details.surface && ['regulier', 'seniors'].includes(selectedDemande.service) && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">📐 Surface</span>
+                        <span className="font-medium">{translations.surfaceLogement[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                      </div>
+                    )}
+
                     {/* Surface Terrasse */}
                     {selectedDemande.surface && selectedDemande.service === 'terrasse' && (
                       <div className="flex justify-between">
@@ -925,7 +1051,7 @@ const AdminPage = ({ onBack }) => {
                     {selectedDemande.details.surface && selectedDemande.service === 'vitres' && (
                       <div className="flex justify-between">
                         <span className="text-gray-500">📐 Surface vitrée</span>
-                        <span className="font-medium">{translations.surfacePro[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
+                        <span className="font-medium">{translations.surfaceLogement[selectedDemande.details.surface] || selectedDemande.details.surface}</span>
                       </div>
                     )}
 
@@ -950,6 +1076,70 @@ const AdminPage = ({ onBack }) => {
                       <div className="flex justify-between">
                         <span className="text-gray-500">🏠 Logement</span>
                         <span className="font-medium">{translate('homeType', selectedDemande.details.homeType)}</span>
+                      </div>
+                    )}
+
+                    {/* Résidence Airbnb */}
+                    {selectedDemande.details.residenceType && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🏡 Type résidence</span>
+                        <span className="font-medium">{translate('residenceType', selectedDemande.details.residenceType)}</span>
+                      </div>
+                    )}
+
+                    {/* Accès clés Airbnb */}
+                    {selectedDemande.details.keyAccess && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🔑 Accès logement</span>
+                        <span className="font-medium">{translate('keyAccess', selectedDemande.details.keyAccess)}</span>
+                      </div>
+                    )}
+
+                    {/* Code boîte à clés Airbnb */}
+                    {selectedDemande.details.keyboxCode && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🔐 Code boîte à clés</span>
+                        <span className="font-medium font-mono">{selectedDemande.details.keyboxCode}</span>
+                      </div>
+                    )}
+
+                    {/* Horaires turnover Airbnb */}
+                    {(selectedDemande.details.checkoutTime || selectedDemande.details.checkinTime) && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">⏰ Turnover</span>
+                        <span className="font-medium">
+                          {selectedDemande.details.checkoutTime && `Départ ${selectedDemande.details.checkoutTime}`}
+                          {selectedDemande.details.checkoutTime && selectedDemande.details.checkinTime && ' → '}
+                          {selectedDemande.details.checkinTime && `Arrivée ${selectedDemande.details.checkinTime}`}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Gestion du linge Airbnb */}
+                    {selectedDemande.details.linenOption && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🛏️ Linge</span>
+                        <span className="font-medium">{translate('linenOption', selectedDemande.details.linenOption)}</span>
+                      </div>
+                    )}
+
+                    {/* Photos Airbnb */}
+                    {selectedDemande.details.wantPhotos && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">📸 Photos fin prestation</span>
+                        <span className="font-medium text-blue-600">Oui</span>
+                      </div>
+                    )}
+
+                    {/* Checklist Airbnb */}
+                    {selectedDemande.details.checklist?.length > 0 && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">✅ Checklist priorités</span>
+                        <div className="flex flex-wrap gap-1">
+                          {translateArray('checklist', selectedDemande.details.checklist).map((c, i) => (
+                            <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{c}</span>
+                          ))}
+                        </div>
                       </div>
                     )}
 
@@ -1074,6 +1264,23 @@ const AdminPage = ({ onBack }) => {
                           {translateArray('seniorServices', selectedDemande.details.seniorServices).map((s, i) => (
                             <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{s}</span>
                           ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Contact proche aidant (Seniors) */}
+                    {(selectedDemande.details.carerName || selectedDemande.details.carerPhone) && (
+                      <div className="pt-2 border-t border-blue-100">
+                        <span className="text-gray-500 block mb-1">👨‍👩‍👦 Proche aidant</span>
+                        <div className="space-y-1">
+                          {selectedDemande.details.carerName && (
+                            <p className="text-gray-700 text-sm">{selectedDemande.details.carerName}</p>
+                          )}
+                          {selectedDemande.details.carerPhone && (
+                            <a href={`tel:${selectedDemande.details.carerPhone}`} className="text-orange-600 text-sm font-medium hover:underline">
+                              📞 {selectedDemande.details.carerPhone}
+                            </a>
+                          )}
                         </div>
                       </div>
                     )}
