@@ -31,7 +31,10 @@ const Step4Contact = ({
     ponctuel: 'Ménage ponctuel',
     seniors: 'Accompagnement Seniors',
     airbnb: 'Airbnb & Gîtes',
-    pro: 'Bureaux & Copropriétés'
+    pro: 'Bureaux & Copropriétés',
+    repassage: 'Repassage à domicile',
+    vitres: 'Nettoyage Baie Vitrée',
+    terrasse: 'Nettoyage de Terrasse'
   };
 
   const frequencyLabels = {
@@ -182,6 +185,9 @@ const Step4Contact = ({
               {wizardState.service === 'seniors' && '❤️'}
               {wizardState.service === 'airbnb' && '🔑'}
               {wizardState.service === 'pro' && '🏢'}
+              {wizardState.service === 'repassage' && '👔'}
+              {wizardState.service === 'vitres' && '🪟'}
+              {wizardState.service === 'terrasse' && '☀️'}
             </div>
             <div>
               <p className="text-xs text-gray-500">Service choisi</p>
