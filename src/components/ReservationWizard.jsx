@@ -190,8 +190,15 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   // ═══════════════════════════════════════════════════════════════════
   
   const calculateEstimate = () => {
-    // TODO: Remplacer par import depuis pricingConfig.js
-    const baseRate = 25; // €/h placeholder
+    // Tarifs par service (€/h)
+    const rates = {
+      regulier: 29,
+      ponctuel: 34,
+      seniors: 29,
+      airbnb: 29,
+      pro: 29,
+    };
+    const baseRate = rates[wizardState.service] || 29;
     
     if (!wizardState.hours || !wizardState.frequency) {
       return { subtotal: 0, promo: 0, afterPromo: 0, finalPrice: 0 };
