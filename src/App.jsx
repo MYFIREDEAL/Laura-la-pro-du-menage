@@ -128,10 +128,14 @@ const App = () => {
         </div>
       </section>
 
-      {/* Barre de navigation rapide des services */}
-      <section className="py-6 px-4 bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
+      <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <SectionTitle subtitle="Des solutions professionnelles pour chaque aspect de votre vie.">
+            Nos Univers de Service
+          </SectionTitle>
+
+          {/* Barre de navigation rapide des services */}
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
             {[
               { id: 'service-regulier', label: 'Régulier', emoji: '🏠', color: 'bg-orange-500' },
               { id: 'service-seniors', label: 'Seniors', emoji: '🧡', color: 'bg-orange-400' },
@@ -145,21 +149,13 @@ const App = () => {
               <button
                 key={item.id}
                 onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-white font-bold text-sm whitespace-nowrap shrink-0 shadow-md hover:scale-105 active:scale-95 transition-all duration-200 ${item.color}`}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-white font-bold text-sm whitespace-nowrap shadow-md hover:scale-105 active:scale-95 transition-all duration-200 ${item.color}`}
               >
                 <span>{item.emoji}</span>
                 <span>{item.label}</span>
               </button>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="py-16 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <SectionTitle subtitle="Des solutions professionnelles pour chaque aspect de votre vie.">
-            Nos Univers de Service
-          </SectionTitle>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div id="service-regulier" className="relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
