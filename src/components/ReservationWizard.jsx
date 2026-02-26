@@ -428,7 +428,12 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     return (
       <button
         onClick={() => {
-          updateState({ service: service.id });
+          // Si ponctuel, on pré-sélectionne la fréquence 'once' automatiquement
+          if (service.id === 'ponctuel') {
+            updateState({ service: service.id, frequency: 'once' });
+          } else {
+            updateState({ service: service.id, frequency: null });
+          }
           // Auto-avance vers étape 2 après sélection
           setTimeout(() => updateState({ step: 2 }), 200);
         }}
@@ -693,17 +698,24 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
           <Calendar size={20} className="text-orange-500" />
           Fréquence
         </h3>
-        <div className="grid grid-cols-2 gap-3">
-          {frequencies.map(freq => (
-            <ChoiceButton 
-              key={freq.id}
-              item={freq}
-              isSelected={wizardState.frequency === freq.id}
-              onClick={() => updateState({ frequency: freq.id })}
-              type="frequency"
-            />
-          ))}
-        </div>
+        {wizardState.service === 'ponctuel' ? (
+          /* Service ponctuel : fréquence figée */
+          <div className="p-4 rounded-xl border-2 border-orange-500 bg-orange-50 text-center">
+            <span className="font-bold text-orange-700">Ponctuel (1 seule fois)</span>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {frequencies.map(freq => (
+              <ChoiceButton 
+                key={freq.id}
+                item={freq}
+                isSelected={wizardState.frequency === freq.id}
+                onClick={() => updateState({ frequency: freq.id })}
+                type="frequency"
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Durée */}
