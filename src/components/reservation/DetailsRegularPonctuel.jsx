@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Sparkles, Key, CheckCircle2, Shirt, Package, Glasses } from 'lucide-react';
+import { Home, Sparkles, CheckCircle2, Shirt, Package, Glasses } from 'lucide-react';
 
 /**
  * DetailsRegularPonctuel - Détails spécifiques pour ménage régulier / ponctuel
@@ -113,30 +113,6 @@ const DetailsRegularPonctuel = ({ details, updateDetails, options, toggleOption,
               </button>
             );
           })}
-        </div>
-      </div>
-
-      {/* Accès au logement */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          <Key size={16} className="inline mr-1" />
-          Accès au logement
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <input
-            type="text"
-            value={details.accessCode || ''}
-            onChange={(e) => updateDetails({ accessCode: e.target.value })}
-            placeholder="Digicode / interphone"
-            className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors"
-          />
-          <input
-            type="text"
-            value={details.floor || ''}
-            onChange={(e) => updateDetails({ floor: e.target.value })}
-            placeholder="Étage (ex: 3ème sans ascenseur)"
-            className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors"
-          />
         </div>
       </div>
 

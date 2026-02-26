@@ -176,6 +176,12 @@ const translations = {
     'medium': 'Ça s\'accumule un peu',
     'deep': 'Ça fait un moment…',
     'extreme': 'Gros chantier en vue !'
+  },
+  // Volume de repassage
+  ironingVolume: {
+    'small': 'Petit panier (1-2 pers.)',
+    'medium': 'Panier moyen (3-4 pers.)',
+    'large': 'Grand panier (5+ pers.)'
   }
 };
 
@@ -814,10 +820,10 @@ const AdminPage = ({ onBack }) => {
                         </div>
                       )}
 
-                      {/* Étage */}
+                      {/* Étage / Indications d'accès */}
                       {selectedDemande.details.floor && (
                         <div className="flex justify-between">
-                          <span className="text-gray-500">🏢 Étage</span>
+                          <span className="text-gray-500">{selectedDemande.service === 'terrasse' ? '📍 Accès terrasse' : '🏢 Étage'}</span>
                           <span className="font-medium">{selectedDemande.details.floor}</span>
                         </div>
                       )}
@@ -871,6 +877,14 @@ const AdminPage = ({ onBack }) => {
                               <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{s}</span>
                             ))}
                           </div>
+                        </div>
+                      )}
+
+                      {/* Volume de repassage */}
+                      {selectedDemande.details.ironingVolume && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">🧺 Volume de linge</span>
+                          <span className="font-medium">{translations.ironingVolume[selectedDemande.details.ironingVolume] || selectedDemande.details.ironingVolume}</span>
                         </div>
                       )}
 
@@ -1258,10 +1272,10 @@ const AdminPage = ({ onBack }) => {
                       </div>
                     )}
 
-                    {/* Étage */}
+                    {/* Étage / Indications d'accès */}
                     {selectedDemande.details.floor && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">🏢 Étage</span>
+                        <span className="text-gray-500">{selectedDemande.service === 'terrasse' ? '📍 Accès terrasse' : '🏢 Étage'}</span>
                         <span className="font-medium">{selectedDemande.details.floor}</span>
                       </div>
                     )}
@@ -1312,6 +1326,14 @@ const AdminPage = ({ onBack }) => {
                             <span key={i} className="bg-white px-2 py-0.5 rounded text-xs">{s}</span>
                           ))}
                         </div>
+                      </div>
+                    )}
+
+                    {/* Volume de repassage */}
+                    {selectedDemande.details.ironingVolume && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">🧺 Volume de linge</span>
+                        <span className="font-medium">{translations.ironingVolume[selectedDemande.details.ironingVolume] || selectedDemande.details.ironingVolume}</span>
                       </div>
                     )}
 

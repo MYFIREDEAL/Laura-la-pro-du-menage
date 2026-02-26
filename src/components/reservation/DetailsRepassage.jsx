@@ -1,18 +1,26 @@
 import React from 'react';
-import { Key, CheckCircle2, Package } from 'lucide-react';
+import { CheckCircle2, Package, Shirt } from 'lucide-react';
 
 /**
  * DetailsRepassage - Détails spécifiques pour le repassage à domicile
  * 
  * Champs :
- * - Accès au logement (digicode, étage)
- * - Seule option payante : Produits fournis par Laura (+3€/venue)
+ * - Volume de linge à repasser (petit / moyen / grand panier)
+ * - Option : Matériel fourni par Laura (table + fer)
+ * 
+ * Note : Accès au logement déplacé en Step 4 (Coordonnées)
  */
 
 const DetailsRepassage = ({ details, updateDetails, options, toggleOption }) => {
 
+  const volumeOptions = [
+    { id: 'small', label: 'Petit panier', description: '1-2 personnes', icon: '👕' },
+    { id: 'medium', label: 'Panier moyen', description: '3-4 personnes', icon: '👔' },
+    { id: 'large', label: 'Grand panier', description: '5+ personnes / famille', icon: '🧺' },
+  ];
+
   const optionsList = [
-    { id: 'products', label: 'Produits fournis par Laura', icon: Package, extra: '+3€/venue' },
+    { id: 'products', label: 'Matériel fourni par Laura (table + fer)', icon: Shirt, extra: '+3€/venue' },
   ];
 
   return (
@@ -21,34 +29,35 @@ const DetailsRepassage = ({ details, updateDetails, options, toggleOption }) => 
         👔 Détails du repassage
       </h3>
 
-      {/* Accès au logement */}
+      {/* Volume de linge */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          <Key size={16} className="inline mr-1" />
-          Accès au logement
+          🧺 Volume de linge à repasser
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <input
-            type="text"
-            value={details.accessCode || ''}
-            onChange={(e) => updateDetails({ accessCode: e.target.value })}
-            placeholder="Digicode / interphone"
-            className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors"
-          />
-          <input
-            type="text"
-            value={details.floor || ''}
-            onChange={(e) => updateDetails({ floor: e.target.value })}
-            placeholder="Étage (ex: 3ème sans ascenseur)"
-            className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors"
-          />
+        <div className="grid grid-cols-3 gap-3">
+          {volumeOptions.map(opt => (
+            <button
+              key={opt.id}
+              type="button"
+              onClick={() => updateDetails({ ironingVolume: opt.id })}
+              className={`p-3 rounded-xl border-2 text-center transition-all duration-200 ${
+                details.ironingVolume === opt.id
+                  ? 'bg-orange-50 border-orange-400 text-orange-700'
+                  : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300'
+              }`}
+            >
+              <span className="text-2xl block mb-1">{opt.icon}</span>
+              <span className="font-bold block text-sm">{opt.label}</span>
+              <span className="text-xs text-gray-500">{opt.description}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Option supplémentaire : produits fournis uniquement */}
+      {/* Option supplémentaire : matériel fourni */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          🧹 Options supplémentaires
+          👔 Options supplémentaires
         </label>
         <div className="space-y-2">
           {optionsList.map(option => {

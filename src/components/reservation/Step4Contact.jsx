@@ -1,13 +1,14 @@
 import React from 'react';
-import { ArrowLeft, Phone, MapPin, MessageSquare, User, CheckCircle2, Sparkles, Clock, Calendar } from 'lucide-react';
+import { ArrowLeft, Phone, MapPin, MessageSquare, User, CheckCircle2, Sparkles, Clock, Calendar, Key } from 'lucide-react';
 
 /**
- * Step4Contact - Étape 4 : Coordonnées + Validation finale
+ * Step4Contact - Étape 4 : Coordonnées + Accès + Validation finale
  * 
  * Champs :
  * - Prénom
  * - Téléphone (obligatoire)
  * - Ville / Code postal
+ * - Accès au logement (digicode + étage) — sauf Airbnb & Pro qui gèrent l'accès en Step3
  * - Commentaires
  * - Bloc avantage fiscal
  * - Bouton validation
@@ -21,6 +22,9 @@ const Step4Contact = ({
   onSubmit
 }) => {
   const { details } = wizardState;
+
+  // Services qui gèrent l'accès dans leur propre formulaire (Step 3)
+  const servicesWithOwnAccess = ['airbnb', 'pro'];
 
   // ═══════════════════════════════════════════════════════════════════
   // TRADUCTIONS
@@ -145,6 +149,32 @@ const Step4Contact = ({
             className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors resize-none"
           />
         </div>
+
+        {/* Accès au logement — affiché pour tous sauf Airbnb & Pro */}
+        {!servicesWithOwnAccess.includes(wizardState.service) && (
+          <div className="pt-2">
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              <Key size={14} className="inline mr-1" />
+              {wizardState.service === 'terrasse' ? 'Accès à la terrasse' : 'Accès au logement'}
+            </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <input
+                type="text"
+                value={details.accessCode || ''}
+                onChange={(e) => updateDetails({ accessCode: e.target.value })}
+                placeholder={wizardState.service === 'terrasse' ? 'Code portail / interphone' : 'Digicode / interphone'}
+                className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors"
+              />
+              <input
+                type="text"
+                value={details.floor || ''}
+                onChange={(e) => updateDetails({ floor: e.target.value })}
+                placeholder={wizardState.service === 'terrasse' ? 'Indications d\'accès (ex: par le jardin)' : 'Étage (ex: 3ème sans ascenseur)'}
+                className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none transition-colors"
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bloc avantage fiscal */}

@@ -1,13 +1,14 @@
 import React from 'react';
-import { Home, Key, CheckCircle2, Package } from 'lucide-react';
+import { Home, CheckCircle2, Package } from 'lucide-react';
 
 /**
  * DetailsVitres - Détails spécifiques pour le nettoyage de baies vitrées
  * 
  * Champs :
- * - Surface approximative (S/M/L/XL)
- * - Accès au logement (digicode, étage)
+ * - Surface approximative (S/M/L/XL) — pour estimer le nombre de baies
  * - Seule option payante : Produits fournis par Laura (+3€/venue)
+ * 
+ * Note : Accès au logement déplacé en Step 4 (Coordonnées)
  */
 
 const DetailsVitres = ({ details, updateDetails, options, toggleOption }) => {
@@ -33,7 +34,7 @@ const DetailsVitres = ({ details, updateDetails, options, toggleOption }) => {
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
           <Home size={16} className="inline mr-1" />
-          Surface approximative du logement
+          Surface du logement <span className="text-gray-400 font-normal">(permet d'estimer le nombre de vitres)</span>
         </label>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {surfaceOptions.map(opt => (
@@ -54,34 +55,10 @@ const DetailsVitres = ({ details, updateDetails, options, toggleOption }) => {
         </div>
       </div>
 
-      {/* Accès au logement */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-3">
-          <Key size={16} className="inline mr-1" />
-          Accès au logement
-        </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <input
-            type="text"
-            value={details.accessCode || ''}
-            onChange={(e) => updateDetails({ accessCode: e.target.value })}
-            placeholder="Digicode / interphone"
-            className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-400 focus:outline-none transition-colors"
-          />
-          <input
-            type="text"
-            value={details.floor || ''}
-            onChange={(e) => updateDetails({ floor: e.target.value })}
-            placeholder="Étage (ex: 3ème sans ascenseur)"
-            className="px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-400 focus:outline-none transition-colors"
-          />
-        </div>
-      </div>
-
       {/* Option supplémentaire : produits fournis uniquement */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-3">
-          🧹 Options supplémentaires
+          � Options supplémentaires
         </label>
         <div className="space-y-2">
           {optionsList.map(option => {
