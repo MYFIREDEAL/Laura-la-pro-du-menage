@@ -49,10 +49,10 @@ const DetailsSeniors = ({ details, updateDetails, options, toggleOption }) => {
 
   // Options PAYANTES (identiques au ménage + courses)
   const optionsPayantes = [
-    { id: 'ironing', label: 'Repassage', icon: Shirt, extra: '+5€/h' },
+    { id: 'ironing', label: 'Repassage', icon: Shirt, extra: '+5€/venue' },
     { id: 'shopping', label: 'Faire les courses', icon: ShoppingCart, extra: '+10€/sortie' },
-    { id: 'products', label: 'Produits fournis par Laura', icon: Package, extra: '+5€' },
-    { id: 'windows', label: 'Vitres', icon: Glasses, extra: '+5€' },
+    { id: 'products', label: 'Produits fournis par Laura', icon: Package, extra: '+3€/venue' },
+    { id: 'windows', label: 'Vitres', icon: Glasses, extra: '+5€/venue' },
   ];
 
   // ═══════════════════════════════════════════════════════════════════

@@ -207,13 +207,13 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     const hours = wizardState.hours;
     const freq = selectedFrequency?.multiplier || 1;
     
-    // Calcul options
-    let optionsExtra = 0;
-    if (wizardState.options.ironing) optionsExtra += 5 * hours;
-    if (wizardState.options.products) optionsExtra += 5;
-    if (wizardState.options.windows) optionsExtra += 5;
+    // Calcul options (par venue, pas par heure)
+    let optionsPerVenue = 0;
+    if (wizardState.options.ironing) optionsPerVenue += 5;
+    if (wizardState.options.products) optionsPerVenue += 3;
+    if (wizardState.options.windows) optionsPerVenue += 5;
 
-    const subtotal = (baseRate * hours * freq) + optionsExtra;
+    const subtotal = (baseRate * hours * freq) + (optionsPerVenue * freq);
     
     // Promo selon service :
     // - Airbnb & Pro : seulement 30% le 1er mois (pas de 1ère heure offerte)

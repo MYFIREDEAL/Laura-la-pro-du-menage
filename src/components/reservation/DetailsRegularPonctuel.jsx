@@ -33,9 +33,9 @@ const DetailsRegularPonctuel = ({ details, updateDetails, options, toggleOption 
   ];
 
   const optionsList = [
-    { id: 'ironing', label: 'Repassage', icon: Shirt, extra: '+5€/h' },
-    { id: 'products', label: 'Produits fournis par Laura', icon: Package, extra: '+5€' },
-    { id: 'windows', label: 'Vitres', icon: Glasses, extra: '+5€' },
+    { id: 'ironing', label: 'Repassage', icon: Shirt, extra: '+5€/venue' },
+    { id: 'products', label: 'Produits fournis par Laura', icon: Package, extra: '+3€/venue' },
+    { id: 'windows', label: 'Vitres', icon: Glasses, extra: '+5€/venue' },
   ];
 
   // ═══════════════════════════════════════════════════════════════════
