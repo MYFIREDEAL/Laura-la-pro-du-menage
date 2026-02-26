@@ -359,6 +359,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     if (wizardState.options.ironing) optionsPerVenue += 5;
     if (wizardState.options.products) optionsPerVenue += 3;
     if (wizardState.options.windows) optionsPerVenue += 5;
+    if (wizardState.options.shopping) optionsPerVenue += 10;
 
     const subtotal = (baseRate * hours * freq) + (optionsPerVenue * freq);
     
@@ -754,6 +755,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               {wizardState.options.ironing && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Repassage</span>}
               {wizardState.options.products && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Produits par Laura</span>}
               {wizardState.options.windows && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Vitres</span>}
+              {wizardState.options.shopping && <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">Courses (+10€)</span>}
             </div>
           </div>
         )}
