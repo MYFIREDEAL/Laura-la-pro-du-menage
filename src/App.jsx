@@ -496,7 +496,11 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Démoussage & traitement anti-mousse</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Nettoyage du mobilier de jardin</li>
                 </ul>
-                <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6">
+                <div className="relative bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6">
+                  <div className="absolute -top-3 -right-3 bg-amber-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
+                    <p className="text-sm">-30%</p>
+                    <p className="text-[9px]">1er mois</p>
+                  </div>
                   <p className="text-amber-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> Service bientôt disponible
                   </p>
