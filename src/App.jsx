@@ -721,7 +721,7 @@ const App = () => {
           Notre Histoire
         </SectionTitle>
 
-        {/* Section 1 : La Rencontre */}
+        {/* Section 1 : Laura */}
         <div className="bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-gray-100 mb-12">
           <div className="flex flex-col md:flex-row gap-8 items-center mb-8">
             <img 
@@ -731,10 +731,11 @@ const App = () => {
             />
             <div>
               <h3 className="text-2xl font-bold mb-2">Laura, passionnée du ménage</h3>
-              <p className="text-sm text-red-600 font-semibold mb-4 italic">Une rencontre qui a tout changé</p>
+              <p className="text-sm text-red-600 font-semibold mb-4 italic">Une vocation devenue mission</p>
               <p className="text-gray-600 leading-relaxed">
-                Tout a commencé par une rencontre simple : Laura intervenait chez moi par l'intermédiaire d'une société de ménage classique. 
-                Travailleuse, rigoureuse, toujours souriante — Laura était tout simplement <strong>exceptionnelle</strong> dans son métier.
+                Pendant des années, Laura a travaillé pour des sociétés de ménage classiques. 
+                Travailleuse, rigoureuse, toujours souriante — elle était tout simplement <strong>exceptionnelle</strong> dans son métier. 
+                Mais quelque chose n'allait pas.
               </p>
             </div>
           </div>
@@ -749,16 +750,17 @@ const App = () => {
             <h3 className="text-2xl font-bold text-red-700">Le Déclic</h3>
           </div>
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
-            Un jour, j'ai découvert combien Laura gagnait réellement pour tout ce travail remarquable. 
-            <strong className="text-red-600"> J'étais sidéré.</strong>
+            Un jour, Laura a pris conscience d'une réalité révoltante : malgré son dévouement, malgré la qualité de son travail, 
+            malgré les heures passées à rendre chaque intérieur impeccable… 
+            <strong className="text-red-600"> elle était sous-payée.</strong>
           </p>
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
-            Comment une professionnelle aussi dévouée et talentueuse pouvait-elle être si peu valorisée ? 
-            Les grandes sociétés de ménage facturent cher aux clients… mais reversent une misère à celles et ceux qui font réellement le travail.
+            Les grandes sociétés de ménage facturent cher aux clients… mais reversent une misère à celles et ceux qui font réellement le travail. 
+            Laura a refusé d'accepter cette injustice plus longtemps.
           </p>
           <div className="bg-white/70 p-6 rounded-2xl border border-red-200 mt-6">
             <p className="text-red-700 font-semibold text-center text-lg italic">
-              « Ce jour-là, j'ai compris qu'il fallait changer les choses. Pas demain. Maintenant. »
+              « J'en avais assez. Je méritais mieux, et mes collègues aussi. Il fallait changer les choses. »
             </p>
           </div>
         </div>
@@ -772,11 +774,11 @@ const App = () => {
             <h3 className="text-2xl font-bold text-emerald-700">La Naissance de Laura la Pro du Ménage</h3>
           </div>
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
-            Avec Laura, nous avons décidé de créer notre propre entreprise. Pas une société de plus — 
+            Laura a décidé de créer sa propre entreprise. Pas une société de plus — 
             <strong>une entreprise avec des valeurs</strong>.
           </p>
           <p className="text-gray-700 leading-relaxed text-lg mb-6">
-            Notre mission est double :
+            Sa mission est double :
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white/70 p-6 rounded-2xl border border-emerald-200">
