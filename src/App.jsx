@@ -515,7 +515,26 @@ const App = () => {
         <SectionTitle subtitle="Moitié prix sur toutes vos prestations de ménage.">
           Avantage Fiscal 50%
         </SectionTitle>
-        <div className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-red-100">
+
+        {/* Bandeau officiel État */}
+        <div className="bg-blue-900 text-white p-6 md:p-8 rounded-3xl shadow-lg mb-8 text-left">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="bg-white w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl">🇫🇷</span>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg">Dispositif officiel de l'État français</h3>
+              <p className="text-blue-200 text-sm">Article 199 sexdecies du Code Général des Impôts</p>
+            </div>
+          </div>
+          <p className="text-blue-100 leading-relaxed text-sm">
+            Le crédit d'impôt pour l'emploi d'un salarié à domicile est un dispositif légal garanti par l'État. 
+            Il s'applique à <strong className="text-white">tous les foyers</strong>, imposables ou non. 
+            Avec l'avance immédiate de l'URSSAF, vous ne payez que 50% dès la facture.
+          </p>
+        </div>
+
+        <div className="bg-white p-8 md:p-12 rounded-[3rem] shadow-xl border border-red-100 mb-8">
           <div className="bg-red-600 text-white inline-block px-8 py-4 rounded-3xl text-3xl font-black mb-8">
             - 50 %
           </div>
@@ -531,6 +550,45 @@ const App = () => {
             <div className="p-6 bg-gray-50 rounded-2xl border border-gray-200">
               <h4 className="font-bold mb-2 flex items-center gap-2"><CheckCircle2 size={18}/> Simplification</h4>
               <p className="text-sm text-gray-600">Fini d'attendre l'année suivante. C'est du pouvoir d'achat récupéré tout de suite.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Exemple concret */}
+        <div className="bg-white p-8 md:p-10 rounded-3xl shadow-lg border border-emerald-100 mb-8 text-left">
+          <h3 className="text-xl font-bold mb-6 text-center">💡 Exemple concret</h3>
+          <div className="grid md:grid-cols-3 gap-6 text-center">
+            <div className="p-4 bg-gray-50 rounded-2xl">
+              <p className="text-sm text-gray-500 mb-1">Prix de la prestation</p>
+              <p className="text-2xl font-black text-gray-800">30 €</p>
+            </div>
+            <div className="p-4 bg-red-50 rounded-2xl">
+              <p className="text-sm text-gray-500 mb-1">Avantage fiscal</p>
+              <p className="text-2xl font-black text-red-600">- 15 €</p>
+            </div>
+            <div className="p-4 bg-emerald-50 rounded-2xl">
+              <p className="text-sm text-gray-500 mb-1">Vous payez réellement</p>
+              <p className="text-2xl font-black text-emerald-600">15 €</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Source officielle en bas */}
+        <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200 text-left">
+          <div className="flex items-start gap-3">
+            <ShieldCheck size={24} className="text-blue-700 flex-shrink-0 mt-1" />
+            <div>
+              <p className="font-bold text-blue-900 mb-1">Source officielle</p>
+              <p className="text-sm text-blue-800 leading-relaxed">
+                Ce dispositif est encadré par l'<strong>URSSAF</strong> et le <strong>Ministère de l'Économie</strong>. 
+                Pour en savoir plus, consultez le site officiel : 
+                <a href="https://www.service-public.fr/particuliers/vosdroits/F12" target="_blank" rel="noopener noreferrer" className="underline font-semibold ml-1">
+                  service-public.fr
+                </a>
+              </p>
+              <p className="text-xs text-blue-600 mt-2 italic">
+                Laura la Pro du Ménage est une entreprise déclarée et agréée services à la personne. Toutes nos prestations ouvrent droit au crédit d'impôt de 50%.
+              </p>
             </div>
           </div>
         </div>
