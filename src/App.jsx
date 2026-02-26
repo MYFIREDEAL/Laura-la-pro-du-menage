@@ -128,7 +128,7 @@ const App = () => {
         </div>
       </section>
 
-      <section id="section-services" className="py-16 px-6 bg-white" style={{ scrollMarginTop: '80px' }}>
+      <section id="section-services" className="py-16 px-6 bg-white" style={{ scrollMarginTop: '150px' }}>
         <div className="max-w-6xl mx-auto">
           <SectionTitle subtitle="Des solutions professionnelles pour chaque aspect de votre vie.">
             Nos Univers de Service
