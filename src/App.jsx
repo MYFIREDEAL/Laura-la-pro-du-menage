@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import ReservationWizard from './components/ReservationWizard';
 import AdminPage from './pages/AdminPage';
+import { saveCandidature } from './lib/candidaturesStorage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('accueil');
@@ -982,16 +983,17 @@ const App = () => {
   const [recrutementForm, setRecrutementForm] = useState({ prenom: '', tel: '', email: '', departement: '' });
   const [recrutementSent, setRecrutementSent] = useState(false);
 
-  const handleRecrutementSubmit = (e) => {
+  const handleRecrutementSubmit = async (e) => {
     e.preventDefault();
-    // Envoyer par mail ou stocker
-    const subject = encodeURIComponent(`Candidature - ${recrutementForm.prenom} (${recrutementForm.departement})`);
-    const body = encodeURIComponent(
-      `Nouvelle candidature !\n\nPrénom : ${recrutementForm.prenom}\nTéléphone : ${recrutementForm.tel}\nEmail : ${recrutementForm.email}\nDépartement : ${recrutementForm.departement}`
-    );
-    window.location.href = `mailto:contact@laura-menage.fr?subject=${subject}&body=${body}`;
-    setRecrutementSent(true);
-    setTimeout(() => setRecrutementSent(false), 5000);
+    try {
+      // Sauvegarder dans Supabase
+      await saveCandidature(recrutementForm);
+      setRecrutementSent(true);
+      setRecrutementForm({ prenom: '', tel: '', email: '', departement: '' });
+      setTimeout(() => setRecrutementSent(false), 5000);
+    } catch (error) {
+      console.error('Erreur candidature:', error);
+    }
   };
 
   const PageRecrutement = () => (

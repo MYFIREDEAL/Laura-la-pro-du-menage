@@ -15,6 +15,13 @@ import {
   serviceLabels,
   frequencyLabels
 } from '../lib/demandesStorage';
+import {
+  getAllCandidatures,
+  updateCandidatureStatus,
+  addCandidatureNote,
+  deleteCandidature,
+  candidatureStatusLabels
+} from '../lib/candidaturesStorage';
 
 /**
  * Traductions des valeurs en français
@@ -202,6 +209,7 @@ const translateArray = (category, arr) => {
  * Accès : /admin (à sécuriser en production)
  */
 const AdminPage = ({ onBack }) => {
+  const [activeTab, setActiveTab] = useState('demandes'); // 'demandes' | 'candidatures'
   const [demandes, setDemandes] = useState([]);
   const [selectedDemande, setSelectedDemande] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -212,14 +220,30 @@ const AdminPage = ({ onBack }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [demandeToDelete, setDemandeToDelete] = useState(null);
 
+  // Candidatures
+  const [candidatures, setCandidatures] = useState([]);
+  const [selectedCandidature, setSelectedCandidature] = useState(null);
+  const [showCandMobileDetail, setShowCandMobileDetail] = useState(false);
+  const [showCandDeleteModal, setShowCandDeleteModal] = useState(false);
+  const [candToDelete, setCandToDelete] = useState(null);
+  const [candSearchQuery, setCandSearchQuery] = useState('');
+  const [candFilterStatus, setCandFilterStatus] = useState('all');
+
   // Charger les demandes
   const loadDemandes = async () => {
     const data = await getAllDemandes();
     setDemandes(data);
   };
 
+  // Charger les candidatures
+  const loadCandidatures = async () => {
+    const data = await getAllCandidatures();
+    setCandidatures(data);
+  };
+
   useEffect(() => {
     loadDemandes();
+    loadCandidatures();
   }, []);
 
   // Sélectionner une demande (avec gestion mobile)
@@ -296,6 +320,55 @@ const AdminPage = ({ onBack }) => {
     await loadDemandes();
   };
 
+  // ═══════════════════════════════════════════════════════════════════
+  // CANDIDATURES — CRUD
+  // ═══════════════════════════════════════════════════════════════════
+
+  const handleCandStatusChange = async (id, newStatus) => {
+    await updateCandidatureStatus(id, newStatus);
+    await loadCandidatures();
+    if (selectedCandidature?.id === id) {
+      setSelectedCandidature({ ...selectedCandidature, status: newStatus });
+    }
+  };
+
+  const handleCandSaveNote = async (id, note) => {
+    await addCandidatureNote(id, note);
+    await loadCandidatures();
+  };
+
+  const askDeleteCand = (cand) => {
+    setCandToDelete(cand);
+    setShowCandDeleteModal(true);
+  };
+
+  const confirmDeleteCand = async () => {
+    if (candToDelete) {
+      await deleteCandidature(candToDelete.id);
+      await loadCandidatures();
+      if (selectedCandidature?.id === candToDelete.id) setSelectedCandidature(null);
+      setShowCandMobileDetail(false);
+    }
+    setShowCandDeleteModal(false);
+    setCandToDelete(null);
+  };
+
+  const filteredCandidatures = candidatures.filter(c => {
+    if (candFilterStatus !== 'all' && c.status !== candFilterStatus) return false;
+    if (candSearchQuery) {
+      const s = candSearchQuery.toLowerCase();
+      return c.prenom?.toLowerCase().includes(s) || c.tel?.includes(s) || c.email?.toLowerCase().includes(s) || c.departement?.includes(s);
+    }
+    return true;
+  });
+
+  const candStats = {
+    total: candidatures.length,
+    new: candidatures.filter(c => c.status === 'new').length,
+    contacted: candidatures.filter(c => c.status === 'contacted').length,
+    confirmed: candidatures.filter(c => c.status === 'confirmed').length
+  };
+
   // Icône par service
   const ServiceIcon = ({ service }) => {
     const icons = {
@@ -329,33 +402,61 @@ const AdminPage = ({ onBack }) => {
               >
                 <ArrowLeft size={20} />
               </button>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Demandes</h1>
-                <p className="text-sm text-gray-500">{stats.total} demande{stats.total > 1 ? 's' : ''}</p>
+              {/* Tabs */}
+              <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1">
+                <button
+                  onClick={() => setActiveTab('demandes')}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                    activeTab === 'demandes'
+                      ? 'bg-white text-orange-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Demandes
+                  <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+                    activeTab === 'demandes' ? 'bg-orange-100 text-orange-600' : 'bg-gray-200 text-gray-500'
+                  }`}>{stats.total}</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('candidatures')}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                    activeTab === 'candidatures'
+                      ? 'bg-white text-purple-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  Candidatures
+                  <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
+                    activeTab === 'candidatures' ? 'bg-purple-100 text-purple-600' : 'bg-gray-200 text-gray-500'
+                  }`}>{candStats.total}</span>
+                </button>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
               <button
-                onClick={loadDemandes}
+                onClick={activeTab === 'demandes' ? loadDemandes : loadCandidatures}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 title="Actualiser"
               >
                 <RefreshCw size={18} />
               </button>
-              <button
-                onClick={exportToCSV}
-                className="flex items-center gap-2 bg-orange-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
-              >
-                <Download size={16} />
-                <span className="hidden sm:inline">Exporter CSV</span>
-              </button>
+              {activeTab === 'demandes' && (
+                <button
+                  onClick={exportToCSV}
+                  className="flex items-center gap-2 bg-orange-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
+                >
+                  <Download size={16} />
+                  <span className="hidden sm:inline">Exporter CSV</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-4 md:py-6">
+        {activeTab === 'demandes' && (<>
         {/* Stats Cards - Cliquables pour filtrer */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
           <button 
@@ -965,6 +1066,265 @@ const AdminPage = ({ onBack }) => {
             )}
           </div>
         </div>
+        </>)}
+
+        {/* ═══════════════════════════════════════════════════════════════
+            ONGLET CANDIDATURES
+           ═══════════════════════════════════════════════════════════════ */}
+        {activeTab === 'candidatures' && (<>
+        {/* Stats Cards candidatures */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
+          <button 
+            onClick={() => setCandFilterStatus('all')}
+            className={`text-left rounded-xl p-3 md:p-4 border transition-all ${
+              candFilterStatus === 'all' 
+                ? 'bg-white border-gray-400 ring-2 ring-gray-200' 
+                : 'bg-white border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            <p className="text-xl md:text-2xl font-bold text-gray-900">{candStats.total}</p>
+            <p className="text-xs md:text-sm text-gray-500">Total</p>
+          </button>
+          <button 
+            onClick={() => setCandFilterStatus('new')}
+            className={`text-left rounded-xl p-3 md:p-4 border transition-all ${
+              candFilterStatus === 'new' 
+                ? 'bg-purple-100 border-purple-400 ring-2 ring-purple-200' 
+                : 'bg-purple-50 border-purple-200 hover:border-purple-300'
+            }`}
+          >
+            <p className="text-xl md:text-2xl font-bold text-purple-700">{candStats.new}</p>
+            <p className="text-xs md:text-sm text-purple-600">Nouvelles</p>
+          </button>
+          <button 
+            onClick={() => setCandFilterStatus('contacted')}
+            className={`text-left rounded-xl p-3 md:p-4 border transition-all ${
+              candFilterStatus === 'contacted' 
+                ? 'bg-yellow-100 border-yellow-400 ring-2 ring-yellow-200' 
+                : 'bg-yellow-50 border-yellow-200 hover:border-yellow-300'
+            }`}
+          >
+            <p className="text-xl md:text-2xl font-bold text-yellow-700">{candStats.contacted}</p>
+            <p className="text-xs md:text-sm text-yellow-600">Contactées</p>
+          </button>
+          <button 
+            onClick={() => setCandFilterStatus('confirmed')}
+            className={`text-left rounded-xl p-3 md:p-4 border transition-all ${
+              candFilterStatus === 'confirmed' 
+                ? 'bg-green-100 border-green-400 ring-2 ring-green-200' 
+                : 'bg-green-50 border-green-200 hover:border-green-300'
+            }`}
+          >
+            <p className="text-xl md:text-2xl font-bold text-green-700">{candStats.confirmed}</p>
+            <p className="text-xs md:text-sm text-green-600">Confirmées</p>
+          </button>
+        </div>
+
+        {/* Barre de recherche candidatures */}
+        <div className="bg-white rounded-xl border border-gray-200 p-3 md:p-4 mb-4 md:mb-6">
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+            <div className="flex-1 relative">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Rechercher un candidat..."
+                value={candSearchQuery}
+                onChange={(e) => setCandSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              />
+            </div>
+            <select
+              value={candFilterStatus}
+              onChange={(e) => setCandFilterStatus(e.target.value)}
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="all">Tous les statuts</option>
+              <option value="new">Nouvelles</option>
+              <option value="contacted">Contactées</option>
+              <option value="confirmed">Confirmées</option>
+              <option value="cancelled">Refusées</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Liste candidatures */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+          {/* Colonne liste */}
+          <div className="lg:col-span-2 space-y-2 md:space-y-3">
+            {filteredCandidatures.length === 0 ? (
+              <div className="bg-white rounded-xl border border-gray-200 p-8 md:p-12 text-center">
+                <div className="text-gray-400 mb-4">
+                  <Users size={40} className="mx-auto" />
+                </div>
+                <p className="text-gray-500">Aucune candidature</p>
+                <p className="text-sm text-gray-400 mt-1">
+                  Les candidatures apparaîtront ici
+                </p>
+              </div>
+            ) : (
+              filteredCandidatures.map((cand) => (
+                <div
+                  key={cand.id}
+                  onClick={() => {
+                    setSelectedCandidature(cand);
+                    if (window.innerWidth < 1024) setShowCandMobileDetail(true);
+                  }}
+                  className={`bg-white rounded-xl border p-3 md:p-4 cursor-pointer transition-all hover:shadow-md ${
+                    selectedCandidature?.id === cand.id 
+                      ? 'border-purple-500 ring-2 ring-purple-100' 
+                      : 'border-gray-200'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-2 md:gap-3">
+                      <div className="w-9 h-9 md:w-10 md:h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 flex-shrink-0">
+                        <User size={16} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="font-semibold text-gray-900 text-sm md:text-base truncate">
+                            {cand.prenom || 'Sans prénom'}
+                          </h3>
+                          <span className={`text-[10px] md:text-xs px-2 py-0.5 rounded-full ${candidatureStatusLabels[cand.status]?.color || 'bg-gray-100'}`}>
+                            {candidatureStatusLabels[cand.status]?.label || cand.status}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 md:gap-3 mt-1 text-[10px] md:text-xs text-gray-400 flex-wrap">
+                          <span className="flex items-center gap-1">
+                            <Phone size={10} className="md:w-3 md:h-3" />
+                            {cand.tel}
+                          </span>
+                          {cand.email && (
+                            <span className="flex items-center gap-1 truncate max-w-[160px]">
+                              ✉️ {cand.email}
+                            </span>
+                          )}
+                          {cand.departement && (
+                            <span className="flex items-center gap-1">
+                              <MapPin size={10} className="md:w-3 md:h-3" />
+                              {cand.departement}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-[10px] md:text-xs text-gray-400">
+                        {new Date(cand.createdAt).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'short'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Colonne détail candidature - Desktop */}
+          <div className="hidden lg:block lg:col-span-1">
+            {selectedCandidature ? (
+              <div className="bg-white rounded-xl border border-gray-200 p-6 sticky top-24">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-gray-900">Détails candidature</h3>
+                  <button
+                    onClick={() => askDeleteCand(selectedCandidature)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Supprimer"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+
+                <div className="text-xs text-gray-400 mb-4">
+                  <p>ID: {selectedCandidature.id}</p>
+                  <p>Reçue le {new Date(selectedCandidature.createdAt).toLocaleDateString('fr-FR', {
+                    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                  })}</p>
+                </div>
+
+                {/* Contact */}
+                <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                  <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Contact</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <User size={16} className="text-gray-400" />
+                      <span className="font-medium">{selectedCandidature.prenom || '—'}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone size={16} className="text-gray-400" />
+                      <a href={`tel:${selectedCandidature.tel}`} className="font-medium text-purple-600 hover:underline">
+                        {selectedCandidature.tel}
+                      </a>
+                    </div>
+                    {selectedCandidature.email && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400">✉️</span>
+                        <a href={`mailto:${selectedCandidature.email}`} className="font-medium text-purple-600 hover:underline text-sm truncate">
+                          {selectedCandidature.email}
+                        </a>
+                      </div>
+                    )}
+                    {selectedCandidature.departement && (
+                      <div className="flex items-center gap-2">
+                        <MapPin size={16} className="text-gray-400" />
+                        <span>{selectedCandidature.departement}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Statut */}
+                <div className="mb-4">
+                  <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Changer le statut</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {Object.entries(candidatureStatusLabels).map(([key, { label, color }]) => (
+                      <button
+                        key={key}
+                        onClick={() => handleCandStatusChange(selectedCandidature.id, key)}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                          selectedCandidature.status === key
+                            ? color + ' ring-2 ring-offset-1'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Notes */}
+                <div>
+                  <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Notes internes</h4>
+                  <textarea
+                    defaultValue={selectedCandidature.notes || ''}
+                    onBlur={(e) => handleCandSaveNote(selectedCandidature.id, e.target.value)}
+                    placeholder="Ajouter une note..."
+                    className="w-full border border-gray-200 rounded-lg p-3 text-sm resize-none h-24 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+
+                {/* Appeler */}
+                <a
+                  href={`tel:${selectedCandidature.tel}`}
+                  className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl font-semibold mt-4 hover:shadow-lg transition-all"
+                >
+                  <Phone size={18} />
+                  Appeler maintenant
+                </a>
+              </div>
+            ) : (
+              <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                <Eye size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500">Sélectionnez une candidature</p>
+                <p className="text-sm text-gray-400 mt-1">pour voir les détails</p>
+              </div>
+            )}
+          </div>
+        </div>
+        </>)}
       </div>
 
       {/* Mobile Detail Slide-over */}
@@ -1431,6 +1791,151 @@ const AdminPage = ({ onBack }) => {
               </button>
               <button
                 onClick={confirmDelete}
+                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors"
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════
+          CANDIDATURE — Mobile Detail Slide-over
+         ═══════════════════════════════════════════════════════════════ */}
+      {showCandMobileDetail && selectedCandidature && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          <div 
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowCandMobileDetail(false)}
+          />
+          <div className="absolute inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+              <h3 className="font-bold text-gray-900">Détails candidature</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => askDeleteCand(selectedCandidature)}
+                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <Trash2 size={18} />
+                </button>
+                <button
+                  onClick={() => setShowCandMobileDetail(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <ArrowLeft size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div className="p-4">
+              <div className="text-xs text-gray-400 mb-4">
+                <p>ID: {selectedCandidature.id}</p>
+                <p>Reçue le {new Date(selectedCandidature.createdAt).toLocaleDateString('fr-FR', {
+                  weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
+                })}</p>
+              </div>
+
+              {/* Contact */}
+              <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Contact</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <User size={16} className="text-gray-400" />
+                    <span className="font-medium">{selectedCandidature.prenom || '—'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone size={16} className="text-gray-400" />
+                    <a href={`tel:${selectedCandidature.tel}`} className="font-medium text-purple-600">
+                      {selectedCandidature.tel}
+                    </a>
+                  </div>
+                  {selectedCandidature.email && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400">✉️</span>
+                      <a href={`mailto:${selectedCandidature.email}`} className="font-medium text-purple-600 text-sm truncate">
+                        {selectedCandidature.email}
+                      </a>
+                    </div>
+                  )}
+                  {selectedCandidature.departement && (
+                    <div className="flex items-center gap-2">
+                      <MapPin size={16} className="text-gray-400" />
+                      <span>{selectedCandidature.departement}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Statut */}
+              <div className="mb-4">
+                <h4 className="text-xs text-gray-500 uppercase tracking-wide mb-2">Statut</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(candidatureStatusLabels).map(([key, { label, color }]) => (
+                    <button
+                      key={key}
+                      onClick={() => handleCandStatusChange(selectedCandidature.id, key)}
+                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                        selectedCandidature.status === key
+                          ? color + ' ring-2 ring-offset-1'
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Appeler */}
+              <a
+                href={`tel:${selectedCandidature.tel}`}
+                className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-bold shadow-lg"
+              >
+                <Phone size={20} />
+                Appeler maintenant
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════
+          CANDIDATURE — Modale de suppression
+         ═══════════════════════════════════════════════════════════════ */}
+      {showCandDeleteModal && candToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => { setShowCandDeleteModal(false); setCandToDelete(null); }}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-in zoom-in-95 fade-in duration-200">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Trash2 size={28} className="text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 text-center mb-2">
+              Supprimer cette candidature ?
+            </h3>
+            <div className="bg-gray-50 rounded-xl p-3 mb-4">
+              <p className="font-medium text-gray-900 text-center">
+                {candToDelete.prenom || candToDelete.tel}
+              </p>
+              {candToDelete.email && (
+                <p className="text-sm text-gray-500 text-center">{candToDelete.email}</p>
+              )}
+            </div>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              Cette action est irréversible.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setShowCandDeleteModal(false); setCandToDelete(null); }}
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={confirmDeleteCand}
                 className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors"
               >
                 Supprimer
