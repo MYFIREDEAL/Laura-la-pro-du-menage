@@ -135,7 +135,7 @@ const App = () => {
           </SectionTitle>
 
           {/* Barre de navigation rapide des services */}
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+          <div className="flex flex-wrap justify-center gap-x-3 gap-y-4 mb-10 px-2 md:px-0">
             {[
               { id: 'service-regulier', label: 'Régulier', emoji: '🏠', color: 'bg-orange-500' },
               { id: 'service-seniors', label: 'Seniors', emoji: '🧡', color: 'bg-orange-400' },
@@ -149,7 +149,7 @@ const App = () => {
               <button
                 key={item.id}
                 onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-white font-bold text-sm whitespace-nowrap shadow-md hover:scale-105 active:scale-95 transition-all duration-200 ${item.color}`}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-bold text-sm whitespace-nowrap shadow-md hover:scale-105 active:scale-95 transition-all duration-200 ${item.color}`}
               >
                 <span>{item.emoji}</span>
                 <span>{item.label}</span>
