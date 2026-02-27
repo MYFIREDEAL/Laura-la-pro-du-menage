@@ -1334,7 +1334,8 @@ const App = () => {
   };
 
   // === SPA interne (tout le contenu existant) ===
-  const SPAContent = () => (
+  // IMPORTANT : variable JSX, PAS composant () => (...) — sinon les inputs perdent le focus à chaque setState
+  const spaContent = (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -1533,7 +1534,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/ville/:slug" element={<CityPage />} />
-      <Route path="/*" element={<SPAContent />} />
+      <Route path="/*" element={spaContent} />
     </Routes>
   );
 };
