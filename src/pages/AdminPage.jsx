@@ -3,7 +3,8 @@ import {
   ArrowLeft, Phone, MapPin, Calendar, Clock, User, 
   CheckCircle2, XCircle, MessageSquare, Download,
   Trash2, ChevronDown, ChevronUp, Search, Filter,
-  Home, Users, Key, Building2, RefreshCw, Eye
+  Home, Users, Key, Building2, RefreshCw, Eye,
+  Gift, ToggleLeft, ToggleRight, CalendarDays, Percent, Tag
 } from 'lucide-react';
 import { 
   getAllDemandes, 
@@ -22,6 +23,13 @@ import {
   deleteCandidature,
   candidatureStatusLabels
 } from '../lib/candidaturesStorage';
+import {
+  getAllPromotions,
+  updatePromotion,
+  updateAllPromotions,
+  promoServiceLabels,
+  formatDateFr
+} from '../lib/promotionsStorage';
 
 /**
  * Traductions des valeurs en français
@@ -209,7 +217,7 @@ const translateArray = (category, arr) => {
  * Accès : /admin (à sécuriser en production)
  */
 const AdminPage = ({ onBack }) => {
-  const [activeTab, setActiveTab] = useState('demandes'); // 'demandes' | 'candidatures'
+  const [activeTab, setActiveTab] = useState('demandes'); // 'demandes' | 'candidatures' | 'promotions'
   const [demandes, setDemandes] = useState([]);
   const [selectedDemande, setSelectedDemande] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -229,6 +237,13 @@ const AdminPage = ({ onBack }) => {
   const [candSearchQuery, setCandSearchQuery] = useState('');
   const [candFilterStatus, setCandFilterStatus] = useState('all');
 
+  // Promotions
+  const [promotions, setPromotions] = useState([]);
+  const [promoSaving, setPromoSaving] = useState(null); // serviceId en cours de sauvegarde
+  const [bulkDate, setBulkDate] = useState('');
+  const [bulkDiscount, setBulkDiscount] = useState('');
+  const [showBulkModal, setShowBulkModal] = useState(false);
+
   // Charger les demandes
   const loadDemandes = async () => {
     const data = await getAllDemandes();
@@ -241,10 +256,69 @@ const AdminPage = ({ onBack }) => {
     setCandidatures(data);
   };
 
+  // Charger les promotions
+  const loadPromotions = async () => {
+    const data = await getAllPromotions();
+    setPromotions(data);
+  };
+
   useEffect(() => {
     loadDemandes();
     loadCandidatures();
+    loadPromotions();
   }, []);
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PROMOTIONS — Handlers
+  // ═══════════════════════════════════════════════════════════════════
+
+  const handlePromoToggle = async (serviceId, field, value) => {
+    setPromoSaving(serviceId);
+    await updatePromotion(serviceId, { [field]: value });
+    await loadPromotions();
+    setPromoSaving(null);
+  };
+
+  const handlePromoFieldChange = async (serviceId, field, value) => {
+    setPromoSaving(serviceId);
+    await updatePromotion(serviceId, { [field]: value });
+    await loadPromotions();
+    setPromoSaving(null);
+  };
+
+  const handleExtend1Month = async (serviceId, currentEndDate) => {
+    setPromoSaving(serviceId);
+    const date = new Date(currentEndDate + 'T00:00:00');
+    date.setMonth(date.getMonth() + 1);
+    const newDate = date.toISOString().split('T')[0];
+    await updatePromotion(serviceId, { endDate: newDate });
+    await loadPromotions();
+    setPromoSaving(null);
+  };
+
+  const handleBulkApply = async () => {
+    const updates = {};
+    if (bulkDate) updates.endDate = bulkDate;
+    if (bulkDiscount) updates.discountPercent = Number(bulkDiscount);
+    if (Object.keys(updates).length > 0) {
+      await updateAllPromotions(updates);
+      await loadPromotions();
+    }
+    setShowBulkModal(false);
+    setBulkDate('');
+    setBulkDiscount('');
+  };
+
+  const getPromoStatus = (promo) => {
+    if (!promo.promoActive) return { label: 'Désactivée', color: 'bg-gray-100 text-gray-500', dot: '⚪' };
+    const today = new Date().toISOString().split('T')[0];
+    if (promo.endDate < today) return { label: 'Expirée', color: 'bg-red-100 text-red-600', dot: '🔴' };
+    const end = new Date(promo.endDate + 'T00:00:00');
+    const now = new Date();
+    const daysLeft = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    if (daysLeft <= 7) return { label: `Expire dans ${daysLeft}j`, color: 'bg-amber-100 text-amber-700', dot: '⚠️' };
+    return { label: 'Active', color: 'bg-green-100 text-green-700', dot: '🟢' };
+  };
 
   // Sélectionner une demande (avec gestion mobile)
   const handleSelectDemande = (demande) => {
@@ -430,12 +504,23 @@ const AdminPage = ({ onBack }) => {
                     activeTab === 'candidatures' ? 'bg-purple-100 text-purple-600' : 'bg-gray-200 text-gray-500'
                   }`}>{candStats.total}</span>
                 </button>
+                <button
+                  onClick={() => setActiveTab('promotions')}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                    activeTab === 'promotions'
+                      ? 'bg-white text-emerald-600 shadow-sm'
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <span className="hidden sm:inline">Promos</span>
+                  <span className="sm:hidden">🎁</span>
+                </button>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
               <button
-                onClick={activeTab === 'demandes' ? loadDemandes : loadCandidatures}
+                onClick={activeTab === 'demandes' ? loadDemandes : activeTab === 'candidatures' ? loadCandidatures : loadPromotions}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 title="Actualiser"
               >
@@ -1325,9 +1410,222 @@ const AdminPage = ({ onBack }) => {
           </div>
         </div>
         </>)}
-      </div>
 
-      {/* Mobile Detail Slide-over */}
+        {/* ═══════════════════════════════════════════════════════════════
+            ONGLET PROMOTIONS
+           ═══════════════════════════════════════════════════════════════ */}
+        {activeTab === 'promotions' && (<>
+        
+        {/* Header promos */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <Gift size={24} className="text-emerald-500" />
+              Gestion des promotions
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">Modifiez les promos en temps réel — sans coder, sans redéployer</p>
+          </div>
+          <button
+            onClick={() => setShowBulkModal(true)}
+            className="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-emerald-600 transition-all shadow-md"
+          >
+            <Tag size={16} />
+            Appliquer à tous
+          </button>
+        </div>
+
+        {/* Stats promos */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-green-600">{promotions.filter(p => p.promoActive && p.endDate >= new Date().toISOString().split('T')[0]).length}</p>
+            <p className="text-xs text-green-600 font-medium">Actives</p>
+          </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-amber-600">{promotions.filter(p => {
+              const daysLeft = Math.ceil((new Date(p.endDate + 'T00:00:00') - new Date()) / (1000*60*60*24));
+              return p.promoActive && daysLeft > 0 && daysLeft <= 7;
+            }).length}</p>
+            <p className="text-xs text-amber-600 font-medium">Bientôt expirées</p>
+          </div>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-center">
+            <p className="text-2xl font-black text-red-600">{promotions.filter(p => !p.promoActive || p.endDate < new Date().toISOString().split('T')[0]).length}</p>
+            <p className="text-xs text-red-600 font-medium">Inactives</p>
+          </div>
+        </div>
+
+        {/* Grille des cartes promo */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {promotions.map(promo => {
+            const meta = promoServiceLabels[promo.serviceId] || { label: promo.serviceId, emoji: '📦', color: 'gray' };
+            const status = getPromoStatus(promo);
+            const isSaving = promoSaving === promo.serviceId;
+            
+            const colorMap = {
+              red: { bg: 'bg-red-50', border: 'border-red-200', accent: 'text-red-600', btn: 'bg-red-500 hover:bg-red-600' },
+              pink: { bg: 'bg-pink-50', border: 'border-pink-200', accent: 'text-pink-600', btn: 'bg-pink-500 hover:bg-pink-600' },
+              orange: { bg: 'bg-orange-50', border: 'border-orange-200', accent: 'text-orange-600', btn: 'bg-orange-500 hover:bg-orange-600' },
+              blue: { bg: 'bg-blue-50', border: 'border-blue-200', accent: 'text-blue-600', btn: 'bg-blue-500 hover:bg-blue-600' },
+              emerald: { bg: 'bg-emerald-50', border: 'border-emerald-200', accent: 'text-emerald-600', btn: 'bg-emerald-500 hover:bg-emerald-600' },
+              purple: { bg: 'bg-purple-50', border: 'border-purple-200', accent: 'text-purple-600', btn: 'bg-purple-500 hover:bg-purple-600' },
+              cyan: { bg: 'bg-cyan-50', border: 'border-cyan-200', accent: 'text-cyan-600', btn: 'bg-cyan-500 hover:bg-cyan-600' },
+              amber: { bg: 'bg-amber-50', border: 'border-amber-200', accent: 'text-amber-600', btn: 'bg-amber-500 hover:bg-amber-600' },
+            };
+            const c = colorMap[meta.color] || colorMap.emerald;
+            
+            return (
+              <div key={promo.serviceId} className={`relative rounded-2xl border-2 ${promo.promoActive ? c.border : 'border-gray-200'} ${promo.promoActive ? c.bg : 'bg-gray-50'} p-5 transition-all ${isSaving ? 'opacity-60' : ''}`}>
+                
+                {/* Badge statut */}
+                <span className={`absolute top-3 right-3 text-[10px] font-bold px-2 py-1 rounded-full ${status.color}`}>
+                  {status.dot} {status.label}
+                </span>
+                
+                {/* Header carte */}
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">{meta.emoji}</span>
+                  <div>
+                    <h3 className="font-bold text-gray-900">{meta.label}</h3>
+                    <p className="text-xs text-gray-500">{promo.serviceId}</p>
+                  </div>
+                </div>
+
+                {/* Toggle actif */}
+                <div className="flex items-center justify-between mb-4 bg-white rounded-xl p-3">
+                  <span className="text-sm font-medium text-gray-700">Promo active</span>
+                  <button
+                    onClick={() => handlePromoToggle(promo.serviceId, 'promoActive', !promo.promoActive)}
+                    className="transition-all"
+                  >
+                    {promo.promoActive 
+                      ? <ToggleRight size={32} className="text-emerald-500" />
+                      : <ToggleLeft size={32} className="text-gray-300" />
+                    }
+                  </button>
+                </div>
+
+                {/* Champs (grisés si désactivé) */}
+                <div className={`space-y-3 ${!promo.promoActive ? 'opacity-40 pointer-events-none' : ''}`}>
+                  
+                  {/* Réduction % */}
+                  <div className="flex items-center gap-3 bg-white rounded-xl p-3">
+                    <Percent size={18} className="text-gray-400" />
+                    <span className="text-sm font-medium text-gray-700 flex-1">Réduction</span>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        value={promo.discountPercent}
+                        onChange={(e) => handlePromoFieldChange(promo.serviceId, 'discountPercent', Number(e.target.value))}
+                        className="w-16 text-center border border-gray-200 rounded-lg py-1 text-sm font-bold focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                      />
+                      <span className="text-sm font-bold text-gray-500">%</span>
+                    </div>
+                  </div>
+
+                  {/* 1ère heure offerte */}
+                  <div className="flex items-center justify-between bg-white rounded-xl p-3">
+                    <div className="flex items-center gap-2">
+                      <Gift size={18} className="text-gray-400" />
+                      <span className="text-sm font-medium text-gray-700">1ère heure offerte</span>
+                    </div>
+                    <button
+                      onClick={() => handlePromoToggle(promo.serviceId, 'freeFirstHour', !promo.freeFirstHour)}
+                      className="transition-all"
+                    >
+                      {promo.freeFirstHour 
+                        ? <ToggleRight size={28} className="text-emerald-500" />
+                        : <ToggleLeft size={28} className="text-gray-300" />
+                      }
+                    </button>
+                  </div>
+
+                  {/* Date de fin */}
+                  <div className="flex items-center gap-3 bg-white rounded-xl p-3">
+                    <CalendarDays size={18} className="text-gray-400" />
+                    <span className="text-sm font-medium text-gray-700 flex-1">Fin</span>
+                    <input
+                      type="date"
+                      value={promo.endDate}
+                      onChange={(e) => handlePromoFieldChange(promo.serviceId, 'endDate', e.target.value)}
+                      className="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  {/* Bouton prolonger */}
+                  <button
+                    onClick={() => handleExtend1Month(promo.serviceId, promo.endDate)}
+                    className="w-full text-center text-xs font-semibold text-emerald-600 hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg py-2 transition-all"
+                  >
+                    📅 Prolonger +1 mois → {formatDateFr((() => { const d = new Date(promo.endDate + 'T00:00:00'); d.setMonth(d.getMonth() + 1); return d.toISOString().split('T')[0]; })())}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Modal "Appliquer à tous" */}
+        {showBulkModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => { setShowBulkModal(false); setBulkDate(''); setBulkDiscount(''); }}
+            />
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+              <div className="text-center mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                  <Tag size={24} className="text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">Appliquer à tous les services</h3>
+                <p className="text-sm text-gray-500 mt-1">Modifiez la date et/ou la réduction pour tous</p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Nouvelle date de fin</label>
+                  <input
+                    type="date"
+                    value={bulkDate}
+                    onChange={(e) => setBulkDate(e.target.value)}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Nouvelle réduction (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={bulkDiscount}
+                    onChange={(e) => setBulkDiscount(e.target.value)}
+                    placeholder="Ex: 30"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setShowBulkModal(false); setBulkDate(''); setBulkDiscount(''); }}
+                  className="flex-1 px-4 py-3 border border-gray-200 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={handleBulkApply}
+                  disabled={!bulkDate && !bulkDiscount}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                >
+                  Appliquer
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        </>)}
+      </div>
       {showMobileDetail && selectedDemande && (
         <div className="lg:hidden fixed inset-0 z-50">
           {/* Backdrop */}

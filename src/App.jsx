@@ -8,6 +8,7 @@ import {
 import ReservationWizard from './components/ReservationWizard';
 import AdminPage from './pages/AdminPage';
 import { saveCandidature } from './lib/candidaturesStorage';
+import { getAllPromotions, getActivePromo, formatDateFr } from './lib/promotionsStorage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('accueil');
@@ -18,6 +19,23 @@ const App = () => {
   const [adminPassword, setAdminPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+
+  // Promotions dynamiques depuis Supabase
+  const [promotions, setPromotions] = useState([]);
+  useEffect(() => {
+    getAllPromotions().then(setPromotions);
+  }, []);
+
+  // Helper pour récupérer la promo d'un service
+  const promo = (serviceId) => getActivePromo(promotions, serviceId);
+  const promoDate = (serviceId) => {
+    const p = promo(serviceId);
+    return p ? formatDateFr(p.endDate) : '';
+  };
+  const promoDiscount = (serviceId) => {
+    const p = promo(serviceId);
+    return p ? p.discountPercent : 30;
+  };
 
   // Navigation vers le wizard avec service pré-sélectionné
   const goToReservation = (service = null) => {
@@ -190,13 +208,15 @@ const App = () => {
                 <div className="absolute top-[3%] left-[18%] text-2xl sparkle-1">✨</div>
                 <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
                 <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
-                {/* Badge -30% sur l'image */}
+                {/* Badge promo sur l'image */}
+                {promo('regulier') && (
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-red-600 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
-                    <p className="text-lg md:text-2xl font-black">-30%</p>
+                    <p className="text-lg md:text-2xl font-black">-{promoDiscount('regulier')}%</p>
                     <p className="text-[10px] md:text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
+                )}
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
@@ -212,16 +232,18 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Dépoussiérage & rangement</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Chaque semaine ou tous les 15 jours</li>
                 </ul>
+                {promo('regulier') && (
                 <div className="relative bg-red-50 border border-red-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-red-600 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
-                    <p className="text-sm">-30%</p>
+                    <p className="text-sm">-{promoDiscount('regulier')}%</p>
                     <p className="text-[9px]">1er mois</p>
                   </div>
                   <p className="text-red-600 font-bold flex items-center gap-2">
                     <Gift size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-red-500 text-sm mt-1">Offre valable jusqu'au 20 mars 2026</p>
+                  <p className="text-red-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('regulier')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('regulier')} className="w-full">Je lance mon essai</Button>
               </div>
             </div>
@@ -239,12 +261,14 @@ const App = () => {
                 <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
                 <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
+                {promo('seniors') && (
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-orange-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
-                    <p className="text-lg md:text-2xl font-black">-30%</p>
+                    <p className="text-lg md:text-2xl font-black">-{promoDiscount('seniors')}%</p>
                     <p className="text-[10px] md:text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
+                )}
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
@@ -260,16 +284,18 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Toujours la même intervenante</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-orange-500" /> Un café partagé, un moment d'échange</li>
                 </ul>
+                {promo('seniors') && (
                 <div className="relative bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-orange-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
-                    <p className="text-sm">-30%</p>
+                    <p className="text-sm">-{promoDiscount('seniors')}%</p>
                     <p className="text-[9px]">1er mois</p>
                   </div>
                   <p className="text-orange-600 font-bold flex items-center gap-2">
                     <Heart size={18} fill="currentColor" /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-orange-500 text-sm mt-1">Offre valable jusqu'au 20 mars 2026</p>
+                  <p className="text-orange-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('seniors')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('seniors')} className="w-full !bg-orange-500 hover:!bg-orange-600">Je réserve pour mes parents</Button>
               </div>
             </div>
@@ -287,12 +313,14 @@ const App = () => {
                 <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
                 <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
+                {promo('airbnb') && (
                 <div className="absolute top-4 right-4">
                   <div className="bg-blue-600 text-white px-4 py-3 rounded-2xl shadow-xl">
-                    <p className="text-2xl font-black">-30%</p>
+                    <p className="text-2xl font-black">-{promoDiscount('airbnb')}%</p>
                     <p className="text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
+                )}
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-50 to-transparent"></div>
               </div>
@@ -305,12 +333,14 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-blue-500" /> Ménage & Désinfection complète</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-blue-500" /> Gestion du linge & Dressage</li>
                 </ul>
+                {promo('airbnb') && (
                 <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-6">
                   <p className="text-blue-600 font-bold flex items-center gap-2">
-                    <Key size={18} /> 🎁 -30% le 1er mois
+                    <Key size={18} /> 🎁 -{promoDiscount('airbnb')}% le 1er mois
                   </p>
-                  <p className="text-blue-500 text-sm mt-1">Offre valable jusqu'au 20 mars 2026</p>
+                  <p className="text-blue-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('airbnb')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('airbnb')} className="w-full !bg-blue-600 hover:!bg-blue-700">Je calcule pour ma location</Button>
               </div>
             </div>
@@ -328,12 +358,14 @@ const App = () => {
                 <div className="absolute top-[11%] left-[30%] text-xl sparkle-2">✨</div>
                 <div className="absolute bottom-[29%] left-[16%] text-lg sparkle-3">✨</div>
                 {/* Badge sur l'image */}
+                {promo('pro') && (
                 <div className="absolute top-4 right-4">
                   <div className="bg-emerald-600 text-white px-4 py-3 rounded-2xl shadow-xl">
-                    <p className="text-2xl font-black">-30%</p>
+                    <p className="text-2xl font-black">-{promoDiscount('pro')}%</p>
                     <p className="text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
+                )}
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-emerald-50 to-transparent"></div>
               </div>
@@ -346,12 +378,14 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500" /> Entretien des postes & sanitaires</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-emerald-500" /> Nettoyage des parties communes</li>
                 </ul>
+                {promo('pro') && (
                 <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 mb-6">
                   <p className="text-emerald-600 font-bold flex items-center gap-2">
-                    <Building2 size={18} /> 🎁 -30% le 1er mois
+                    <Building2 size={18} /> 🎁 -{promoDiscount('pro')}% le 1er mois
                   </p>
-                  <p className="text-emerald-500 text-sm mt-1">Offre valable jusqu'au 20 mars 2026</p>
+                  <p className="text-emerald-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('pro')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('pro')} className="w-full !bg-emerald-600 hover:!bg-emerald-700">Demander une proposition Pro</Button>
               </div>
             </div>
@@ -365,12 +399,14 @@ const App = () => {
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Badge sur l'image */}
+                {promo('ponctuel') && (
                 <div className="absolute top-3 right-3 md:top-4 md:right-4">
                   <div className="bg-pink-500 text-white px-2.5 py-2 md:px-4 md:py-3 rounded-xl md:rounded-2xl shadow-xl">
-                    <p className="text-lg md:text-2xl font-black">-30%</p>
+                    <p className="text-lg md:text-2xl font-black">-{promoDiscount('ponctuel')}%</p>
                     <p className="text-[10px] md:text-xs font-bold">de réduction</p>
                   </div>
                 </div>
+                )}
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-pink-50 to-transparent"></div>
               </div>
@@ -384,16 +420,18 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Vitres, plinthes & recoins oubliés</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-pink-500" /> Dépoussiérage complet & désinfection</li>
                 </ul>
+                {promo('ponctuel') && (
                 <div className="relative bg-pink-50 border border-pink-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-pink-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
-                    <p className="text-sm">-30%</p>
+                    <p className="text-sm">-{promoDiscount('ponctuel')}%</p>
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-pink-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-pink-500 text-sm mt-1">Offre spéciale printemps 2026</p>
+                  <p className="text-pink-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('ponctuel')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('ponctuel')} className="w-full !bg-pink-500 hover:!bg-pink-600">Réserver mon ménage de printemps</Button>
               </div>
             </div>
@@ -426,16 +464,18 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-500" /> Linge de maison (draps, nappes)</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-purple-500" /> Pliage et rangement soigné</li>
                 </ul>
+                {promo('repassage') && (
                 <div className="relative bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-purple-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
-                    <p className="text-sm">-30%</p>
+                    <p className="text-sm">-{promoDiscount('repassage')}%</p>
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-purple-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-purple-500 text-sm mt-1">Offre de bienvenue — valable jusqu'au 20 mars 2026</p>
+                  <p className="text-purple-500 text-sm mt-1">{`Offre de bienvenue — valable jusqu'au ${promoDate('repassage')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('repassage')} className="w-full !bg-purple-500 hover:!bg-purple-600">Calculer mon prix</Button>
               </div>
             </div>
@@ -468,16 +508,18 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Fenêtres intérieures & extérieures</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-cyan-500" /> Encadrements & rails nettoyés</li>
                 </ul>
+                {promo('vitres') && (
                 <div className="relative bg-cyan-50 border border-cyan-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-cyan-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
-                    <p className="text-sm">-30%</p>
+                    <p className="text-sm">-{promoDiscount('vitres')}%</p>
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-cyan-600 font-bold flex items-center gap-2">
                     <Sparkles size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-cyan-500 text-sm mt-1">Offre de bienvenue — valable jusqu'au 20 mars 2026</p>
+                  <p className="text-cyan-500 text-sm mt-1">{`Offre de bienvenue — valable jusqu'au ${promoDate('vitres')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('vitres')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Calculer mon prix</Button>
               </div>
             </div>
@@ -510,16 +552,18 @@ const App = () => {
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Démoussage & traitement anti-mousse</li>
                   <li className="flex items-center gap-2"><CheckCircle2 size={16} className="text-amber-500" /> Nettoyage du mobilier de jardin</li>
                 </ul>
+                {promo('terrasse') && (
                 <div className="relative bg-amber-50 border border-amber-100 rounded-2xl p-4 mb-6">
                   <div className="absolute -top-3 -right-3 bg-amber-500 text-white px-3 py-1.5 rounded-full text-center font-black shadow-lg leading-tight">
-                    <p className="text-sm">-30%</p>
+                    <p className="text-sm">-{promoDiscount('terrasse')}%</p>
                     <p className="text-[9px]">de réduction</p>
                   </div>
                   <p className="text-amber-600 font-bold flex items-center gap-2">
-                    <Sparkles size={18} /> 🎁 -30% de réduction
+                    <Sparkles size={18} /> 🎁 -{promoDiscount('terrasse')}% de réduction
                   </p>
-                  <p className="text-amber-500 text-sm mt-1">Offre de bienvenue — valable jusqu'au 20 mars 2026</p>
+                  <p className="text-amber-500 text-sm mt-1">{`Offre de bienvenue — valable jusqu'au ${promoDate('terrasse')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('terrasse')} className="w-full !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
               </div>
             </div>
@@ -735,22 +779,26 @@ const App = () => {
                 {/* Étoiles animées */}
                 <div className="absolute top-[5%] left-[10%] text-2xl sparkle-1">✨</div>
                 <div className="absolute top-[15%] left-[5%] text-xl sparkle-2">✨</div>
-                {/* Badge -30% */}
+                {/* Badge promo */}
+                {promo('seniors') && (
                 <div className="absolute top-4 right-4">
                   <div className="bg-orange-500 text-white px-4 py-3 rounded-2xl shadow-xl">
-                    <p className="text-2xl font-black">-30%</p>
+                    <p className="text-2xl font-black">-{promoDiscount('seniors')}%</p>
                     <p className="text-xs font-bold">le 1er mois</p>
                   </div>
                 </div>
+                )}
               </div>
               {/* Offre et CTA sous l'image */}
               <div className="mt-6 text-center w-full max-w-sm">
+                {promo('seniors') && (
                 <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 mb-4">
                   <p className="text-orange-600 font-bold flex items-center justify-center gap-2">
                     <Gift size={18} /> 🎁 1ère heure offerte
                   </p>
-                  <p className="text-orange-500 text-sm mt-1">Offre valable jusqu'au 20 mars 2026</p>
+                  <p className="text-orange-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('seniors')}`}</p>
                 </div>
+                )}
                 <Button onClick={() => goToReservation('seniors')} className="text-lg px-8 py-4 w-full">Offrir cette aide à vos parents</Button>
               </div>
             </div>

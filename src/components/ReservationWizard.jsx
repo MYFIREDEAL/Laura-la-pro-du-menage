@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Home, Users, Calendar, Building2, Key, Sparkles,
   Clock, CheckCircle2, ChevronRight, Heart,
@@ -8,6 +8,7 @@ import {
 import Step3Details from './reservation/Step3Details';
 import Step4Contact from './reservation/Step4Contact';
 import { saveDemande } from '../lib/demandesStorage';
+import { getAllPromotions, getActivePromo } from '../lib/promotionsStorage';
 
 /**
  * ReservationWizard - Wizard de réservation en 4 étapes
@@ -52,6 +53,12 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   
   // State pour gérer les transitions fluides
   const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Promotions dynamiques depuis Supabase
+  const [promotions, setPromotions] = useState([]);
+  useEffect(() => {
+    getAllPromotions().then(setPromotions);
+  }, []);
 
   // ═══════════════════════════════════════════════════════════════════
   // DONNÉES STATIQUES
@@ -335,7 +342,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
   const selectedDuration = durations.find(d => d.id === wizardState.hours) || durationsPonctuel.find(d => d.id === wizardState.hours);
 
   // ═══════════════════════════════════════════════════════════════════
-  // CALCUL PRIX (placeholder - à remplacer par calculatePrice.js)
+  // CALCUL PRIX — Utilise les promos dynamiques depuis Supabase
   // ═══════════════════════════════════════════════════════════════════
   
   const calculateEstimate = () => {
@@ -348,10 +355,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       pro: 29,
       repassage: 29,
       vitres: 29,
-      terrasse: 34,  // Terrasse = tarif ponctuel (toujours ponctuel)
+      terrasse: 34,
     };
-    // Si fréquence ponctuelle, on applique le tarif ponctuel même si le service choisi est différent
-    // Sauf pour terrasse qui est déjà à 34€/h
     const effectiveRate = wizardState.service === 'terrasse' 
       ? rates.terrasse 
       : (wizardState.frequency === 'once' ? rates.ponctuel : (rates[wizardState.service] || 29));
@@ -364,63 +369,47 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     const hours = wizardState.hours;
     const freq = selectedFrequency?.multiplier || 1;
     
-    // Calcul options (par venue, pas par heure)
-    // On sépare les options « main-d'œuvre » des « fournitures »
-    // car seule la main-d'œuvre est éligible au crédit d'impôt 50%
-    let optionsMainOeuvre = 0; // prestations = éligibles crédit impôt
-    let optionsFournitures = 0; // produits/matériel = NON éligibles crédit impôt
+    // Options
+    let optionsMainOeuvre = 0;
+    let optionsFournitures = 0;
     if (wizardState.options.ironing) optionsMainOeuvre += 5;
-    if (wizardState.options.products) optionsFournitures += 3; // Produits ménagers = fourniture
+    if (wizardState.options.products) optionsFournitures += 3;
     if (wizardState.options.windows) optionsMainOeuvre += 5;
     if (wizardState.options.shopping) optionsMainOeuvre += 10;
-    const optionsPerVenue = optionsMainOeuvre + optionsFournitures;
 
-    // Coût produit saturateur (fourniture, hors réduction & hors crédit impôt)
+    // Saturateur
     const hasSaturateur = wizardState.service === 'terrasse' && wizardState.saturateur === true && wizardState.surface;
     const saturCost = hasSaturateur ? (saturateurProductCost[wizardState.surface] || 0) : 0;
 
-    // Total fournitures par période (non éligible crédit impôt, non soumis à la promo)
     const totalFournitures = (optionsFournitures * freq) + saturCost;
-
-    // Sous-total main-d'œuvre (éligible crédit impôt + soumis à la promo)
     const subtotalMainOeuvre = (baseRate * hours * freq) + (optionsMainOeuvre * freq);
-    
-    // Sous-total global affiché
     const subtotal = subtotalMainOeuvre + (optionsFournitures * freq);
     
-    // Promo selon service (appliquée uniquement sur la main-d'œuvre) :
-    // - Airbnb, Pro & Terrasse : seulement 30% (pas de 1ère heure offerte)
-    // - Autres (régulier, ponctuel, seniors, repassage, vitres) : 1ère heure offerte PUIS 30% sur le reste
-    // Note : pour ponctuel/terrasse (once), le wording dit "-30% de réduction" et non "le 1er mois"
-    const isNoFreeHour = wizardState.service === 'airbnb' || wizardState.service === 'pro' || wizardState.service === 'terrasse';
-    const promoFirstHour = isNoFreeHour ? 0 : baseRate; // 1h offerte uniquement pour particuliers (hors terrasse)
-    const subtotalAfterFreeHour = Math.max(0, subtotalMainOeuvre - promoFirstHour); // On retire l'heure gratuite d'abord
-    const promoPercent = subtotalAfterFreeHour * 0.30; // Puis -30% sur le reste
+    // ═══ PROMO DYNAMIQUE ═══
+    // Récupérer la promo active pour ce service depuis la base
+    const activePromo = getActivePromo(promotions, wizardState.service);
+    const hasPromo = !!activePromo;
+    const discountRate = hasPromo ? (activePromo.discountPercent / 100) : 0;
+    const isNoFreeHour = hasPromo ? !activePromo.freeFirstHour : true;
+    
+    const promoFirstHour = (hasPromo && !isNoFreeHour) ? baseRate : 0;
+    const subtotalAfterFreeHour = Math.max(0, subtotalMainOeuvre - promoFirstHour);
+    const promoPercent = hasPromo ? subtotalAfterFreeHour * discountRate : 0;
     const promo = promoFirstHour + promoPercent;
     
-    // Après promo = main-d'œuvre après promo + fournitures (produits intacts)
     const mainOeuvreAfterPromo = Math.max(0, subtotalMainOeuvre - promo);
     const afterPromo = mainOeuvreAfterPromo + (optionsFournitures * freq);
     
-    // Avance immédiate 50% (crédit d'impôt)
-    // S'applique UNIQUEMENT sur la main-d'œuvre, PAS sur les fournitures
-    // - Pro : jamais éligible
-    // - Airbnb avec résidence secondaire : pas éligible
-    // - Autres : éligible
+    // Crédit impôt 50%
     let isEligible50 = selectedService?.eligible50 !== false;
-    
-    // Cas spécial Airbnb : dépend du type de résidence
     if (wizardState.service === 'airbnb' && wizardState.details.residenceType === 'secondaire') {
       isEligible50 = false;
     }
-    
-    // Crédit impôt 50% uniquement sur main-d'œuvre après promo
     const creditImpot = isEligible50 ? mainOeuvreAfterPromo * 0.5 : 0;
     
-    // Prix final = main-d'œuvre après crédit + fournitures (produits + saturateur)
     const finalPrice = (mainOeuvreAfterPromo - creditImpot) + totalFournitures;
 
-    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isNoFreeHour, saturCost, creditImpot, totalFournitures, mainOeuvreAfterPromo };
+    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isNoFreeHour, saturCost, creditImpot, totalFournitures, mainOeuvreAfterPromo, hasPromo, discountPercent: hasPromo ? activePromo.discountPercent : 0 };
   };
 
   const estimate = calculateEstimate();
@@ -539,8 +528,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               <li className="flex items-start gap-2">
                 <span className="bg-green-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">2</span>
                 <span>{wizardState.frequency === 'once' 
-                  ? (estimate.isNoFreeHour ? 'Intervention avec -30% de réduction' : '1ère heure offerte, -30% de réduction')
-                  : (estimate.isNoFreeHour ? '1ère intervention avec -30%' : '1ère heure d\'essai')
+                  ? (estimate.isNoFreeHour ? `Intervention avec -${estimate.discountPercent}% de réduction` : `1ère heure offerte, -${estimate.discountPercent}% de réduction`)
+                  : (estimate.isNoFreeHour ? `1ère intervention avec -${estimate.discountPercent}%` : '1ère heure d\'essai')
                 }</span>
               </li>
               <li className="flex items-start gap-2">
@@ -834,9 +823,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               </div>
             )}
             
-            {/* -30% de réduction */}
+            {/* -X% de réduction */}
             <div className="flex justify-between text-sm text-green-600">
-              <span>📉 -30% {wizardState.frequency === 'once' ? 'de réduction' : 'sur le 1er mois'}</span>
+              <span>📉 -{estimate.discountPercent}% {wizardState.frequency === 'once' ? 'de réduction' : 'sur le 1er mois'}</span>
               <span>-{estimate.promoPercent.toFixed(2)} €</span>
             </div>
 

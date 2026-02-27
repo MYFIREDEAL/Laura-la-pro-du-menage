@@ -118,3 +118,43 @@ CREATE POLICY "Admin peut modifier les candidatures"
 CREATE POLICY "Admin peut supprimer les candidatures"
   ON candidatures FOR DELETE
   USING (true);
+
+
+-- ============================================
+-- Table des promotions (gestion admin)
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS promotions (
+  service_id TEXT PRIMARY KEY,
+  promo_active BOOLEAN NOT NULL DEFAULT TRUE,
+  discount_percent NUMERIC NOT NULL DEFAULT 30,
+  free_first_hour BOOLEAN NOT NULL DEFAULT TRUE,
+  end_date DATE NOT NULL DEFAULT '2026-03-20',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Insérer les promos par défaut pour chaque service
+INSERT INTO promotions (service_id, promo_active, discount_percent, free_first_hour, end_date) VALUES
+  ('regulier',  TRUE, 30, TRUE,  '2026-03-20'),
+  ('ponctuel',  TRUE, 30, TRUE,  '2026-03-20'),
+  ('seniors',   TRUE, 30, TRUE,  '2026-03-20'),
+  ('airbnb',    TRUE, 30, FALSE, '2026-03-20'),
+  ('pro',       TRUE, 30, FALSE, '2026-03-20'),
+  ('repassage', TRUE, 30, TRUE,  '2026-03-20'),
+  ('vitres',    TRUE, 30, TRUE,  '2026-03-20'),
+  ('terrasse',  TRUE, 30, FALSE, '2026-03-20')
+ON CONFLICT (service_id) DO NOTHING;
+
+ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Tout le monde peut lire les promos"
+  ON promotions FOR SELECT
+  USING (true);
+
+CREATE POLICY "Admin peut modifier les promos"
+  ON promotions FOR UPDATE
+  USING (true);
+
+CREATE POLICY "Admin peut insérer les promos"
+  ON promotions FOR INSERT
+  WITH CHECK (true);

@@ -116,7 +116,7 @@ supabase-setup.sql                   # SQL pour créer les tables + RLS policies
 | Bureaux & Copropriétés | `pro` | 29€ | ❌ | ✅ |
 | Terrasse Bois | `terrasse` | 34€ | ❌ | ✅ |
 | Baie Vitrée | `vitres` | 29€ | ✅ | ❌ |
-| Repassage | `repassage` | 29€ | ✅ | ❌ |
+| Repassage | — | — | — | — (Bientôt disponible) |
 
 ### Étape 2 — Fréquence + Durée
 
