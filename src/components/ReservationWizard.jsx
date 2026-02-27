@@ -278,7 +278,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       // Petit délai pour l'animation de sortie
       setTimeout(() => {
         setWizardState(prev => ({ ...prev, ...updates }));
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Scroll immédiat vers le haut (smooth buggue sur mobile)
+        window.scrollTo(0, 0);
         
         // Fin de la transition après l'animation d'entrée
         setTimeout(() => {
