@@ -42,9 +42,10 @@ src/
 │   ├── supabase.js                  # Client Supabase (renvoie null si env vars absentes)
 │   ├── demandesStorage.js           # CRUD demandes — Supabase + fallback localStorage
 │   ├── candidaturesStorage.js       # CRUD candidatures — Supabase + fallback localStorage
+│   ├── promotionsStorage.js         # CRUD promotions — Supabase + fallback localStorage
 │   └── utils.js
 └── pages/
-    └── AdminPage.jsx                # ~1900 lignes — Admin avec onglets Demandes/Candidatures
+    └── AdminPage.jsx                # ~2100 lignes — Admin avec onglets Demandes/Candidatures/Promos
 
 supabase-setup.sql                   # SQL pour créer les tables + RLS policies
 .env                                 # Variables Supabase (gitignored)
@@ -207,16 +208,23 @@ optionsMainOeuvre = (repassage ? 5€ + vitres ? 5€) × freq  // ajouté à ma
 - Produits fournis par Laura : +3€/venue → **fournitures** (pas de crédit impôt)
 - Vitres : +5€/venue → main-d'œuvre
 
-### 🎁 Promo "Offre de bienvenue" (1er mois)
+### 🎁 Promo "Offre de bienvenue" — DYNAMIQUE (Supabase)
 
-#### Pour régulier, ponctuel, seniors, vitres :
-1. **1ère heure offerte** = baseRate (ex: 29€ ou 34€) — sauf si `isNoFreeHour`
-2. **-30%** sur la **main-d'œuvre restante** (pas sur les fournitures !)
-3. Total promo mainOeuvre = 1ère heure + 30% du reste
+Les promos sont maintenant gérées **dynamiquement** depuis l'onglet "Promos" de l'admin.
+Chaque service a ses propres paramètres dans la table `promotions` :
+- **promo_active** : activer/désactiver la promo
+- **discount_percent** : pourcentage de réduction (ex: 30)
+- **free_first_hour** : 1ère heure offerte oui/non
+- **end_date** : date de fin de l'offre
 
-#### Pour airbnb, pro, terrasse (isNoFreeHour = true) :
-1. Pas de 1ère heure offerte
-2. **-30%** sur la main-d'œuvre totale
+#### Logique de calcul (ReservationWizard) :
+1. `getActivePromo(promotions, serviceId)` récupère la promo active (non expirée)
+2. Si `freeFirstHour` : 1ère heure offerte = baseRate
+3. Réduction `discountPercent`% sur la **main-d'œuvre restante** (pas les fournitures)
+
+#### Affichage conditionnel (App.jsx) :
+- Les badges image (-X%), les encarts promo et dates sont **masqués** quand la promo est désactivée
+- `promo('serviceId')` / `promoDate('serviceId')` / `promoDiscount('serviceId')` — helpers dans App.jsx
 
 #### Crédit d'impôt 50% (avance immédiate) :
 - Applicable pour : régulier, ponctuel, seniors, airbnb (résidence principale), vitres
@@ -313,7 +321,17 @@ Affiche en temps réel :
 | departement | TEXT | Département |
 | notes | TEXT | Notes internes admin |
 
-### Storage pattern (demandesStorage.js / candidaturesStorage.js)
+#### `promotions` (gestion promos dynamiques)
+| Colonne | Type | Description |
+|---------|------|-------------|
+| service_id | TEXT PK | Ex: "regulier", "seniors", "airbnb" |
+| promo_active | BOOLEAN | Promo activée ou non |
+| discount_percent | INTEGER | Pourcentage de réduction (ex: 30) |
+| free_first_hour | BOOLEAN | 1ère heure offerte |
+| end_date | DATE | Date de fin de l'offre |
+| updated_at | TIMESTAMPTZ | Dernière modification |
+
+### Storage pattern (demandesStorage.js / candidaturesStorage.js / promotionsStorage.js)
 - Toutes les fonctions sont **async**
 - **Supabase en priorité**, fallback localStorage si `supabase === null`
 - Fonctions : `getAll`, `save`, `updateStatus`, `addNote`, `delete`, `exportToCSV` (demandes only)
@@ -329,7 +347,7 @@ Affiche en temps réel :
 - Stocké en **SHA-256** : `780438c8ef0436ffbd307c131f854c8b663cce768ee47e1d79c0d9edd3cefc60`
 - Vérification via `crypto.subtle.digest('SHA-256', ...)` (Web Crypto API)
 
-### Interface à 2 onglets
+### Interface à 3 onglets
 
 #### Onglet "Demandes" (thème orange)
 - 4 stats cliquables : Total / Nouvelles / Contactées / Confirmées
@@ -346,6 +364,13 @@ Affiche en temps réel :
 - Panneau détail : contact, changement de statut (new/contacted/confirmed/cancelled=Refusée), notes, appeler
 - Mobile : slide-over + modale de suppression
 
+#### Onglet "Promos" (thème émeraude)
+- Barre de stats : Actives / Expirent bientôt / Inactives
+- Grille de cartes par service (8 services)
+- Chaque carte : toggle actif/inactif, % remise, 1ère heure offerte (toggle), date fin, bouton +1 mois
+- "Appliquer à tous" : modal pour définir date fin + % remise pour tous les services d'un coup
+- Données stockées dans table `promotions` (Supabase) avec fallback localStorage
+
 ---
 
 ## ⚠️ Points d'attention / Pièges connus
@@ -353,7 +378,7 @@ Affiche en temps réel :
 1. **`setCurrentPage`** (PAS `setPage`) — erreur fréquente qui casse la navigation
 2. **Tarif ponctuel** : 34€/h s'applique dès que `frequency === 'once'`, même si le service sélectionné est "régulier"
 3. **Options = par venue** (pas par heure) — multiplié par la fréquence
-4. **Promo -30%** : appliquée UNIQUEMENT sur main-d'œuvre, APRÈS soustraction de l'heure gratuite
+4. **Promo dynamique** : les % et dates sont gérés depuis l'onglet Promos de l'admin — plus de hardcodé
 5. **Crédit impôt 50%** : UNIQUEMENT sur main-d'œuvre après promo (exclut fournitures : produits ménagers + saturateur)
 6. **Surface à l'étape 3** : masquée pour ponctuel (prop `service` passée à `DetailsRegularPonctuel`)
 7. **initialService ponctuel** : frequency doit être initialisée à `'once'` dans le useState
@@ -387,6 +412,8 @@ VITE_SUPABASE_ANON_KEY=<voir .env>
 
 - [x] **Mettre à jour la date de l'offre de bienvenue** → prolongée jusqu'au 20 mars 2026 ✅
 - [x] Connecter le service "Repassage" → connecté au wizard ✅
+- [x] **Onglet Promotions admin** → gestion dynamique des promos (%, dates, 1ère heure) ✅
+- [x] **⚠️ Exécuter le SQL `promotions`** sur Supabase → table + RLS + données par défaut ✅
 - [ ] Ajouter des témoignages clients
 - [ ] SEO / meta tags
 - [ ] Auth admin plus robuste (actuellement hash SHA-256 côté client, pas de session)
@@ -397,7 +424,24 @@ VITE_SUPABASE_ANON_KEY=<voir .env>
 
 ## 📅 Dernière mise à jour : 27 février 2026
 
-### Session du 27/02/2026 — Résumé des changements :
+### Session du 27/02/2026 (session 2) — Résumé des changements :
+1. ✅ **Onglet Promotions admin** : 3ème onglet dans AdminPage (thème émeraude)
+   - Toggle actif/inactif par service
+   - % remise configurable
+   - 1ère heure offerte (toggle)
+   - Date de fin avec +1 mois
+   - "Appliquer à tous" (date + %)
+2. ✅ **Table Supabase `promotions`** : SQL ajouté à supabase-setup.sql + RLS + INSERT par défaut
+3. ✅ **promotionsStorage.js** : CRUD complet avec fallback localStorage
+4. ✅ **ReservationWizard dynamique** : calcul prix branché sur promos Supabase (% et 1ère heure)
+5. ✅ **App.jsx dynamique** : tous les badges, encarts promo et dates branchés sur Supabase
+6. ✅ **Affichage conditionnel** : promos masquées quand désactivées dans l'admin
+7. ✅ **Fix admin modal** : boucle infinie hashchange corrigée
+8. ✅ **Fix mobile admin** : suppression autoFocus clavier
+9. ✅ **Fix flicker admin** : setTimeout entre fermeture modale et changement de page
+10. ✅ **Nettoyage wizard** : suppression des 3 affichages promo redondants
+
+### Session du 27/02/2026 (session 1) — Résumé des changements :
 1. ✅ **Saturateur terrasse** : grille de coût par surface (15€ → 180€), intégré au calcul + UI
 2. ✅ **Crédit d'impôt fix** : séparation main-d'œuvre / fournitures — crédit 50% uniquement sur main-d'œuvre
 3. ✅ **Mobile spacing** : espacement des boutons de service sur mobile (gap-y-4, px-5)
