@@ -92,6 +92,21 @@ const App = () => {
     window.scrollTo(0, 0);
   }, [currentPage]);
 
+  // SEO — Titre dynamique par page
+  useEffect(() => {
+    const titles = {
+      accueil: 'Laura la Pro du Ménage — Ménage à domicile, Aide Seniors, Repassage | Devis Gratuit',
+      services: 'Nos Services de Ménage à Domicile | Laura la Pro du Ménage',
+      seniors: 'Aide Ménagère Seniors à Domicile | Laura la Pro du Ménage',
+      histoire: 'Notre Histoire — Qui est Laura ? | Laura la Pro du Ménage',
+      fiscal: 'Crédit d\'Impôt 50% — Avantage Fiscal Ménage | Laura la Pro du Ménage',
+      reserver: 'Réserver un Service de Ménage — Devis Gratuit | Laura la Pro du Ménage',
+      recrutement: 'Recrutement — Rejoignez Notre Équipe | Laura la Pro du Ménage',
+      admin: 'Administration | Laura la Pro du Ménage'
+    };
+    document.title = titles[currentPage] || 'Laura la Pro du Ménage';
+  }, [currentPage]);
+
   const navigation = [
     { id: 'accueil', name: 'Accueil' },
     { id: 'services', name: 'Nos Services' },
@@ -128,7 +143,7 @@ const App = () => {
       <section className="relative w-[95%] md:w-[85%] mx-auto">
         <img 
           src="https://ik.imagekit.io/bqla7nrgyf/unnamed-1.jpg" 
-          alt="Laura souriante" 
+          alt="Laura la Pro du Ménage — femme de ménage souriante et professionnelle" 
           className="w-full rounded-2xl min-h-[280px] object-cover object-[30%_center] md:object-center" 
         />
         
@@ -202,7 +217,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/te%CC%81le%CC%81chargement%20(1).png?updatedAt=1769989907107" 
-                  alt="Famille débordée" 
+                  alt="Service de ménage régulier pour familles débordées à domicile" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Étoiles de propreté animées */}
@@ -254,7 +269,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/te%CC%81le%CC%81chargement%20(10).png?updatedAt=1769990159607" 
-                  alt="Aide aux seniors" 
+                  alt="Aide ménagère et accompagnement bienveillant pour personnes âgées" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Étoiles de propreté animées */}
@@ -306,7 +321,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/te%CC%81le%CC%81chargement%20(11).png?updatedAt=1769990512574" 
-                  alt="AirBnB & Gîtes" 
+                  alt="Ménage professionnel pour locations Airbnb et gîtes" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Étoiles de propreté animées */}
@@ -351,7 +366,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/te%CC%81le%CC%81chargement%20(4).png?updatedAt=1769990618710" 
-                  alt="Bureaux & Copropriétés" 
+                  alt="Nettoyage de bureaux et parties communes de copropriétés" 
                   className="w-full h-full object-cover object-top"
                 />
                 {/* Étoiles de propreté animées */}
@@ -396,7 +411,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/printemps.jpg" 
-                  alt="Ménage Printanier" 
+                  alt="Grand ménage de printemps et nettoyage ponctuel à domicile" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Badge sur l'image */}
@@ -442,7 +457,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/Repassage.jpg" 
-                  alt="Service de repassage" 
+                  alt="Service de repassage professionnel à domicile" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Badge sur l'image */}
@@ -486,7 +501,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/Lavage%20vitre.jpg" 
-                  alt="Nettoyage baie vitrée" 
+                  alt="Nettoyage professionnel de baies vitrées et fenêtres à domicile" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Badge sur l'image */}
@@ -530,7 +545,7 @@ const App = () => {
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/Terasse.jpg" 
-                  alt="Nettoyage de terrasse" 
+                  alt="Nettoyage haute pression de terrasses et espaces extérieurs" 
                   className="w-full h-full object-cover object-center"
                 />
                 {/* Badge sur l'image */}
@@ -774,7 +789,7 @@ const App = () => {
               <div className="relative">
                 <img 
                   src="https://ik.imagekit.io/bqla7nrgyf/te%CC%81le%CC%81chargement%20(10).png?updatedAt=1769990159607" 
-                  alt="Soutien aux seniors" 
+                  alt="Accompagnement ménager dédié aux personnes âgées et seniors" 
                   className="rounded-2xl shadow-lg w-full max-w-sm object-cover"
                 />
                 {/* Étoiles animées */}
@@ -853,7 +868,7 @@ const App = () => {
           <div className="flex flex-col md:flex-row gap-8 items-center mb-8">
             <img 
               src="https://ik.imagekit.io/bqla7nrgyf/unnamed-1.jpg" 
-              alt="Laura" 
+              alt="Laura fondatrice de Laura la Pro du Ménage — notre histoire" 
               className="w-48 h-48 rounded-full object-cover shadow-lg flex-shrink-0"
             />
             <div>
@@ -1067,7 +1082,7 @@ const App = () => {
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <img 
               src="https://ik.imagekit.io/bqla7nrgyf/unnamed.jpg" 
-              alt="Laura recrute" 
+              alt="Recrutement auto-entrepreneurs ménage — Laura la Pro du Ménage" 
               className="w-full md:w-1/2 rounded-2xl object-cover shadow-lg"
             />
             <div>
