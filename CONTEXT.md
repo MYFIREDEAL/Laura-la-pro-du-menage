@@ -7,12 +7,13 @@
 
 ## 📋 Résumé du projet
 
-Site vitrine + simulateur de prix pour **Laura la Pro du Ménage**, entreprise de services à la personne (ménage, aide seniors, Airbnb, bureaux).
+Site vitrine + simulateur de prix pour **Laura la Pro du Ménage**, entreprise de services à la personne (ménage, aide seniors, Airbnb, bureaux, terrasses, vitres).
 
 - **URL live** : https://laura-la-pro-du-menage.vercel.app
 - **GitHub** : `MYFIREDEAL/Laura-la-pro-du-menage` (branche `main`)
 - **Déploiement** : Vercel auto-deploy à chaque `git push` sur `main`
 - **Stack** : React (SPA) + Vite + Tailwind CSS + Lucide Icons
+- **Backend** : Supabase (PostgreSQL) — fallback localStorage si Supabase indisponible
 - **Images** : Hébergées sur ImageKit (`ik.imagekit.io/bqla7nrgyf/`)
 
 ---
@@ -21,11 +22,11 @@ Site vitrine + simulateur de prix pour **Laura la Pro du Ménage**, entreprise d
 
 ```
 src/
-├── App.jsx                          # ~1450 lignes — Toutes les pages + navigation
+├── App.jsx                          # ~1460 lignes — Toutes les pages + navigation
 ├── main.jsx                         # Point d'entrée React
 ├── index.css                        # Styles globaux + Tailwind
 ├── components/
-│   ├── ReservationWizard.jsx        # ~1060 lignes — Wizard 4 étapes (calculateur de prix)
+│   ├── ReservationWizard.jsx        # ~1331 lignes — Wizard 4 étapes (calculateur de prix)
 │   ├── reservation/
 │   │   ├── Step3Details.jsx         # Étape 3 — Switch modulaire par service
 │   │   ├── Step4Contact.jsx         # Étape 4 — Coordonnées + envoi
@@ -38,10 +39,16 @@ src/
 │   ├── Layout.jsx
 │   └── ui/                          # Composants UI (button, toast, etc.)
 ├── lib/
-│   ├── demandesStorage.js           # Sauvegarde des demandes
+│   ├── supabase.js                  # Client Supabase (renvoie null si env vars absentes)
+│   ├── demandesStorage.js           # CRUD demandes — Supabase + fallback localStorage
+│   ├── candidaturesStorage.js       # CRUD candidatures — Supabase + fallback localStorage
 │   └── utils.js
 └── pages/
-    └── AdminPage.jsx                # Page admin (mdp: yesbaby)
+    └── AdminPage.jsx                # ~1900 lignes — Admin avec onglets Demandes/Candidatures
+
+supabase-setup.sql                   # SQL pour créer les tables + RLS policies
+.env                                 # Variables Supabase (gitignored)
+.env.example                         # Template des variables d'environnement
 ```
 
 ---
@@ -99,14 +106,17 @@ src/
 ## 💰 ReservationWizard — Calculateur de prix (4 étapes)
 
 ### Étape 1 — Choix du service
-5 services disponibles :
-| Service | ID | Tarif/h | Éligible -50% |
-|---------|-----|---------|---------------|
-| Ménage régulier | `regulier` | 29€ | ✅ |
-| Ménage ponctuel | `ponctuel` | 34€ | ✅ |
-| Accompagnement Seniors | `seniors` | 29€ | ✅ |
-| Airbnb & Gîtes | `airbnb` | 29€ | ✅ (sauf résidence secondaire) |
-| Bureaux & Copropriétés | `pro` | 29€ | ❌ |
+8 services disponibles (5 actifs dans le wizard) :
+| Service | ID | Tarif/h | Éligible -50% | isNoFreeHour |
+|---------|-----|---------|---------------|--------------|
+| Ménage régulier | `regulier` | 29€ | ✅ | ❌ |
+| Ménage ponctuel | `ponctuel` | 34€ | ✅ | ❌ |
+| Accompagnement Seniors | `seniors` | 29€ | ✅ | ❌ |
+| Airbnb & Gîtes | `airbnb` | 29€ | ✅ (sauf résidence secondaire) | ✅ |
+| Bureaux & Copropriétés | `pro` | 29€ | ❌ | ✅ |
+| Terrasse Bois | `terrasse` | 34€ | ❌ | ✅ |
+| Baie Vitrée | `vitres` | 29€ | ✅ | ❌ |
+| Repassage | — | — | — | — (Bientôt disponible) |
 
 ### Étape 2 — Fréquence + Durée
 
@@ -167,39 +177,62 @@ Chaque service a son propre composant de détails :
 - Téléphone (obligatoire, min 10 chiffres), Nom, Ville, Commentaires
 - Envoi de la demande
 
-### 💲 Calcul des prix
+### 💲 Calcul des prix (calculateEstimate)
+
+Le calcul sépare **main-d'œuvre** et **fournitures** :
 
 ```
-subtotal = (baseRate × hours × freq) + (optionsPerVenue × freq)
+mainOeuvre = baseRate × hours × freq
+fournitures = (produitsMenagers ? 3€ : 0) × freq + saturateurCost
+optionsMainOeuvre = (repassage ? 5€ + vitres ? 5€) × freq  // ajouté à mainOeuvre
 ```
 
-**Options** = prix par venue (pas par heure) × fréquence :
-- Repassage : +5€/venue
-- Produits fournis par Laura : +3€/venue
-- Vitres : +5€/venue
+**Promo -30%** : appliquée **uniquement sur main-d'œuvre** (pas les fournitures)
+**Crédit impôt 50%** : calculé **uniquement sur main-d'œuvre après promo** (pas les fournitures)
+
+### Fournitures spécifiques
+
+**Produits ménagers** : +3€/venue (option cochable dans Step 3)
+**Saturateur terrasse** : coût selon surface :
+| Surface | Coût saturateur |
+|---------|----------------|
+| xs (< 15m²) | 15€ |
+| sm (15-30m²) | 35€ |
+| md (30-50m²) | 75€ |
+| lg (50-80m²) | 120€ |
+| xl (80m²+) | 180€ |
+
+### Options (prix par venue, pas par heure) :
+- Repassage : +5€/venue → main-d'œuvre
+- Produits fournis par Laura : +3€/venue → **fournitures** (pas de crédit impôt)
+- Vitres : +5€/venue → main-d'œuvre
 
 ### 🎁 Promo "Offre de bienvenue" (1er mois)
 
-#### Pour régulier, ponctuel, seniors :
-1. **1ère heure offerte** = baseRate (ex: 29€ ou 34€)
-2. **-30%** sur le **reste** (subtotal - 1ère heure) → pas sur le total complet !
-3. Total promo = 1ère heure + 30% du reste
+#### Pour régulier, ponctuel, seniors, vitres :
+1. **1ère heure offerte** = baseRate (ex: 29€ ou 34€) — sauf si `isNoFreeHour`
+2. **-30%** sur la **main-d'œuvre restante** (pas sur les fournitures !)
+3. Total promo mainOeuvre = 1ère heure + 30% du reste
 
-#### Pour airbnb, pro :
+#### Pour airbnb, pro, terrasse (isNoFreeHour = true) :
 1. Pas de 1ère heure offerte
-2. **-30%** sur le total complet
+2. **-30%** sur la main-d'œuvre totale
 
-#### Avance immédiate 50% :
-- Applicable pour : régulier, ponctuel, seniors, airbnb (résidence principale)
-- PAS applicable pour : pro, airbnb (résidence secondaire)
-- `finalPrice = afterPromo × 0.5`
+#### Crédit d'impôt 50% (avance immédiate) :
+- Applicable pour : régulier, ponctuel, seniors, airbnb (résidence principale), vitres
+- PAS applicable pour : pro, terrasse, airbnb (résidence secondaire)
+- Calculé **uniquement sur main-d'œuvre après promo** (exclut fournitures)
+- `creditImpot = mainOeuvreAfterPromo × 0.5`
 
 ### Récapitulatif latéral (sticky)
 Affiche en temps réel :
-- Service, Fréquence, Surface (ponctuel), État (ponctuel), Durée
+- Service, Fréquence, Surface (ponctuel/terrasse), État (ponctuel/terrasse), Durée
 - Options actives
-- Sous-total, Détail des remises (vert), Après promo
-- Avance immédiate 50% (si éligible)
+- Sous-total main-d'œuvre
+- Bloc vert promo : 1ère heure offerte + -30%
+- "Après promo" main-d'œuvre
+- Bloc bleu crédit impôt 50% (si éligible, uniquement sur main-d'œuvre)
+- Bloc ambre fournitures (produits ménagers + saturateur, si présents)
 - **Prix final en gros** rouge
 
 ---
@@ -223,6 +256,8 @@ Affiche en temps réel :
 - 3 cartes avantages (rémunération juste, aide admin AE, missions régulières)
 - Formulaire : Prénom, Téléphone, Email, Département
 - Cible : travailleurs indépendants auto-entrepreneurs
+- ⚠️ **Défini comme variable JSX** (`const pageRecrutement = (...)`) et pas composant (`() => (...)`) — sinon les inputs perdent le focus à chaque frappe (re-render remonte le composant)
+- À la soumission → `saveCandidature()` → Supabase table `candidatures`
 
 ### PageSeniors
 - Page dédiée à l'accompagnement seniors
@@ -238,16 +273,96 @@ Affiche en temps réel :
 
 ---
 
+## 🗄️ Supabase — Base de données
+
+### Configuration
+- **Projet** : "Laura la pro du ménage" (Europe West)
+- **URL** : `https://qajxmyjzgrjnsnvtqwyx.supabase.co`
+- **Anon Key** : dans `.env` (variable `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY`)
+- **Variables Vercel** : configurées ✅
+
+### Tables
+
+#### `demandes` (réservations clients)
+| Colonne | Type | Description |
+|---------|------|-------------|
+| id | TEXT PK | Ex: "DEM-LXZ45-AB3C" |
+| created_at | TIMESTAMPTZ | Date de création |
+| status | TEXT | new / contacted / confirmed / cancelled |
+| name, phone, city, message | TEXT | Coordonnées client |
+| service, service_label | TEXT | Service choisi |
+| frequency, frequency_label | TEXT | Fréquence |
+| hours | NUMERIC | Durée en heures |
+| price_estimate | NUMERIC | Prix estimé |
+| options | JSONB | Options cochées |
+| surface, clean_level | TEXT | Surface et état (ponctuel/terrasse) |
+| saturateur | BOOLEAN | Option saturateur (terrasse) |
+| saturateur_cost | NUMERIC | Coût produit saturateur |
+| details | JSONB | Tous les détails Step 3/4 |
+| notes | TEXT | Notes internes admin |
+
+#### `candidatures` (recrutement)
+| Colonne | Type | Description |
+|---------|------|-------------|
+| id | TEXT PK | Ex: "CAND-LXZ45-AB3C" |
+| created_at | TIMESTAMPTZ | Date de candidature |
+| status | TEXT | new / contacted / confirmed / cancelled |
+| prenom | TEXT | Prénom du candidat |
+| tel | TEXT | Téléphone |
+| email | TEXT | Email |
+| departement | TEXT | Département |
+| notes | TEXT | Notes internes admin |
+
+### Storage pattern (demandesStorage.js / candidaturesStorage.js)
+- Toutes les fonctions sont **async**
+- **Supabase en priorité**, fallback localStorage si `supabase === null`
+- Fonctions : `getAll`, `save`, `updateStatus`, `addNote`, `delete`, `exportToCSV` (demandes only)
+- Conversion snake_case ↔ camelCase automatique
+
+---
+
+## 🔐 Page Admin (/#admin)
+
+### Accès
+- URL : `/#admin` → affiche la **modale de mot de passe** (pas d'accès direct)
+- Mot de passe : `yesbaby`
+- Stocké en **SHA-256** : `780438c8ef0436ffbd307c131f854c8b663cce768ee47e1d79c0d9edd3cefc60`
+- Vérification via `crypto.subtle.digest('SHA-256', ...)` (Web Crypto API)
+
+### Interface à 2 onglets
+
+#### Onglet "Demandes" (thème orange)
+- 4 stats cliquables : Total / Nouvelles / Contactées / Confirmées
+- Barre de recherche + filtres dépliables (statut, service)
+- Liste cliquable (gauche) + panneau détail sticky (droite, desktop)
+- Mobile : slide-over plein écran
+- Actions : changer statut, notes internes, supprimer, exporter CSV, appeler
+- Affiche tous les détails : contact, service, options, surface, état, accès, priorités, etc.
+
+#### Onglet "Candidatures" (thème violet)
+- 4 stats cliquables : Total / Nouvelles / Contactées / Confirmées
+- Barre de recherche + filtre statut
+- Liste des candidats (prénom, tel, email, département, statut, date)
+- Panneau détail : contact, changement de statut (new/contacted/confirmed/cancelled=Refusée), notes, appeler
+- Mobile : slide-over + modale de suppression
+
+---
+
 ## ⚠️ Points d'attention / Pièges connus
 
 1. **`setCurrentPage`** (PAS `setPage`) — erreur fréquente qui casse la navigation
 2. **Tarif ponctuel** : 34€/h s'applique dès que `frequency === 'once'`, même si le service sélectionné est "régulier"
 3. **Options = par venue** (pas par heure) — multiplié par la fréquence
-4. **Promo -30%** : appliquée APRÈS soustraction de l'heure gratuite (pas sur le total)
-5. **Surface à l'étape 3** : masquée pour ponctuel (prop `service` passée à `DetailsRegularPonctuel`)
-6. **initialService ponctuel** : frequency doit être initialisée à `'once'` dans le useState
-7. **Multiplicateurs** : weekly=4, biweekly=2, monthly=1, once=1 (pas 4.33)
-8. **Date offre bienvenue** : "Valable jusqu'au 14 février 2026" → ⚠️ EXPIRÉE (on est le 26/02/2026) — À METTRE À JOUR
+4. **Promo -30%** : appliquée UNIQUEMENT sur main-d'œuvre, APRÈS soustraction de l'heure gratuite
+5. **Crédit impôt 50%** : UNIQUEMENT sur main-d'œuvre après promo (exclut fournitures : produits ménagers + saturateur)
+6. **Surface à l'étape 3** : masquée pour ponctuel (prop `service` passée à `DetailsRegularPonctuel`)
+7. **initialService ponctuel** : frequency doit être initialisée à `'once'` dans le useState
+8. **isNoFreeHour** : `airbnb`, `pro`, `terrasse` → pas de 1ère heure offerte
+9. **Terrasse** : skip Step 3 (pas de détails) → passe directement de Step 2 à Step 4
+10. **Pages inline dans App.jsx** : définies comme **variables JSX** (`const page = (...)`) PAS comme composants (`const Page = () => (...)`) — sinon les inputs perdent le focus à chaque setState
+11. **Admin `/#admin`** : affiche la modale mdp, pas d'accès direct (même via URL)
+12. **Supabase** : toutes les fonctions storage sont **async** → `await` obligatoire
+13. **Multiplicateurs** : weekly=4, biweekly=2, monthly=1, once=1 (pas 4.33)
 
 ---
 
@@ -260,6 +375,10 @@ npm run dev
 
 # Déployer (auto via Vercel)
 git add -A && git commit -m "description" && git push
+
+# Variables d'environnement requises (.env)
+VITE_SUPABASE_URL=https://qajxmyjzgrjnsnvtqwyx.supabase.co
+VITE_SUPABASE_ANON_KEY=<voir .env>
 ```
 
 ---
@@ -267,16 +386,22 @@ git add -A && git commit -m "description" && git push
 ## 📌 TODO / Idées pour la suite
 
 - [ ] **Mettre à jour la date de l'offre de bienvenue** (actuellement "14 février 2026" → expirée)
-- [ ] Connecter les services "Bientôt disponible" (Repassage, Baie vitrée, Terrasse bois)
-- [ ] Afficher "Total" au lieu de "/ mois" quand fréquence = ponctuel (once)
-- [ ] Ajouter un service "Ménage printanier" distinct du ponctuel ?
-- [ ] Intégrer un vrai backend pour les demandes (actuellement localStorage)
+- [ ] Connecter le service "Repassage" (seul service encore "Bientôt disponible")
 - [ ] Ajouter des témoignages clients
 - [ ] SEO / meta tags
-- [ ] Version mobile : tester tous les flows
+- [ ] Auth admin plus robuste (actuellement hash SHA-256 côté client, pas de session)
+- [ ] Notifications email / SMS à Laura quand nouvelle demande/candidature
+- [ ] Export CSV pour les candidatures (comme les demandes)
 
 ---
 
-## 📅 Dernière mise à jour : 26 février 2026
+## 📅 Dernière mise à jour : 27 février 2026
 
-Dernier commit : `949b96b8` — "Fix: pré-sélectionner fréquence 'once' quand initialService=ponctuel"
+### Session du 27/02/2026 — Résumé des changements :
+1. ✅ **Saturateur terrasse** : grille de coût par surface (15€ → 180€), intégré au calcul + UI
+2. ✅ **Crédit d'impôt fix** : séparation main-d'œuvre / fournitures — crédit 50% uniquement sur main-d'œuvre
+3. ✅ **Mobile spacing** : espacement des boutons de service sur mobile (gap-y-4, px-5)
+4. ✅ **Supabase intégration** : remplacement localStorage par Supabase (table `demandes`) avec fallback
+5. ✅ **Admin sécurité** : mot de passe hashé SHA-256, bypass `/#admin` corrigé
+6. ✅ **Candidatures** : nouveau module complet (table Supabase + CRUD + onglet admin violet)
+7. ✅ **Fix formulaire recrutement** : conversion composant → variable JSX (fix perte de focus)
