@@ -996,7 +996,7 @@ const App = () => {
     }
   };
 
-  const PageRecrutement = () => (
+  const pageRecrutement = (
     <div className="py-12 px-6 animate-in fade-in duration-500">
       <div className="max-w-4xl mx-auto">
         <SectionTitle subtitle="Rejoignez une entreprise qui vous respecte.">
@@ -1239,7 +1239,7 @@ const App = () => {
       case 'seniors': return <PageSeniors />;
       case 'histoire': return <PageHistoire />;
       case 'fiscal': return <PageFiscal />;
-      case 'recrutement': return <PageRecrutement />;
+      case 'recrutement': return pageRecrutement;
       case 'contact': return <PageContact />;
       case 'reserver': return (
         <ReservationWizard 
