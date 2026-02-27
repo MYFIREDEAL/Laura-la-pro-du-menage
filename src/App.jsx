@@ -46,11 +46,14 @@ const App = () => {
     }
   };
 
-  // Accès admin via URL hash (ex: /#admin)
+  // Accès admin via URL hash (ex: /#admin) — demande le mot de passe
   useEffect(() => {
     const checkHash = () => {
       if (window.location.hash === '#admin') {
-        setCurrentPage('admin');
+        // Afficher la modale de mot de passe au lieu d'accéder directement
+        setShowAdminModal(true);
+        // Nettoyer le hash pour ne pas le laisser dans l'URL
+        window.location.hash = '';
       }
     };
     checkHash();
