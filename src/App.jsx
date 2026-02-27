@@ -38,10 +38,11 @@ const App = () => {
     const hash = await hashPassword(adminPassword);
     if (hash === ADMIN_HASH) {
       setIsAdminAuthenticated(true);
-      setShowAdminModal(false);
       setAdminPassword('');
       setPasswordError(false);
-      setCurrentPage('admin');
+      setShowAdminModal(false);
+      // Petit délai pour laisser la modale se fermer avant de changer la page derrière
+      setTimeout(() => setCurrentPage('admin'), 150);
     } else {
       setPasswordError(true);
       setTimeout(() => setPasswordError(false), 2000);
