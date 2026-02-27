@@ -27,7 +27,7 @@ const CityPage = () => {
     "@type": "LocalBusiness",
     "name": `Laura la Pro du Ménage — ${city.name}`,
     "description": city.metaDescription,
-    "url": `https://lauralaprodumenage.fr/ville/${city.slug}`,
+    "url": `https://www.lauralaprodumenage.fr/ville/${city.slug}`,
     "telephone": "",
     "priceRange": "€€",
     "currenciesAccepted": "EUR",
@@ -88,13 +88,13 @@ const CityPage = () => {
         "@type": "ListItem",
         "position": 1,
         "name": "Accueil",
-        "item": "https://lauralaprodumenage.fr/"
+        "item": "https://www.lauralaprodumenage.fr/"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": `Ménage à ${city.name}`,
-        "item": `https://lauralaprodumenage.fr/ville/${city.slug}`
+        "item": `https://www.lauralaprodumenage.fr/ville/${city.slug}`
       }
     ]
   };
@@ -105,13 +105,13 @@ const CityPage = () => {
         <title>{city.metaTitle}</title>
         <meta name="description" content={city.metaDescription} />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href={`https://lauralaprodumenage.fr/ville/${city.slug}`} />
+        <link rel="canonical" href={`https://www.lauralaprodumenage.fr/ville/${city.slug}`} />
 
         {/* Open Graph */}
         <meta property="og:type" content="website" />
         <meta property="og:title" content={city.metaTitle} />
         <meta property="og:description" content={city.metaDescription} />
-        <meta property="og:url" content={`https://lauralaprodumenage.fr/ville/${city.slug}`} />
+        <meta property="og:url" content={`https://www.lauralaprodumenage.fr/ville/${city.slug}`} />
         <meta property="og:site_name" content="Laura la Pro du Ménage" />
         <meta property="og:locale" content="fr_FR" />
 
@@ -149,7 +149,7 @@ const CityPage = () => {
                 Accueil
               </Link>
               <a
-                href="https://lauralaprodumenage.fr/#reserver"
+                href="https://www.lauralaprodumenage.fr/#reserver"
                 className="px-5 py-2.5 rounded-full font-bold bg-red-600 text-white hover:bg-red-700 transition-all transform hover:scale-105 shadow-md text-sm"
               >
                 Calculer mon prix
@@ -182,7 +182,7 @@ const CityPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
-                href="https://lauralaprodumenage.fr/#reserver"
+                href="https://www.lauralaprodumenage.fr/#reserver"
                 className="px-8 py-4 rounded-full font-bold bg-red-600 text-white hover:bg-red-700 transition-all transform hover:scale-105 shadow-lg text-lg flex items-center gap-2"
               >
                 Calculer mon prix gratuit
@@ -348,7 +348,7 @@ const CityPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a
-                  href="https://lauralaprodumenage.fr/#reserver"
+                  href="https://www.lauralaprodumenage.fr/#reserver"
                   className="px-8 py-4 rounded-full font-bold bg-white text-red-600 hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg text-lg flex items-center gap-2"
                 >
                   <Star size={20} />
@@ -374,8 +374,8 @@ const CityPage = () => {
               </div>
               <div className="flex items-center gap-6 text-sm text-gray-400">
                 <Link to="/" className="hover:text-white transition-colors">Accueil</Link>
-                <a href="https://lauralaprodumenage.fr/#reserver" className="hover:text-white transition-colors">Réserver</a>
-                <a href="https://lauralaprodumenage.fr/#fiscal" className="hover:text-white transition-colors">Crédit d'impôt</a>
+                <a href="https://www.lauralaprodumenage.fr/#reserver" className="hover:text-white transition-colors">Réserver</a>
+                <a href="https://www.lauralaprodumenage.fr/#fiscal" className="hover:text-white transition-colors">Crédit d'impôt</a>
               </div>
             </div>
             <div className="border-t border-gray-800 mt-6 pt-6 text-center text-gray-500 text-xs">
