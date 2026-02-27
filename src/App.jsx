@@ -1460,7 +1460,17 @@ const App = () => {
         </div>
       </footer>
 
-      {/* Modal Admin Login */}
+    </div>
+  );
+
+  return (
+    <>
+      <Routes>
+        <Route path="/ville/:slug" element={<CityPage />} />
+        <Route path="/*" element={spaContent} />
+      </Routes>
+
+      {/* Modal Admin Login — en dehors de spaContent pour éviter la perte de focus */}
       {showAdminModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           {/* Backdrop */}
@@ -1488,6 +1498,7 @@ const App = () => {
                 onChange={(e) => setAdminPassword(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
                 placeholder="Mot de passe"
+                autoFocus
                 className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-center text-lg font-medium transition-all ${
                   passwordError 
                     ? 'border-red-400 bg-red-50 animate-shake' 
@@ -1528,14 +1539,7 @@ const App = () => {
           </div>
         </div>
       )}
-    </div>
-  );
-
-  return (
-    <Routes>
-      <Route path="/ville/:slug" element={<CityPage />} />
-      <Route path="/*" element={spaContent} />
-    </Routes>
+    </>
   );
 };
 
