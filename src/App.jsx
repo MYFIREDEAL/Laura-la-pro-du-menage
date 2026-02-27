@@ -24,8 +24,17 @@ const App = () => {
   };
 
   // Gestion connexion admin
-  const handleAdminLogin = () => {
-    if (adminPassword === 'yesbaby') {
+  // Hash SHA-256 du mot de passe admin (pas de mot de passe en clair dans le code)
+  const ADMIN_HASH = '780438c8ef0436ffbd307c131f854c8b663cce768ee47e1d79c0d9edd3cefc60'; // mot de passe hashé SHA-256
+  const hashPassword = async (pwd) => {
+    const encoded = new TextEncoder().encode(pwd);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const handleAdminLogin = async () => {
+    const hash = await hashPassword(adminPassword);
+    if (hash === ADMIN_HASH) {
       setShowAdminModal(false);
       setAdminPassword('');
       setPasswordError(false);
