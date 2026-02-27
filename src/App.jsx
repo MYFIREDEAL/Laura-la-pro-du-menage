@@ -20,11 +20,11 @@ const App = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
-  // Promotions dynamiques depuis Supabase
+  // Promotions dynamiques depuis Supabase — rechargées à chaque changement de page
   const [promotions, setPromotions] = useState([]);
   useEffect(() => {
     getAllPromotions().then(setPromotions);
-  }, []);
+  }, [currentPage]);
 
   // Helper pour récupérer la promo d'un service
   const promo = (serviceId) => getActivePromo(promotions, serviceId);
@@ -196,7 +196,7 @@ const App = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
-            <div id="service-regulier" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-regulier" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module avec badge */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -220,7 +220,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-2 italic">🧹 Ménage Régulier</h3>
                 <p className="text-lg font-bold text-orange-500 mb-3">Débordé par le quotidien ?</p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
@@ -244,11 +244,11 @@ const App = () => {
                   <p className="text-red-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('regulier')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('regulier')} className="w-full">Je lance mon essai</Button>
+                <Button onClick={() => goToReservation('regulier')} className="w-full mt-auto">Je lance mon essai</Button>
               </div>
             </div>
 
-            <div id="service-seniors" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-seniors" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-orange-50 to-white border border-orange-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -272,7 +272,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-orange-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-2 italic">🧡 Spécial Seniors</h3>
                 <p className="text-lg font-bold text-orange-500 mb-3">Prenez soin de vos parents</p>
                 <p className="text-gray-700 mb-4 leading-relaxed">
@@ -296,11 +296,11 @@ const App = () => {
                   <p className="text-orange-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('seniors')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('seniors')} className="w-full !bg-orange-500 hover:!bg-orange-600">Je réserve pour mes parents</Button>
+                <Button onClick={() => goToReservation('seniors')} className="w-full mt-auto !bg-orange-500 hover:!bg-orange-600">Je réserve pour mes parents</Button>
               </div>
             </div>
 
-            <div id="service-airbnb" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-airbnb" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-blue-50 to-white border border-blue-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -324,7 +324,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🔑 Offre AirBnB & Gîtes</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Propriétaires, déléguez la corvée du ménage entre deux locations. Nous garantissons une propreté irréprochable pour vos voyageurs.
@@ -341,11 +341,11 @@ const App = () => {
                   <p className="text-blue-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('airbnb')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('airbnb')} className="w-full !bg-blue-600 hover:!bg-blue-700">Je calcule pour ma location</Button>
+                <Button onClick={() => goToReservation('airbnb')} className="w-full mt-auto !bg-blue-600 hover:!bg-blue-700">Je calcule pour ma location</Button>
               </div>
             </div>
 
-            <div id="service-bureaux" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-bureaux" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-emerald-50 to-white border border-emerald-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -369,7 +369,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-emerald-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🏢 Bureaux & Copropriétés</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Des espaces communs propres pour une meilleure ambiance. Laura intervient avec discrétion dans vos locaux ou parties communes.
@@ -386,11 +386,11 @@ const App = () => {
                   <p className="text-emerald-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('pro')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('pro')} className="w-full !bg-emerald-600 hover:!bg-emerald-700">Demander une proposition Pro</Button>
+                <Button onClick={() => goToReservation('pro')} className="w-full mt-auto !bg-emerald-600 hover:!bg-emerald-700">Demander une proposition Pro</Button>
               </div>
             </div>
 
-            <div id="service-printanier" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-printanier" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-pink-50 to-white border border-pink-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -410,7 +410,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-pink-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🌸 Ménage Printanier</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Le printemps arrive ! Offrez à votre intérieur un grand nettoyage de saison. On s'occupe de tout : vitres, recoins oubliés, dépoussiérage en profondeur et fraîcheur retrouvée.
@@ -432,11 +432,11 @@ const App = () => {
                   <p className="text-pink-500 text-sm mt-1">{`Offre valable jusqu'au ${promoDate('ponctuel')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('ponctuel')} className="w-full !bg-pink-500 hover:!bg-pink-600">Réserver mon ménage de printemps</Button>
+                <Button onClick={() => goToReservation('ponctuel')} className="w-full mt-auto !bg-pink-500 hover:!bg-pink-600">Réserver mon ménage de printemps</Button>
               </div>
             </div>
 
-            <div id="service-repassage" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-purple-50 to-white border border-purple-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-repassage" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-purple-50 to-white border border-purple-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -454,7 +454,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-purple-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-4 italic">👔 Repassage à domicile</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Fini les piles de linge qui s'accumulent ! Laura s'occupe de votre repassage avec soin pour des vêtements impeccables, prêts à porter.
@@ -476,11 +476,11 @@ const App = () => {
                   <p className="text-purple-500 text-sm mt-1">{`Offre de bienvenue — valable jusqu'au ${promoDate('repassage')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('repassage')} className="w-full !bg-purple-500 hover:!bg-purple-600">Calculer mon prix</Button>
+                <Button onClick={() => goToReservation('repassage')} className="w-full mt-auto !bg-purple-500 hover:!bg-purple-600">Calculer mon prix</Button>
               </div>
             </div>
 
-            <div id="service-vitres" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-vitres" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-cyan-50 to-white border border-cyan-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -498,7 +498,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-cyan-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-4 italic">🪟 Nettoyage Baie Vitrée</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Retrouvez une vue cristalline ! Laura nettoie vos baies vitrées, fenêtres et vérandas pour une luminosité parfaite dans votre intérieur.
@@ -520,11 +520,11 @@ const App = () => {
                   <p className="text-cyan-500 text-sm mt-1">{`Offre de bienvenue — valable jusqu'au ${promoDate('vitres')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('vitres')} className="w-full !bg-cyan-500 hover:!bg-cyan-600">Calculer mon prix</Button>
+                <Button onClick={() => goToReservation('vitres')} className="w-full mt-auto !bg-cyan-500 hover:!bg-cyan-600">Calculer mon prix</Button>
               </div>
             </div>
 
-            <div id="service-terrasse" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500">
+            <div id="service-terrasse" className="scroll-mt-24 relative group overflow-hidden rounded-[2.5rem] flex flex-col bg-gradient-to-br from-amber-50 to-white border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-500">
               {/* Image en haut du module */}
               <div className="relative w-full h-72 overflow-hidden rounded-t-[2.5rem]">
                 <img 
@@ -542,7 +542,7 @@ const App = () => {
                 {/* Dégradé en bas */}
                 <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-amber-50 to-transparent"></div>
               </div>
-              <div className="p-8 md:p-10">
+              <div className="p-8 md:p-10 flex flex-col flex-grow">
                 <h3 className="text-2xl font-black text-gray-900 mb-4 italic">☀️ Nettoyage de Terrasse</h3>
                 <p className="text-gray-700 mb-4 leading-relaxed">
                   Les beaux jours arrivent, c'est le moment de profiter de votre terrasse ! Laura la remet à neuf pour que vous puissiez en profiter pleinement tout l'été.
@@ -564,7 +564,7 @@ const App = () => {
                   <p className="text-amber-500 text-sm mt-1">{`Offre de bienvenue — valable jusqu'au ${promoDate('terrasse')}`}</p>
                 </div>
                 )}
-                <Button onClick={() => goToReservation('terrasse')} className="w-full !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
+                <Button onClick={() => goToReservation('terrasse')} className="w-full mt-auto !bg-amber-500 hover:!bg-amber-600">Calculer mon prix</Button>
               </div>
             </div>
           </div>
