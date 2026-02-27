@@ -78,15 +78,65 @@ Les 12 balises `<img>` ont des alt descriptifs SEO-friendly :
 
 ---
 
+## ✅ FAIT — Session du 27/02/2026 (session 2) — SEO Local
+
+### 9. Pages SEO locales — Architecture scalable
+- **React Router** intégré (`BrowserRouter` dans `main.jsx`) sans casser la SPA existante
+- **Route réelle** : `/ville/:slug` → `CityPage.jsx` (crawlable par Google)
+- **SPA existante** : toutes les pages internes continuent de fonctionner sur `/*`
+- **Import** `Routes`, `Route` dans `App.jsx` — SPAContent wrappé
+
+### 10. Page Mont-de-Marsan (`/ville/mont-de-marsan`)
+- **`src/pages/CityPage.jsx`** — Page SEO locale complète (~900 mots) :
+  - H1 : "Votre femme de ménage de confiance à Mont-de-Marsan"
+  - Intro locale avec mention des quartiers
+  - H2 : 6 services détaillés (ménage régulier, ponctuel, seniors, repassage, Airbnb, terrasses)
+  - H2 : 4 arguments "Pourquoi nous choisir" (intervenantes locales, crédit impôt, flexibilité, devis gratuit)
+  - H2 : Zones d'intervention (10 communes autour : Saint-Pierre-du-Mont, Dax, Aire-sur-l'Adour, etc.)
+  - H2 : FAQ locale (5 questions — schema FAQPage JSON-LD)
+  - CTA final vers calculateur de prix
+- **`src/data/cityData.js`** — Données structurées par ville, scalable :
+  - Clé = slug (ex: `'mont-de-marsan'`)
+  - Toutes les données (meta, services, FAQ, zones) dans un seul objet
+  - Fonctions `getCityBySlug()` et `getAllCitySlugs()`
+  - Pour ajouter une ville : copier le bloc, changer les données, ajouter au sitemap
+
+### 11. React Helmet — Meta tags dynamiques
+- **`react-helmet`** sur chaque CityPage :
+  - `<title>` : "Femme de ménage à Mont-de-Marsan | Laura la Pro du Ménage"
+  - `<meta description>` locale
+  - `<link rel="canonical">` vers `/ville/mont-de-marsan`
+  - Open Graph complet (`og:title`, `og:description`, `og:url`, `og:locale`)
+  - Twitter Card (`summary_large_image`)
+
+### 12. JSON-LD — 3 schemas par page ville
+- **LocalBusiness** : `addressLocality` = Mont-de-Marsan, `addressCountry` = FR, `areaServed` = City
+- **FAQPage** : 5 questions/réponses structurées (rich snippets Google)
+- **BreadcrumbList** : Accueil > Ménage à Mont-de-Marsan
+
+### 13. Sitemap nettoyé
+- ❌ **Supprimé** : toutes les URLs `/#...` (non crawlables par Google)
+- ✅ **Gardé** : `/` (accueil) — priorité 1.0
+- ✅ **Ajouté** : `/ville/mont-de-marsan` — priorité 0.9
+
+### 14. Vercel rewrites
+- **`vercel.json`** créé avec rewrites SPA :
+  - `/ville/:slug` → `index.html`
+  - `/*` → `index.html` (catch-all SPA)
+
+---
+
 ## 🔜 À FAIRE — Prochaines étapes SEO
 
 ### Priorité haute
 - [ ] **Ajouter og:image** — Créer une image OG 1200x630px (logo Laura + texte) et l'ajouter dans les meta tags
-- [ ] **Vérifier l'indexation** — Revenir sur Search Console dans 48h, vérifier que les 7 pages sont indexées
-- [ ] **Demander l'indexation manuelle** — Dans Search Console > Inspection de l'URL > entrer chaque URL > "Demander l'indexation"
+- [ ] **Vérifier l'indexation** — Revenir sur Search Console dans 48h, vérifier que les pages sont indexées
+- [ ] **Demander l'indexation manuelle** — Dans Search Console > Inspection de l'URL > `/ville/mont-de-marsan` > "Demander l'indexation"
+- [ ] **Soumettre nouveau sitemap** — Resoumettre le sitemap nettoyé dans Google Search Console
 
 ### Priorité moyenne
-- [ ] **Pages locales SEO** — Créer des landing pages par ville (ex: /menage-paris, /menage-lyon) pour capter le trafic local
+- [x] **Pages locales SEO** — ✅ Architecture créée avec `/ville/mont-de-marsan`
+- [ ] **Ajouter d'autres villes** — Dupliquer dans `cityData.js` : Bordeaux, Nantes, Dax, Pau, etc.
 - [ ] **Google Business Profile** — Créer une fiche Google My Business si Laura a une adresse physique
 - [ ] **Balises H1/H2 sémantiques** — Vérifier que chaque section a des headings bien structurés (H1 unique par page, H2 pour sous-sections)
 - [ ] **Temps de chargement** — Vérifier avec Lighthouse (F12 > Lighthouse) et optimiser si nécessaire
@@ -110,17 +160,26 @@ Les 12 balises `<img>` ont des alt descriptifs SEO-friendly :
 | SSL | ✅ HTTPS automatique (Vercel) |
 | Analytics | ❌ Pas encore configuré |
 | Search Console | ✅ Vérifié + Sitemap soumis |
-| Schema.org | ✅ LocalBusiness JSON-LD |
+| Schema.org | ✅ LocalBusiness + FAQPage + BreadcrumbList JSON-LD |
 | Open Graph | ✅ (manque og:image) |
+| React Router | ✅ Routes réelles pour pages SEO locales |
+| React Helmet | ✅ Meta tags dynamiques par page ville |
+| Pages locales | ✅ /ville/mont-de-marsan (scalable) |
 
 ---
 
-## ⚠️ Limitation SPA
+## ⚠️ Limitation SPA (partiellement résolue)
 
-Le site est une **Single Page Application** (React SPA). Toutes les "pages" sont en réalité des sections de la même page (`/#services`, `/#seniors`, etc.). Cela signifie :
-- Les crawlers voient une seule page HTML avec du JavaScript
-- Le sitemap utilise des hash URLs (`/#...`) qui ne sont **pas crawlés** par Google de la même manière que des vraies routes
-- **Solution future** : migrer vers des vraies routes avec React Router ou un framework SSR (Next.js) pour un SEO optimal
-- **Alternative** : utiliser un service de pre-rendering (Prerender.io, Rendertron) pour servir du HTML statique aux bots
+Le site principal reste une **Single Page Application** (React SPA). Les "pages" internes (`accueil`, `services`, `seniors`, etc.) utilisent un `useState` et ne génèrent pas de vraies routes.
 
-> Note : Pour l'instant, le JSON-LD et les meta tags de la page d'accueil couvrent bien l'ensemble des services. Google devrait indexer correctement la page principale.
+**Ce qui a été résolu** :
+- ✅ Les **pages SEO locales** (`/ville/mont-de-marsan`) sont de **vraies routes** React Router, crawlables par Google
+- ✅ Le **sitemap** ne contient plus de hash URLs inutiles
+- ✅ Chaque page ville a ses propres **meta tags**, **JSON-LD** et **canonical URL**
+
+**Ce qui reste** :
+- Les pages internes de la SPA (`/#services`, `/#seniors`) ne sont pas des routes réelles
+- **Solution future** : migrer progressivement les pages internes vers React Router
+- **Alternative** : pre-rendering (Prerender.io) pour servir du HTML statique aux bots
+
+> Note : La stratégie SEO local avec des pages ville dédiées contourne élégamment la limitation SPA pour le référencement géographique.

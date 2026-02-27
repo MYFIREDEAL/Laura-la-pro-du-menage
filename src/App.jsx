@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { 
   Heart, Home, Users, Euro, Phone, Mail, Menu, X, 
   CheckCircle2, Clock, Star, Sparkles, MapPin, 
@@ -10,6 +11,7 @@ import AdminPage from './pages/AdminPage';
 import { saveCandidature } from './lib/candidaturesStorage';
 import { notifyNewCandidature } from './lib/emailService';
 import { getAllPromotions, getActivePromo, formatDateFr } from './lib/promotionsStorage';
+import CityPage from './pages/CityPage';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('accueil');
@@ -1331,7 +1333,8 @@ const App = () => {
     }
   };
 
-  return (
+  // === SPA interne (tout le contenu existant) ===
+  const SPAContent = () => (
     <div className="min-h-screen bg-white font-sans text-gray-900">
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -1525,6 +1528,13 @@ const App = () => {
         </div>
       )}
     </div>
+  );
+
+  return (
+    <Routes>
+      <Route path="/ville/:slug" element={<CityPage />} />
+      <Route path="/*" element={<SPAContent />} />
+    </Routes>
   );
 };
 

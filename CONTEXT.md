@@ -23,7 +23,7 @@ Site vitrine + simulateur de prix pour **Laura la Pro du Ménage**, entreprise d
 ```
 src/
 ├── App.jsx                          # ~1460 lignes — Toutes les pages + navigation
-├── main.jsx                         # Point d'entrée React
+├── main.jsx                         # Point d'entrée React + BrowserRouter
 ├── index.css                        # Styles globaux + Tailwind
 ├── components/
 │   ├── ReservationWizard.jsx        # ~1331 lignes — Wizard 4 étapes (calculateur de prix)
@@ -38,6 +38,8 @@ src/
 │   ├── Footer.jsx
 │   ├── Layout.jsx
 │   └── ui/                          # Composants UI (button, toast, etc.)
+├── data/
+│   └── cityData.js                  # Données SEO locales par ville (scalable)
 ├── lib/
 │   ├── supabase.js                  # Client Supabase (renvoie null si env vars absentes)
 │   ├── demandesStorage.js           # CRUD demandes — Supabase + fallback localStorage
@@ -45,8 +47,10 @@ src/
 │   ├── promotionsStorage.js         # CRUD promotions — Supabase + fallback localStorage
 │   └── utils.js
 └── pages/
-    └── AdminPage.jsx                # ~2100 lignes — Admin avec onglets Demandes/Candidatures/Promos
+    ├── AdminPage.jsx                # ~2100 lignes — Admin avec onglets Demandes/Candidatures/Promos
+    └── CityPage.jsx                 # Page SEO locale par ville (/ville/:slug)
 
+vercel.json                          # Rewrites SPA pour Vercel (routes /ville/*)
 supabase-setup.sql                   # SQL pour créer les tables + RLS policies
 .env                                 # Variables Supabase (gitignored)
 .env.example                         # Template des variables d'environnement
@@ -74,6 +78,18 @@ supabase-setup.sql                   # SQL pour créer les tables + RLS policies
 ### Fonction de navigation :
 - **`setCurrentPage(pageId)`** — pour changer de page (PAS `setPage`)
 - **`goToReservation(serviceId)`** — ouvre le wizard avec service pré-sélectionné
+
+### Pages SEO locales (vraies routes React Router) :
+| Route | Composant | Slug |
+|-------|-----------|------|
+| `/ville/mont-de-marsan` | `CityPage.jsx` | `mont-de-marsan` |
+
+**Architecture** :
+- `main.jsx` → `BrowserRouter` wrapper
+- `App.jsx` → `<Routes>` avec `/ville/:slug` → `CityPage` et `/*` → SPA existante
+- `src/data/cityData.js` → données par ville (meta, services, FAQ, zones)
+- `src/pages/CityPage.jsx` → page SEO locale (Helmet + JSON-LD)
+- Pour **ajouter une ville** : ajouter un bloc dans `cityData.js` + URL dans `sitemap.xml`
 - **`scrollIntoView`** — pour "Nos Services" qui scroll vers la section
 
 ---
@@ -414,15 +430,30 @@ VITE_SUPABASE_ANON_KEY=<voir .env>
 - [x] Connecter le service "Repassage" → connecté au wizard ✅
 - [x] **Onglet Promotions admin** → gestion dynamique des promos (%, dates, 1ère heure) ✅
 - [x] **⚠️ Exécuter le SQL `promotions`** sur Supabase → table + RLS + données par défaut ✅
+- [x] SEO / meta tags ✅
+- [x] **Pages SEO locales** → `/ville/mont-de-marsan` (React Router + Helmet + JSON-LD) ✅
 - [ ] Ajouter des témoignages clients
-- [ ] SEO / meta tags
+- [ ] **Ajouter d'autres villes** dans `src/data/cityData.js` (Bordeaux, Nantes, Dax, Pau…)
 - [ ] Auth admin plus robuste (actuellement hash SHA-256 côté client, pas de session)
 - [ ] Notifications email / SMS à Laura quand nouvelle demande/candidature
 - [ ] Export CSV pour les candidatures (comme les demandes)
+- [ ] **Soumettre nouveau sitemap** dans Google Search Console (URLs # supprimées)
+- [ ] **Demander indexation** de `/ville/mont-de-marsan` dans Search Console
 
 ---
 
 ## 📅 Dernière mise à jour : 27 février 2026
+
+### Session du 27/02/2026 (session 3) — SEO Local :
+1. ✅ **React Router** : `BrowserRouter` dans `main.jsx`, `Routes` dans `App.jsx`
+2. ✅ **Route `/ville/:slug`** → `CityPage.jsx` (vraie route crawlable)
+3. ✅ **SPA intacte** : toutes les pages existantes continuent sur `/*` (aucune casse)
+4. ✅ **CityPage.jsx** : page SEO locale ~900 mots avec H1, 4×H2, FAQ, CTA
+5. ✅ **cityData.js** : données structurées Mont-de-Marsan, prêt à dupliquer pour d'autres villes
+6. ✅ **React Helmet** : meta title, description, canonical, OG, Twitter par page ville
+7. ✅ **JSON-LD** : 3 schemas (LocalBusiness + FAQPage + BreadcrumbList) par page ville
+8. ✅ **Sitemap nettoyé** : URLs `/#...` supprimées, `/ville/mont-de-marsan` ajouté
+9. ✅ **vercel.json** : rewrites SPA pour que Vercel serve `index.html` sur `/ville/*`
 
 ### Session du 27/02/2026 (session 2) — Résumé des changements :
 1. ✅ **Onglet Promotions admin** : 3ème onglet dans AdminPage (thème émeraude)
