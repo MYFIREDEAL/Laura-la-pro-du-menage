@@ -1416,7 +1416,6 @@ const App = () => {
                 onChange={(e) => setAdminPassword(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAdminLogin()}
                 placeholder="Mot de passe"
-                autoFocus
                 className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-center text-lg font-medium transition-all ${
                   passwordError 
                     ? 'border-red-400 bg-red-50 animate-shake' 
