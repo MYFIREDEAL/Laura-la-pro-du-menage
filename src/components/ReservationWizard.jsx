@@ -231,6 +231,16 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     xl: 5,   // 80m²+  → +5h
   };
 
+  // Coût produit saturateur (hors réduction -30%)
+  // Basé sur : saturateur qualité pro ~6€/L, rendement ~5m²/L (2 couches), marge ×2
+  const saturateurProductCost = {
+    xs: 15,   // <10m²  → ~1.5L → coût 9€ → vente 15€
+    sm: 35,   // 10-25m² → ~3.5L → coût 21€ → vente 35€
+    md: 75,   // 25-50m² → ~7.5L → coût 45€ → vente 75€
+    lg: 120,  // 50-80m² → ~13L → coût 78€ → vente 120€
+    xl: 180,  // 80m²+  → ~20L → coût 120€ → vente 180€
+  };
+
   // Durée recommandée en fonction de la surface + cleanLevel (pour ponctuel et terrasse)
   const getRecommendedHours = () => {
     const isPonctuelLike = wizardState.service === 'ponctuel' || wizardState.service === 'terrasse';
@@ -355,27 +365,45 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     const freq = selectedFrequency?.multiplier || 1;
     
     // Calcul options (par venue, pas par heure)
-    let optionsPerVenue = 0;
-    if (wizardState.options.ironing) optionsPerVenue += 5;
-    if (wizardState.options.products) optionsPerVenue += 3;
-    if (wizardState.options.windows) optionsPerVenue += 5;
-    if (wizardState.options.shopping) optionsPerVenue += 10;
+    // On sépare les options « main-d'œuvre » des « fournitures »
+    // car seule la main-d'œuvre est éligible au crédit d'impôt 50%
+    let optionsMainOeuvre = 0; // prestations = éligibles crédit impôt
+    let optionsFournitures = 0; // produits/matériel = NON éligibles crédit impôt
+    if (wizardState.options.ironing) optionsMainOeuvre += 5;
+    if (wizardState.options.products) optionsFournitures += 3; // Produits ménagers = fourniture
+    if (wizardState.options.windows) optionsMainOeuvre += 5;
+    if (wizardState.options.shopping) optionsMainOeuvre += 10;
+    const optionsPerVenue = optionsMainOeuvre + optionsFournitures;
 
-    const subtotal = (baseRate * hours * freq) + (optionsPerVenue * freq);
+    // Coût produit saturateur (fourniture, hors réduction & hors crédit impôt)
+    const hasSaturateur = wizardState.service === 'terrasse' && wizardState.saturateur === true && wizardState.surface;
+    const saturCost = hasSaturateur ? (saturateurProductCost[wizardState.surface] || 0) : 0;
+
+    // Total fournitures par période (non éligible crédit impôt, non soumis à la promo)
+    const totalFournitures = (optionsFournitures * freq) + saturCost;
+
+    // Sous-total main-d'œuvre (éligible crédit impôt + soumis à la promo)
+    const subtotalMainOeuvre = (baseRate * hours * freq) + (optionsMainOeuvre * freq);
     
-    // Promo selon service :
+    // Sous-total global affiché
+    const subtotal = subtotalMainOeuvre + (optionsFournitures * freq);
+    
+    // Promo selon service (appliquée uniquement sur la main-d'œuvre) :
     // - Airbnb, Pro & Terrasse : seulement 30% (pas de 1ère heure offerte)
     // - Autres (régulier, ponctuel, seniors, repassage, vitres) : 1ère heure offerte PUIS 30% sur le reste
     // Note : pour ponctuel/terrasse (once), le wording dit "-30% de réduction" et non "le 1er mois"
     const isNoFreeHour = wizardState.service === 'airbnb' || wizardState.service === 'pro' || wizardState.service === 'terrasse';
     const promoFirstHour = isNoFreeHour ? 0 : baseRate; // 1h offerte uniquement pour particuliers (hors terrasse)
-    const subtotalAfterFreeHour = Math.max(0, subtotal - promoFirstHour); // On retire l'heure gratuite d'abord
+    const subtotalAfterFreeHour = Math.max(0, subtotalMainOeuvre - promoFirstHour); // On retire l'heure gratuite d'abord
     const promoPercent = subtotalAfterFreeHour * 0.30; // Puis -30% sur le reste
     const promo = promoFirstHour + promoPercent;
     
-    const afterPromo = Math.max(0, subtotal - promo);
+    // Après promo = main-d'œuvre après promo + fournitures (produits intacts)
+    const mainOeuvreAfterPromo = Math.max(0, subtotalMainOeuvre - promo);
+    const afterPromo = mainOeuvreAfterPromo + (optionsFournitures * freq);
     
-    // Avance immédiate 50% (si éligible)
+    // Avance immédiate 50% (crédit d'impôt)
+    // S'applique UNIQUEMENT sur la main-d'œuvre, PAS sur les fournitures
     // - Pro : jamais éligible
     // - Airbnb avec résidence secondaire : pas éligible
     // - Autres : éligible
@@ -386,9 +414,13 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       isEligible50 = false;
     }
     
-    const finalPrice = isEligible50 ? afterPromo * 0.5 : afterPromo;
+    // Crédit impôt 50% uniquement sur main-d'œuvre après promo
+    const creditImpot = isEligible50 ? mainOeuvreAfterPromo * 0.5 : 0;
+    
+    // Prix final = main-d'œuvre après crédit + fournitures (produits + saturateur)
+    const finalPrice = (mainOeuvreAfterPromo - creditImpot) + totalFournitures;
 
-    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isNoFreeHour };
+    return { subtotal, promo, promoFirstHour, promoPercent, afterPromo, finalPrice, isEligible50, isNoFreeHour, saturCost, creditImpot, totalFournitures, mainOeuvreAfterPromo };
   };
 
   const estimate = calculateEstimate();
@@ -410,8 +442,10 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     setSendError(null);
     
     try {
+      // Ajouter le coût saturateur au state pour la sauvegarde
+      const stateToSave = { ...wizardState, saturateurCost: estimate.saturCost || 0 };
       // Sauvegarder la demande localement (+ envoi CRM si configuré)
-      const saveResult = saveDemande(wizardState);
+      const saveResult = saveDemande(stateToSave);
       
       if (!saveResult.success) {
         throw new Error('Erreur de sauvegarde');
@@ -817,11 +851,36 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             <span className="text-gray-900">{estimate.afterPromo.toFixed(2)} €</span>
           </div>
           
-          {/* Avance immédiate */}
+          {/* Avance immédiate (uniquement sur main-d'œuvre) */}
           {estimate.isEligible50 && (
-            <div className="flex justify-between text-sm text-blue-600">
-              <span>💳 Avance immédiate 50%</span>
-              <span>-{(estimate.afterPromo * 0.5).toFixed(2)} €</span>
+            <div className="space-y-1">
+              <div className="flex justify-between text-sm text-blue-600">
+                <span>💳 Avance immédiate 50%</span>
+                <span>-{estimate.creditImpot.toFixed(2)} €</span>
+              </div>
+              {estimate.totalFournitures > 0 && (
+                <p className="text-[10px] text-blue-400 italic">Sur main-d'œuvre uniquement (hors fournitures)</p>
+              )}
+            </div>
+          )}
+
+          {/* Supplément fournitures (hors réduction & hors crédit impôt) */}
+          {estimate.totalFournitures > 0 && (
+            <div className="bg-amber-50 rounded-xl p-3 space-y-1 border border-amber-200">
+              <p className="text-[10px] font-bold text-amber-700 uppercase mb-1">🧴 Fournitures</p>
+              {wizardState.options.products && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-amber-600">Produits ménagers</span>
+                  <span className="text-amber-600">{(3 * (selectedFrequency?.multiplier || 1)).toFixed(2)} €</span>
+                </div>
+              )}
+              {estimate.saturCost > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-amber-600">🪵 Saturateur produit</span>
+                  <span className="text-amber-600">{estimate.saturCost.toFixed(2)} €</span>
+                </div>
+              )}
+              <p className="text-[10px] text-amber-500 pt-1 border-t border-amber-200">Non éligible au crédit d'impôt ni à la réduction</p>
             </div>
           )}
           
@@ -1042,6 +1101,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
               </span>
               <span className={`text-xs ${wizardState.saturateur ? 'text-amber-600' : 'text-gray-500'}`}>
                 Protection du bois au pinceau large, lame par lame — compter ~{saturateurBonusTerrasse[wizardState.surface] || '1 à 5'}h de plus
+                {wizardState.surface && ` · Fourniture : +${saturateurProductCost[wizardState.surface] || '—'} €`}
               </span>
             </div>
             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
@@ -1222,6 +1282,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
                   ? (wizardState.frequency === 'once' ? '-30% de réduction' : '-30% de réduction immédiate')
                   : (wizardState.frequency === 'once' ? '1ère heure offerte, -30%' : '1ère heure d\'essai offerte')
                 }
+                {estimate.saturCost > 0 && ` + saturateur ${estimate.saturCost}€`}
               </span>
             </div>
             

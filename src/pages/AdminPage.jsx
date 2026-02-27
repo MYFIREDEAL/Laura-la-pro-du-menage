@@ -676,7 +676,9 @@ const AdminPage = ({ onBack }) => {
                       {selectedDemande.service === 'terrasse' && selectedDemande.saturateur && (
                         <div className="flex justify-between">
                           <span className="text-gray-500">🪵 Saturateur</span>
-                          <span className="font-medium text-orange-600">Oui (application incluse)</span>
+                          <span className="font-medium text-orange-600">
+                            Oui{selectedDemande.saturateurCost > 0 && ` (+${selectedDemande.saturateurCost}€ fourniture)`}
+                          </span>
                         </div>
                       )}
                       
@@ -1116,7 +1118,9 @@ const AdminPage = ({ onBack }) => {
                     {selectedDemande.service === 'terrasse' && selectedDemande.saturateur && (
                       <div className="flex justify-between">
                         <span className="text-gray-500">🪵 Saturateur</span>
-                        <span className="font-medium text-orange-600">Oui</span>
+                        <span className="font-medium text-orange-600">
+                          Oui{selectedDemande.saturateurCost > 0 && ` (+${selectedDemande.saturateurCost}€)`}
+                        </span>
                       </div>
                     )}
 

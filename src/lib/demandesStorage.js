@@ -90,6 +90,7 @@ export const saveDemande = (wizardState) => {
     surface: wizardState.surface || null,
     cleanLevel: wizardState.cleanLevel || null,
     saturateur: wizardState.saturateur || false,
+    saturateurCost: wizardState.saturateurCost || 0,
     
     // Notes internes
     notes: ''
