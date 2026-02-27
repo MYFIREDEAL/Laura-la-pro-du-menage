@@ -8,6 +8,7 @@ import {
 import ReservationWizard from './components/ReservationWizard';
 import AdminPage from './pages/AdminPage';
 import { saveCandidature } from './lib/candidaturesStorage';
+import { notifyNewCandidature } from './lib/emailService';
 import { getAllPromotions, getActivePromo, formatDateFr } from './lib/promotionsStorage';
 
 const App = () => {
@@ -1046,6 +1047,9 @@ const App = () => {
       setRecrutementSent(true);
       setRecrutementForm({ prenom: '', tel: '', email: '', departement: '' });
       setTimeout(() => setRecrutementSent(false), 5000);
+      
+      // Notification email (non bloquant)
+      notifyNewCandidature();
     } catch (error) {
       console.error('Erreur candidature:', error);
     }

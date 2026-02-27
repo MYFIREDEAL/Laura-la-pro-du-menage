@@ -8,6 +8,7 @@ import {
 import Step3Details from './reservation/Step3Details';
 import Step4Contact from './reservation/Step4Contact';
 import { saveDemande } from '../lib/demandesStorage';
+import { notifyNewDemande } from '../lib/emailService';
 import { getAllPromotions, getActivePromo } from '../lib/promotionsStorage';
 
 /**
@@ -443,6 +444,9 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
       
       console.log('✅ Demande sauvegardée:', saveResult.id);
       setShowSuccessModal(true);
+      
+      // Notification email (non bloquant)
+      notifyNewDemande(wizardState);
       
     } catch (error) {
       console.error('Erreur:', error);
