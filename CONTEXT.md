@@ -91,7 +91,7 @@ supabase-setup.sql                   # SQL pour créer les tables + RLS policies
 | Airbnb & Gîtes | `airbnb` | → Wizard |
 | Bureaux & Copropriétés | `pro` | → Wizard |
 | 🌸 Ménage Printanier | `ponctuel` | → Wizard (ponctuel) |
-| Repassage | — | Bientôt disponible (alert) |
+| Repassage | `repassage` | → Wizard |
 | Baie Vitrée | — | Bientôt disponible (alert) |
 | Terrasse Bois | — | Bientôt disponible (alert) |
 
@@ -116,7 +116,7 @@ supabase-setup.sql                   # SQL pour créer les tables + RLS policies
 | Bureaux & Copropriétés | `pro` | 29€ | ❌ | ✅ |
 | Terrasse Bois | `terrasse` | 34€ | ❌ | ✅ |
 | Baie Vitrée | `vitres` | 29€ | ✅ | ❌ |
-| Repassage | — | — | — | — (Bientôt disponible) |
+| Repassage | `repassage` | 29€ | ✅ | ❌ |
 
 ### Étape 2 — Fréquence + Durée
 
@@ -385,8 +385,8 @@ VITE_SUPABASE_ANON_KEY=<voir .env>
 
 ## 📌 TODO / Idées pour la suite
 
-- [ ] **Mettre à jour la date de l'offre de bienvenue** (actuellement "14 février 2026" → expirée)
-- [ ] Connecter le service "Repassage" (seul service encore "Bientôt disponible")
+- [x] **Mettre à jour la date de l'offre de bienvenue** → prolongée jusqu'au 20 mars 2026 ✅
+- [x] Connecter le service "Repassage" → connecté au wizard ✅
 - [ ] Ajouter des témoignages clients
 - [ ] SEO / meta tags
 - [ ] Auth admin plus robuste (actuellement hash SHA-256 côté client, pas de session)
@@ -405,3 +405,5 @@ VITE_SUPABASE_ANON_KEY=<voir .env>
 5. ✅ **Admin sécurité** : mot de passe hashé SHA-256, bypass `/#admin` corrigé
 6. ✅ **Candidatures** : nouveau module complet (table Supabase + CRUD + onglet admin violet)
 7. ✅ **Fix formulaire recrutement** : conversion composant → variable JSX (fix perte de focus)
+8. ✅ **Date offre de bienvenue** : prolongée de "14 février 2026" → "20 mars 2026" (9 occurrences)
+9. ✅ **Service Repassage** : confirmé connecté au wizard (plus de "Bientôt disponible")

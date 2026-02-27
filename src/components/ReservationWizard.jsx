@@ -915,7 +915,7 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
             : (wizardState.frequency === 'once' ? '1ère heure offerte, -30% de réduction' : '1ère heure d\'essai offerte')
           }
         </p>
-        <p className="text-[10px] mt-2 text-orange-600">Valable jusqu'au 14 février 2026</p>
+        <p className="text-[10px] mt-2 text-orange-600">Valable jusqu'au 20 mars 2026</p>
       </div>
     </div>
     );
