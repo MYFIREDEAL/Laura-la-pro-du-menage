@@ -444,8 +444,8 @@ const ReservationWizard = ({ onBack, onNavigate, initialService = null }) => {
     try {
       // Ajouter le coût saturateur au state pour la sauvegarde
       const stateToSave = { ...wizardState, saturateurCost: estimate.saturCost || 0 };
-      // Sauvegarder la demande localement (+ envoi CRM si configuré)
-      const saveResult = saveDemande(stateToSave);
+      // Sauvegarder la demande dans Supabase (fallback localStorage)
+      const saveResult = await saveDemande(stateToSave);
       
       if (!saveResult.success) {
         throw new Error('Erreur de sauvegarde');

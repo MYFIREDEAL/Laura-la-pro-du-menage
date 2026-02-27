@@ -213,8 +213,8 @@ const AdminPage = ({ onBack }) => {
   const [demandeToDelete, setDemandeToDelete] = useState(null);
 
   // Charger les demandes
-  const loadDemandes = () => {
-    const data = getAllDemandes();
+  const loadDemandes = async () => {
+    const data = await getAllDemandes();
     setDemandes(data);
   };
 
@@ -256,9 +256,9 @@ const AdminPage = ({ onBack }) => {
   });
 
   // Changer le statut
-  const handleStatusChange = (id, newStatus) => {
-    updateDemandeStatus(id, newStatus);
-    loadDemandes();
+  const handleStatusChange = async (id, newStatus) => {
+    await updateDemandeStatus(id, newStatus);
+    await loadDemandes();
     if (selectedDemande?.id === id) {
       setSelectedDemande({ ...selectedDemande, status: newStatus });
     }
@@ -271,10 +271,10 @@ const AdminPage = ({ onBack }) => {
   };
 
   // Confirmer la suppression
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (demandeToDelete) {
-      deleteDemande(demandeToDelete.id);
-      loadDemandes();
+      await deleteDemande(demandeToDelete.id);
+      await loadDemandes();
       if (selectedDemande?.id === demandeToDelete.id) {
         setSelectedDemande(null);
       }
@@ -291,9 +291,9 @@ const AdminPage = ({ onBack }) => {
   };
 
   // Sauvegarder une note
-  const handleSaveNote = (id, note) => {
-    addNote(id, note);
-    loadDemandes();
+  const handleSaveNote = async (id, note) => {
+    await addNote(id, note);
+    await loadDemandes();
   };
 
   // Icône par service
