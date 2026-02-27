@@ -14,6 +14,7 @@ const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null); // Pour pré-sélectionner un service
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -36,11 +37,11 @@ const App = () => {
   const handleAdminLogin = async () => {
     const hash = await hashPassword(adminPassword);
     if (hash === ADMIN_HASH) {
+      setIsAdminAuthenticated(true);
       setShowAdminModal(false);
       setAdminPassword('');
       setPasswordError(false);
       setCurrentPage('admin');
-      window.location.hash = 'admin';
     } else {
       setPasswordError(true);
       setTimeout(() => setPasswordError(false), 2000);
@@ -51,8 +52,13 @@ const App = () => {
   useEffect(() => {
     const checkHash = () => {
       if (window.location.hash === '#admin') {
-        // Afficher la modale de mot de passe au lieu d'accéder directement
-        setShowAdminModal(true);
+        if (isAdminAuthenticated) {
+          // Déjà authentifié → accès direct
+          setCurrentPage('admin');
+        } else {
+          // Pas encore authentifié → modale mot de passe
+          setShowAdminModal(true);
+        }
         // Nettoyer le hash pour ne pas le laisser dans l'URL
         window.location.hash = '';
       }
@@ -60,7 +66,7 @@ const App = () => {
     checkHash();
     window.addEventListener('hashchange', checkHash);
     return () => window.removeEventListener('hashchange', checkHash);
-  }, []);
+  }, [isAdminAuthenticated]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
